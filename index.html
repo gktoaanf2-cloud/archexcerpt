@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCH EXCERPT STUDIO [FINAL]</title>
+    <title>ARCH EXCERPT STUDIO</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* [1. 시스템 폰트] */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
         @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
@@ -36,32 +35,28 @@
             body { padding: 40px; }
         }
 
-        /* [2. 캡처 엔진 - 배경 이미지 눌림 방지 보호막] */
         .preview-wrapper { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
-        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
+        
+        /* 모바일 터치 스크롤 방지 장착 (touch-action: none) */
+        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; touch-action: none; }
         
         .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
         .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
 
-        /* 19금 배지 - 디자인 조정 */
         #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
         #r19-badge span { font-size: 11px; }
 
-        /* [텍스트 에디터 - 색상 버그 픽스 구조] */
         .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        /* [3. 테마 레이아웃 완벽 격리 및 디자인 교정] */
         #card { box-sizing: border-box; }
         
-        /* Standard */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
 
-        /* Y2K Player - 모눈종이 삭제 및 세련된 패널화 */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
         .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2); border: 4px solid #000; border-radius: 16px; padding: 0; box-shadow: 12px 12px 0px #000; display: flex; flex-direction: column; position: relative; z-index: 2; overflow: hidden;}
         .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -73,47 +68,41 @@
         .y2k-window-controls span:nth-child(2) { background: #a2fca2; }
         .y2k-window-controls span:nth-child(3) { background: #ff7e7e; }
         .y2k-screen-wrap { padding: 30px; background: transparent; }
-        /* 모눈종이 배경 제거, 깔끔한 스크린으로 변경 */
-        .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%;}
+        .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; color: #000 !important; box-sizing: border-box; width: 100%;}
         .y2k-ui-elements { padding: 0 30px 40px 30px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .y2k-bar { width: 50%; height: 12px; background: #fff; border: 3px solid #000; border-radius: 6px; box-shadow: 2px 2px 0px #000; position: relative; }
         .y2k-bar::after { content:''; position: absolute; left:0; top:0; width:45%; height:100%; background: var(--c2, #ffb3d9); border-right: 3px solid #000; }
         .y2k-btns { display: flex; gap: 15px; }
         .y2k-btn { width: 55px; height: 50px; border: 3px solid #000; background: #fff; border-radius: 12px; box-shadow: 4px 4px 0px #000; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #000; font-weight: 900; }
 
-        /* Diary */
         .theme-diary { background: var(--c1, #f4f1ea) !important; }
-        .theme-diary #card { width: 85%; background: #fff; padding: var(--pad, 80px); box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; }
+        .theme-diary #card { width: 85%; background: #fff; padding: var(--pad, 80px); box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; color: #000 !important; }
         .diary-holes { position: absolute; left: -45px; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 40px 0; z-index: 10; }
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* Sci-Fi */
         .theme-sf { background: #020204 !important; }
         .theme-sf #card { width: 88%; padding: var(--pad, 70px); background: var(--c2, rgba(0, 15, 25, 0.7)); border: 1px solid var(--c1, #0ff); position: relative; box-shadow: inset 0 0 60px rgba(0,255,255,0.05); backdrop-filter: blur(10px); z-index: 2; }
         .sf-line { position: absolute; background: var(--c1, #0ff); z-index: 5; }
         .sf-h { height: 3px; width: 60px; } .sf-v { width: 3px; height: 60px; }
         .sf-t { top: -2px; } .sf-b { bottom: -2px; } .sf-l { left: -2px; } .sf-r { right: -2px; }
 
-        /* [4. 스티커 엔진] */
-        .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; }
+        /* 스티커 모바일 터치 대응 (touch-action: none 추가) */
+        .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none; }
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
         .sticker-active { border: 2px dashed var(--accent) !important; background: rgba(244,123,32,0.05); }
-        .sticker-ctrl { position: absolute; width: 30px; height: 30px; background: #000; border: 2px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 26px; color: #fff; cursor: pointer; font-size: 14px;}
+        .sticker-ctrl { position: absolute; width: 30px; height: 30px; background: #000; border: 2px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 26px; color: #fff; cursor: pointer; font-size: 14px; touch-action: none;}
         .sticker-active .sticker-ctrl { display: block !important; }
         .sticker-del { top: -15px; right: -15px; background: #ff4d4d; }
         .sticker-resize { bottom: -15px; right: -15px; background: var(--accent); cursor: se-resize; }
         .sticker-up { top: -15px; left: -15px; background: #4caf50; }
         .sticker-down { bottom: -15px; left: -15px; background: #2196f3; }
 
-        /* [5. 패널 UI] */
         .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         label { font-size: 0.7rem; color: var(--dim); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
         select, input[type="text"], textarea { width: 100%; padding: 10px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
-        
         input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 2px; border-radius: 1px; outline: none; margin: 15px 0; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 5px rgba(255,255,255,0.8); }
-
         .toolbar { display: flex; gap: 6px; background: #000; padding: 10px; border-radius: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
         .tool-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .tool-btn.active { background: var(--accent); color: #000; }
@@ -133,7 +122,6 @@
         .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .color-item { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px 12px; border-radius: 6px; border: 1px solid #222; font-size: 11px;}
         
-        /* 세련된 19금 마름모 스위치 디자인 */
         .r19-switch-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
         .r19-switch { width: 14px; height: 14px; border: 1px solid var(--dim); background: transparent; transform: rotate(45deg); transition: 0.3s; }
         .r19-switch.active { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.8); }
@@ -278,7 +266,7 @@
         const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [버그 1: 서식 색상 완벽 복구 (Selection Memory)]
+        // [서식 엔진]
         let savedRange = null;
         function saveSelection() { const s = window.getSelection(); if(s.rangeCount > 0) savedRange = s.getRangeAt(0); }
         editor.addEventListener('mouseup', saveSelection); editor.addEventListener('keyup', saveSelection); editor.addEventListener('mouseleave', saveSelection);
@@ -286,19 +274,19 @@
         function exec(cmd, val = null) {
             editor.focus();
             if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
-            document.execCommand('styleWithCSS', false, true); // <font> 대신 <span style> 사용 강제
+            document.execCommand('styleWithCSS', false, true); 
             document.execCommand(cmd, false, val);
             saveSelection();
         }
 
-        document.getElementById('bBtn').onmousedown = (e) => { e.preventDefault(); exec('bold'); };
-        document.getElementById('iBtn').onmousedown = (e) => { e.preventDefault(); exec('italic'); };
-        document.getElementById('uBtn').onmousedown = (e) => { e.preventDefault(); exec('underline'); };
+        document.getElementById('bBtn').onpointerdown = (e) => { e.preventDefault(); exec('bold'); };
+        document.getElementById('iBtn').onpointerdown = (e) => { e.preventDefault(); exec('italic'); };
+        document.getElementById('uBtn').onpointerdown = (e) => { e.preventDefault(); exec('underline'); };
         document.getElementById('fColor').oninput = (e) => { exec('foreColor', e.target.value); };
-        document.getElementById('hiBtn').onmousedown = (e) => { e.preventDefault(); exec('backColor', 'rgba(255, 235, 59, 0.5)'); };
-        document.getElementById('removeHiBtn').onmousedown = (e) => { e.preventDefault(); exec('backColor', 'transparent'); };
+        document.getElementById('hiBtn').onpointerdown = (e) => { e.preventDefault(); exec('backColor', 'rgba(255, 235, 59, 0.5)'); };
+        document.getElementById('removeHiBtn').onpointerdown = (e) => { e.preventDefault(); exec('backColor', 'transparent'); };
 
-        // [스티커 엔진]
+        // [모바일 포인터 이벤트 스티커 엔진]
         document.getElementById('stickerFile').onchange = function(e) {
             const file = e.target.files[0]; if(!file) return;
             const reader = new FileReader();
@@ -316,20 +304,21 @@
                 <div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>`;
             cap.appendChild(stk);
             
-            stk.querySelector('.sticker-del').onmousedown = (e) => { e.stopPropagation(); stk.remove(); };
-            stk.querySelector('.sticker-up').onmousedown = (e) => { e.stopPropagation(); stk.style.zIndex = ++curZ; };
-            stk.querySelector('.sticker-down').onmousedown = (e) => { e.stopPropagation(); stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1); };
+            stk.querySelector('.sticker-del').onpointerdown = (e) => { e.stopPropagation(); stk.remove(); };
+            stk.querySelector('.sticker-up').onpointerdown = (e) => { e.stopPropagation(); stk.style.zIndex = ++curZ; };
+            stk.querySelector('.sticker-down').onpointerdown = (e) => { e.stopPropagation(); stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1); };
             initStickerInteractions(stk);
         }
 
         function initStickerInteractions(stk) {
             let isM = false, isR = false, sX, sY, sL, sA, sScale = 1, sRot = 0, center = {};
-            stk.onmousedown = (e) => {
+            stk.onpointerdown = (e) => {
                 if(drawMode || e.target.classList.contains('sticker-ctrl')) return;
                 e.stopPropagation(); document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
                 stk.classList.add('sticker-active'); isM = true; sX = e.clientX; sY = e.clientY;
+                stk.setPointerCapture(e.pointerId);
             };
-            stk.querySelector('.sticker-resize').onmousedown = (e) => {
+            stk.querySelector('.sticker-resize').onpointerdown = (e) => {
                 e.stopPropagation(); e.preventDefault(); isR = true;
                 const pR = cap.getBoundingClientRect(), s = 1080/pR.width, rect = stk.getBoundingClientRect();
                 center = { x: (rect.left + rect.width/2 - pR.left)*s, y: (rect.top + rect.height/2 - pR.top)*s };
@@ -337,8 +326,9 @@
                 sL = Math.hypot(sX - center.x, sY - center.y); sA = Math.atan2(sY - center.y, sX - center.x);
                 const tr = window.getComputedStyle(stk).transform;
                 if(tr !== 'none') { const v = tr.split('(')[1].split(')')[0].split(','); sRot = Math.atan2(v[1], v[0]); sScale = Math.sqrt(v[0]*v[0] + v[1]*v[1]); }
+                e.target.setPointerCapture(e.pointerId);
             };
-            window.addEventListener('mousemove', (e) => {
+            window.addEventListener('pointermove', (e) => {
                 const s = 1080 / cap.getBoundingClientRect().width;
                 if(isM) { stk.style.left = (parseFloat(stk.style.left || 0) + (e.clientX - sX)*s) + 'px'; stk.style.top = (parseFloat(stk.style.top || 0) + (e.clientY - sY)*s) + 'px'; sX = e.clientX; sY = e.clientY; }
                 if(isR) {
@@ -346,10 +336,10 @@
                     stk.style.transform = `scale(${(Math.hypot(cX - center.x, cY - center.y) / sL) * sScale}) rotate(${((Math.atan2(cY - center.y, cX - center.x) - sA) + sRot) * (180/Math.PI)}deg)`;
                 }
             });
-            window.addEventListener('mouseup', () => { isM = false; isR = false; });
+            window.addEventListener('pointerup', () => { isM = false; isR = false; });
         }
 
-        // [버그 3: 테마 레이아웃 완벽 격리]
+        // [테마 렌더링 시스템]
         function render() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
@@ -367,7 +357,6 @@
             displayTitle.innerText = `[${catSel.value}] ${charSel.value}`; displayTitle.style.fontFamily = fontSel.value;
             editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
             
-            // 색상 오류 근본 원인 제거: --editor-color를 통한 제어
             if(t === 'y2k' || t === 'diary') cap.style.setProperty('--editor-color', '#000000'); else cap.style.setProperty('--editor-color', '#ffffff');
             
             const txtBody = document.getElementById('text-body') || document.getElementById('y2k-screen-wrap');
@@ -378,7 +367,6 @@
             saveSettings();
         }
 
-        // [버그 2: 백그라운드 블러 캔버스 우회 처리 (html2canvas 왜곡 방지)]
         function applyBlurToBg() {
             if(!rawBgImageSrc) { bgImg.style.display = 'none'; return; }
             bgImg.style.display = 'block';
@@ -396,7 +384,7 @@
         document.getElementById('bgFile').onchange = (e) => { const r = new FileReader(); r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; r.readAsDataURL(e.target.files[0]); };
         document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; render(); };
 
-        // 19금 배지
+        // 19금 배지 토글
         const r19Btn = document.getElementById('r19Btn');
         const r19Toggle = document.getElementById('r19Toggle');
         r19Btn.onclick = () => {
@@ -404,17 +392,17 @@
             document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
-        // 낙서 모드
+        // 낙서 모바일 터치 대응
         drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "🖌️ 낙서 ON" : "🖌️ 낙서 OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
-        dCanvas.onmousedown = (e) => { if(!drawMode) return; isDrawing = true; const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.beginPath(); dCtx.moveTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.strokeStyle = document.getElementById('penColor').value; dCtx.lineWidth = parseInt(document.getElementById('penSize').value); dCtx.lineCap="round"; dCtx.lineJoin="round"; };
-        dCanvas.onmousemove = (e) => { if(!isDrawing) return; const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.lineTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.stroke(); };
-        window.addEventListener('mouseup', () => isDrawing = false);
+        dCanvas.onpointerdown = (e) => { if(!drawMode) return; isDrawing = true; dCanvas.setPointerCapture(e.pointerId); const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.beginPath(); dCtx.moveTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.strokeStyle = document.getElementById('penColor').value; dCtx.lineWidth = parseInt(document.getElementById('penSize').value); dCtx.lineCap="round"; dCtx.lineJoin="round"; };
+        dCanvas.onpointermove = (e) => { if(!isDrawing) return; e.preventDefault(); const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.lineTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.stroke(); };
+        window.addEventListener('pointerup', () => isDrawing = false);
         document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까?")) dCtx.clearRect(0,0,1080,1080); };
         
-        // 유틸
+        // 시스템 유틸
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); render(); };
-        document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다.");
+        document.getElementById('manualBtn').onclick = () => alert("여기에다 내용적으세요 보스!");
         document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { localStorage.clear(); location.reload(); } };
         document.querySelectorAll('input:not(#fColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
         
@@ -424,17 +412,17 @@
             cap.style.width = w + 'px'; cap.style.height = h + 'px'; dCanvas.width = w; dCanvas.height = h; dCtx.drawImage(b,0,0);
             const sc = wrapper.clientWidth / w; cap.style.transform = `scale(${sc})`; wrapper.style.height = (h*sc) + 'px';
         }
-        window.onresize = updateLayout; window.onload = () => { loadSettings(); updateLayout(); render(); };
+        window.onresize = updateLayout; 
+        
+        // 데이터 수신
+        window.onload = () => { 
+            loadSettings(); updateLayout(); render(); 
+            const parsedUrl = new URL(window.location.href);
+            const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
+            if (sharedText) { editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); saveSettings(); }
+        };
 
-        // PWA 공유 텍스트 수신용 안테나 
-const parsedUrl = new URL(window.location.href);
-const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
-if (sharedText) { 
-    editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); 
-    saveSettings(); 
-}
-
-        // [버그 5 수리: 고화질 타임아웃 캡처 (눌림 방지)]
+        // 저장 시 스케일 고화질 복원
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             const oldT = cap.style.transform; cap.style.transform = 'scale(1)'; 
