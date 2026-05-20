@@ -18,7 +18,7 @@
         @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
 
-        :root { --bg: #050506; --panel: #111112; --border: #222225; --accent: #f47b20; --text: #f0f0f0; --dim: #666; }
+        :root { --bg: #050506; --panel: #111112; --border: #222225; --accent: #f47b20; --text: #f0f0f0; --dim: #888; }
         body { background: var(--bg); color: var(--text); font-family: "Pretendard Variable", sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; user-select: none;}
 
         .header-area { text-align: center; margin-bottom: 30px; }
@@ -31,7 +31,7 @@
         @media (min-width: 1000px) {
             .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
             .preview-section { flex: 1; position: sticky; top: 20px; }
-            .panel-section { width: 430px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+            .panel-section { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
             body { padding: 40px; }
         }
 
@@ -39,9 +39,7 @@
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
-        
-        /* 모바일 터치 스크롤 방지 장착 (touch-action: none) */
-        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; touch-action: none; }
+        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
         
         .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
         .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
@@ -87,8 +85,7 @@
         .sf-h { height: 3px; width: 60px; } .sf-v { width: 3px; height: 60px; }
         .sf-t { top: -2px; } .sf-b { bottom: -2px; } .sf-l { left: -2px; } .sf-r { right: -2px; }
 
-        /* 스티커 모바일 터치 대응 (touch-action: none 추가) */
-        .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none; }
+        .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
         .sticker-active { border: 2px dashed var(--accent) !important; background: rgba(244,123,32,0.05); }
         .sticker-ctrl { position: absolute; width: 30px; height: 30px; background: #000; border: 2px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 26px; color: #fff; cursor: pointer; font-size: 14px; touch-action: none;}
@@ -202,7 +199,7 @@
                         <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
                     </div>
                     <label>🦄 스티커 추가</label>
-                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
+                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim" onclick="this.value=null;">
                 </div>
 
                 <div class="panel">
@@ -241,7 +238,7 @@
                                     <span class="r19-label">19금 마크 표기</span>
                                 </div>
                             </div>
-                            <input type="file" id="bgFile" accept="image/*" class="btn-dim">
+                            <input type="file" id="bgFile" accept="image/*" class="btn-dim" onclick="this.value=null;">
                             <div class="compact-row" style="margin-top:8px;">
                                 <div style="flex:2"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
                                 <button id="delBgBtn" style="background:#311; color:#f55; border:1px solid #422; border-radius:4px; height:32px; padding:0 10px; cursor:pointer; font-size:11px; margin-bottom:12px;">삭제</button>
@@ -266,33 +263,46 @@
         const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [서식 엔진]
+        // [모바일 버그수정 2: 서식 엔진 모바일 동기화 (Selection Tracking)]
         let savedRange = null;
-        function saveSelection() { const s = window.getSelection(); if(s.rangeCount > 0) savedRange = s.getRangeAt(0); }
-        editor.addEventListener('mouseup', saveSelection); editor.addEventListener('keyup', saveSelection); editor.addEventListener('mouseleave', saveSelection);
+        document.addEventListener('selectionchange', () => {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0 && editor.contains(sel.anchorNode)) {
+                savedRange = sel.getRangeAt(0);
+            }
+        });
 
         function exec(cmd, val = null) {
             editor.focus();
             if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
             document.execCommand('styleWithCSS', false, true); 
+            if(cmd === 'backColor' && val) document.execCommand('hiliteColor', false, val);
             document.execCommand(cmd, false, val);
-            saveSelection();
         }
 
-        document.getElementById('bBtn').onpointerdown = (e) => { e.preventDefault(); exec('bold'); };
-        document.getElementById('iBtn').onpointerdown = (e) => { e.preventDefault(); exec('italic'); };
-        document.getElementById('uBtn').onpointerdown = (e) => { e.preventDefault(); exec('underline'); };
-        document.getElementById('fColor').oninput = (e) => { exec('foreColor', e.target.value); };
-        document.getElementById('hiBtn').onpointerdown = (e) => { e.preventDefault(); exec('backColor', 'rgba(255, 235, 59, 0.5)'); };
-        document.getElementById('removeHiBtn').onpointerdown = (e) => { e.preventDefault(); exec('backColor', 'transparent'); };
+        const bindFmt = (id, cmd, val) => {
+            const btn = document.getElementById(id);
+            const handler = (e) => { e.preventDefault(); exec(cmd, val); };
+            btn.addEventListener('mousedown', handler);
+            btn.addEventListener('touchstart', handler, {passive: false}); // 모바일 가상키보드 유지용 방어막
+        };
 
-        // [모바일 포인터 이벤트 스티커 엔진]
-        document.getElementById('stickerFile').onchange = function(e) {
+        bindFmt('bBtn', 'bold');
+        bindFmt('iBtn', 'italic');
+        bindFmt('uBtn', 'underline');
+        bindFmt('hiBtn', 'backColor', 'rgba(255, 235, 59, 0.5)');
+        bindFmt('removeHiBtn', 'backColor', 'transparent');
+
+        // 색상 픽커는 터치를 막으면 창이 안 열리므로 별도 처리
+        document.getElementById('fColor').addEventListener('input', (e) => { exec('foreColor', e.target.value); });
+
+        // [모바일 버그수정 1: 스티커 및 이미지 업로드]
+        document.getElementById('stickerFile').addEventListener('change', function(e) {
             const file = e.target.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = (ev) => { createSticker(ev.target.result); };
-            reader.readAsDataURL(file); setTimeout(() => { this.value = ""; }, 100);
-        };
+            reader.readAsDataURL(file);
+        });
 
         function createSticker(src) {
             const stk = document.createElement('div'); stk.className = 'sticker';
@@ -304,42 +314,65 @@
                 <div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>`;
             cap.appendChild(stk);
             
-            stk.querySelector('.sticker-del').onpointerdown = (e) => { e.stopPropagation(); stk.remove(); };
-            stk.querySelector('.sticker-up').onpointerdown = (e) => { e.stopPropagation(); stk.style.zIndex = ++curZ; };
-            stk.querySelector('.sticker-down').onpointerdown = (e) => { e.stopPropagation(); stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1); };
+            const bindBtn = (sel, fn) => {
+                const btn = stk.querySelector(sel);
+                const h = (e) => { e.stopPropagation(); e.preventDefault(); fn(); };
+                btn.addEventListener('mousedown', h); btn.addEventListener('touchstart', h, {passive: false});
+            };
+            bindBtn('.sticker-del', () => stk.remove());
+            bindBtn('.sticker-up', () => stk.style.zIndex = ++curZ);
+            bindBtn('.sticker-down', () => stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1));
+            
             initStickerInteractions(stk);
         }
 
         function initStickerInteractions(stk) {
             let isM = false, isR = false, sX, sY, sL, sA, sScale = 1, sRot = 0, center = {};
-            stk.onpointerdown = (e) => {
+            
+            const startMove = (e) => {
                 if(drawMode || e.target.classList.contains('sticker-ctrl')) return;
                 e.stopPropagation(); document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
-                stk.classList.add('sticker-active'); isM = true; sX = e.clientX; sY = e.clientY;
-                stk.setPointerCapture(e.pointerId);
+                stk.classList.add('sticker-active'); isM = true; 
+                sX = e.clientX || e.touches[0].clientX; sY = e.clientY || e.touches[0].clientY;
             };
-            stk.querySelector('.sticker-resize').onpointerdown = (e) => {
+            stk.addEventListener('mousedown', startMove); stk.addEventListener('touchstart', startMove, {passive: false});
+
+            const startResize = (e) => {
                 e.stopPropagation(); e.preventDefault(); isR = true;
                 const pR = cap.getBoundingClientRect(), s = 1080/pR.width, rect = stk.getBoundingClientRect();
                 center = { x: (rect.left + rect.width/2 - pR.left)*s, y: (rect.top + rect.height/2 - pR.top)*s };
-                sX = (e.clientX - pR.left)*s; sY = (e.clientY - pR.top)*s;
+                sX = ((e.clientX || e.touches[0].clientX) - pR.left)*s; sY = ((e.clientY || e.touches[0].clientY) - pR.top)*s;
                 sL = Math.hypot(sX - center.x, sY - center.y); sA = Math.atan2(sY - center.y, sX - center.x);
                 const tr = window.getComputedStyle(stk).transform;
                 if(tr !== 'none') { const v = tr.split('(')[1].split(')')[0].split(','); sRot = Math.atan2(v[1], v[0]); sScale = Math.sqrt(v[0]*v[0] + v[1]*v[1]); }
-                e.target.setPointerCapture(e.pointerId);
             };
-            window.addEventListener('pointermove', (e) => {
-                const s = 1080 / cap.getBoundingClientRect().width;
-                if(isM) { stk.style.left = (parseFloat(stk.style.left || 0) + (e.clientX - sX)*s) + 'px'; stk.style.top = (parseFloat(stk.style.top || 0) + (e.clientY - sY)*s) + 'px'; sX = e.clientX; sY = e.clientY; }
+            const rBtn = stk.querySelector('.sticker-resize');
+            rBtn.addEventListener('mousedown', startResize); rBtn.addEventListener('touchstart', startResize, {passive: false});
+
+            const onMove = (e) => {
+                if(!isM && !isR) return;
+                const pR = cap.getBoundingClientRect(), s = 1080/pR.width;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if(isM) { 
+                    e.preventDefault();
+                    stk.style.left = (parseFloat(stk.style.left || 0) + (clientX - sX)*s) + 'px'; 
+                    stk.style.top = (parseFloat(stk.style.top || 0) + (clientY - sY)*s) + 'px'; 
+                    sX = clientX; sY = clientY; 
+                }
                 if(isR) {
-                    const cX = (e.clientX - cap.getBoundingClientRect().left)*s, cY = (e.clientY - cap.getBoundingClientRect().top)*s;
+                    e.preventDefault();
+                    const cX = (clientX - pR.left)*s, cY = (clientY - pR.top)*s;
                     stk.style.transform = `scale(${(Math.hypot(cX - center.x, cY - center.y) / sL) * sScale}) rotate(${((Math.atan2(cY - center.y, cX - center.x) - sA) + sRot) * (180/Math.PI)}deg)`;
                 }
-            });
-            window.addEventListener('pointerup', () => { isM = false; isR = false; });
+            };
+            window.addEventListener('mousemove', onMove); window.addEventListener('touchmove', onMove, {passive: false});
+            
+            const onEnd = () => { isM = false; isR = false; };
+            window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        // [테마 렌더링 시스템]
+        // [테마 엔진]
         function render() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
@@ -381,10 +414,12 @@
             img.src = rawBgImageSrc;
         }
 
-        document.getElementById('bgFile').onchange = (e) => { const r = new FileReader(); r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; r.readAsDataURL(e.target.files[0]); };
+        document.getElementById('bgFile').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if(!file) return;
+            const r = new FileReader(); r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; r.readAsDataURL(file);
+        });
         document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; render(); };
 
-        // 19금 배지 토글
         const r19Btn = document.getElementById('r19Btn');
         const r19Toggle = document.getElementById('r19Toggle');
         r19Btn.onclick = () => {
@@ -392,11 +427,32 @@
             document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
-        // 낙서 모바일 터치 대응
+        // [낙서 엔진]
         drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "🖌️ 낙서 ON" : "🖌️ 낙서 OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
-        dCanvas.onpointerdown = (e) => { if(!drawMode) return; isDrawing = true; dCanvas.setPointerCapture(e.pointerId); const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.beginPath(); dCtx.moveTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.strokeStyle = document.getElementById('penColor').value; dCtx.lineWidth = parseInt(document.getElementById('penSize').value); dCtx.lineCap="round"; dCtx.lineJoin="round"; };
-        dCanvas.onpointermove = (e) => { if(!isDrawing) return; e.preventDefault(); const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; dCtx.lineTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.stroke(); };
-        window.addEventListener('pointerup', () => isDrawing = false);
+        
+        const startDraw = (e) => {
+            if(!drawMode) return; isDrawing = true; e.preventDefault();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; 
+            dCtx.beginPath(); dCtx.moveTo((clientX-r.left)*s, (clientY-r.top)*s); 
+            dCtx.strokeStyle = document.getElementById('penColor').value; 
+            dCtx.lineWidth = parseInt(document.getElementById('penSize').value); 
+            dCtx.lineCap="round"; dCtx.lineJoin="round"; 
+        };
+        dCanvas.addEventListener('mousedown', startDraw); dCanvas.addEventListener('touchstart', startDraw, {passive: false});
+
+        const moveDraw = (e) => {
+            if(!isDrawing) return; e.preventDefault();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; 
+            dCtx.lineTo((clientX-r.left)*s, (clientY-r.top)*s); dCtx.stroke(); 
+        };
+        dCanvas.addEventListener('mousemove', moveDraw); dCanvas.addEventListener('touchmove', moveDraw, {passive: false});
+        
+        const endDraw = () => isDrawing = false;
+        window.addEventListener('mouseup', endDraw); window.addEventListener('touchend', endDraw);
         document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까?")) dCtx.clearRect(0,0,1080,1080); };
         
         // 시스템 유틸
@@ -414,7 +470,7 @@
         }
         window.onresize = updateLayout; 
         
-        // 데이터 수신
+        // [PWA 앱 공유 텍스트 수신 안테나]
         window.onload = () => { 
             loadSettings(); updateLayout(); render(); 
             const parsedUrl = new URL(window.location.href);
@@ -422,7 +478,6 @@
             if (sharedText) { editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); saveSettings(); }
         };
 
-        // 저장 시 스케일 고화질 복원
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             const oldT = cap.style.transform; cap.style.transform = 'scale(1)'; 
@@ -433,8 +488,8 @@
             }, 150);
         };
 
-        function saveSettings() { localStorage.setItem('arch_final_v16_data', JSON.stringify({ cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, size: sizeSlide.value, c1: c1.value, c2: c2.value, c3: c3.value, c4: c4.value, pad: padSlide.value, rad: radSlide.value, blur: blurSlide.value, html: editor.innerHTML })); }
-        function loadSettings() { const s = JSON.parse(localStorage.getItem('arch_final_v16_data')); if(s) { catSel.value = s.cat; catSel.dispatchEvent(new Event('change')); charSel.value = s.char; ratioSel.value = s.rat; themeSel.value = s.thm; fontSel.value = s.fnt; sizeSlide.value = s.size; c1.value = s.c1; c2.value = s.c2; if(s.c3) c3.value = s.c3; if(s.c4) c4.value = s.c4; padSlide.value = s.pad; radSlide.value = s.rad; if(s.blur) blurSlide.value = s.blur; editor.innerHTML = s.html; } else catSel.dispatchEvent(new Event('change')); }
+        function saveSettings() { localStorage.setItem('arch_final_v_touch', JSON.stringify({ cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, size: sizeSlide.value, c1: c1.value, c2: c2.value, c3: c3.value, c4: c4.value, pad: padSlide.value, rad: radSlide.value, blur: blurSlide.value, html: editor.innerHTML })); }
+        function loadSettings() { const s = JSON.parse(localStorage.getItem('arch_final_v_touch')); if(s) { catSel.value = s.cat; catSel.dispatchEvent(new Event('change')); charSel.value = s.char; ratioSel.value = s.rat; themeSel.value = s.thm; fontSel.value = s.fnt; sizeSlide.value = s.size; c1.value = s.c1; c2.value = s.c2; if(s.c3) c3.value = s.c3; if(s.c4) c4.value = s.c4; padSlide.value = s.pad; radSlide.value = s.rad; if(s.blur) blurSlide.value = s.blur; editor.innerHTML = s.html; } else catSel.dispatchEvent(new Event('change')); }
     </script>
 </body>
 </html>
