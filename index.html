@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCH EXCERPT STUDIO</title>
+    <title>ARCH EXCERPT STUDIO [FINAL]</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
+        /* [1. 시스템 폰트] */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
         @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
@@ -18,8 +19,8 @@
         @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
 
-        :root { --bg: #050506; --panel: #111112; --border: #222225; --accent: #f47b20; --text: #f0f0f0; --dim: #888; }
-        body { background: var(--bg); color: var(--text); font-family: "Pretendard Variable", sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+        :root { --bg: #050506; --panel: #111112; --border: #222225; --accent: #f47b20; --text: #f0f0f0; --dim: #666; }
+        body { background: var(--bg); color: var(--text); font-family: "Pretendard Variable", sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; user-select: none;}
 
         .header-area { text-align: center; margin-bottom: 30px; }
         h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
@@ -31,11 +32,11 @@
         @media (min-width: 1000px) {
             .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
             .preview-section { flex: 1; position: sticky; top: 20px; }
-            .panel-section { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+            .panel-section { width: 430px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
             body { padding: 40px; }
         }
 
-        /* 캡처 엔진 영역 */
+        /* [2. 캡처 엔진 - 배경 이미지 눌림 방지 보호막] */
         .preview-wrapper { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
@@ -45,20 +46,22 @@
         .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
         .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
 
-        /* 19금 배지 */
-        #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 26px; text-align: center; border-radius: 50%; width: 100px; height: 100px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
-        #r19-badge span { font-size: 14px; }
+        /* 19금 배지 - 디자인 조정 */
+        #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
+        #r19-badge span { font-size: 11px; }
 
-        /* 에디터 텍스트 */
-        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: inherit; }
+        /* [텍스트 에디터 - 색상 버그 픽스 구조] */
+        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        /* 테마 레이아웃 완벽 격리 */
+        /* [3. 테마 레이아웃 완벽 격리 및 디자인 교정] */
         #card { box-sizing: border-box; }
         
+        /* Standard */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
 
+        /* Y2K Player - 모눈종이 삭제 및 세련된 패널화 */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
         .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2); border: 4px solid #000; border-radius: 16px; padding: 0; box-shadow: 12px 12px 0px #000; display: flex; flex-direction: column; position: relative; z-index: 2; overflow: hidden;}
         .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -70,26 +73,29 @@
         .y2k-window-controls span:nth-child(2) { background: #a2fca2; }
         .y2k-window-controls span:nth-child(3) { background: #ff7e7e; }
         .y2k-screen-wrap { padding: 30px; background: transparent; }
-        .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; background-image: linear-gradient(#f0f0f5 2px, transparent 2px), linear-gradient(90deg, #f0f0f5 2px, transparent 2px); background-size: 30px 30px; color: #000 !important; box-sizing: border-box; width: 100%;}
+        /* 모눈종이 배경 제거, 깔끔한 스크린으로 변경 */
+        .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%;}
         .y2k-ui-elements { padding: 0 30px 40px 30px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .y2k-bar { width: 50%; height: 12px; background: #fff; border: 3px solid #000; border-radius: 6px; box-shadow: 2px 2px 0px #000; position: relative; }
         .y2k-bar::after { content:''; position: absolute; left:0; top:0; width:45%; height:100%; background: var(--c2, #ffb3d9); border-right: 3px solid #000; }
         .y2k-btns { display: flex; gap: 15px; }
         .y2k-btn { width: 55px; height: 50px; border: 3px solid #000; background: #fff; border-radius: 12px; box-shadow: 4px 4px 0px #000; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #000; font-weight: 900; }
 
+        /* Diary */
         .theme-diary { background: var(--c1, #f4f1ea) !important; }
-        .theme-diary #card { width: 85%; background: #fff; padding: var(--pad, 80px); box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; color: #000 !important; }
+        .theme-diary #card { width: 85%; background: #fff; padding: var(--pad, 80px); box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; }
         .diary-holes { position: absolute; left: -45px; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 40px 0; z-index: 10; }
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
+        /* Sci-Fi */
         .theme-sf { background: #020204 !important; }
         .theme-sf #card { width: 88%; padding: var(--pad, 70px); background: var(--c2, rgba(0, 15, 25, 0.7)); border: 1px solid var(--c1, #0ff); position: relative; box-shadow: inset 0 0 60px rgba(0,255,255,0.05); backdrop-filter: blur(10px); z-index: 2; }
         .sf-line { position: absolute; background: var(--c1, #0ff); z-index: 5; }
         .sf-h { height: 3px; width: 60px; } .sf-v { width: 3px; height: 60px; }
         .sf-t { top: -2px; } .sf-b { bottom: -2px; } .sf-l { left: -2px; } .sf-r { right: -2px; }
 
-        /* 스티커 엔진 */
+        /* [4. 스티커 엔진] */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; }
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
         .sticker-active { border: 2px dashed var(--accent) !important; background: rgba(244,123,32,0.05); }
@@ -100,12 +106,14 @@
         .sticker-up { top: -15px; left: -15px; background: #4caf50; }
         .sticker-down { bottom: -15px; left: -15px; background: #2196f3; }
 
-        /* 패널 공통 */
+        /* [5. 패널 UI] */
         .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         label { font-size: 0.7rem; color: var(--dim); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
         select, input[type="text"], textarea { width: 100%; padding: 10px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
+        
         input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 2px; border-radius: 1px; outline: none; margin: 15px 0; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 5px rgba(255,255,255,0.8); }
+
         .toolbar { display: flex; gap: 6px; background: #000; padding: 10px; border-radius: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
         .tool-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .tool-btn.active { background: var(--accent); color: #000; }
@@ -125,9 +133,11 @@
         .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .color-item { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px 12px; border-radius: 6px; border: 1px solid #222; font-size: 11px;}
         
-        /* 19금 배지 토글 버튼 */
-        .r19-btn { width: 30px; height: 30px; transform: rotate(45deg); background: #222; border: 2px solid #e50914; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
-        .r19-btn.active { background: #e50914; box-shadow: 0 0 10px #e50914; }
+        /* 세련된 19금 마름모 스위치 디자인 */
+        .r19-switch-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+        .r19-switch { width: 14px; height: 14px; border: 1px solid var(--dim); background: transparent; transform: rotate(45deg); transition: 0.3s; }
+        .r19-switch.active { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.8); }
+        .r19-label { font-size: 0.75rem; color: var(--dim); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -212,7 +222,7 @@
                     <div class="row-2"><select id="catSel"></select><select id="charSel"></select></div>
                     <div class="row-2">
                         <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1</option><option value="9:16">9:16</option></select></div>
-                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">Sci-Fi</option></select></div>
+                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF 서식</option></select></div>
                     </div>
                     <div class="row-2">
                         <div><label>폰트</label><select id="fontSel"><option value="'Pretendard Variable'">프리텐다드</option><option value="'JoseonGulim'">조선굴림</option><option value="'KoPubDotum'">코펍돋움</option><option value="'MaruBuri'">마루부리</option><option value="'ChosunIlbo'">조선일보명조</option><option value="'LeeSeoyun'">이서윤체</option><option value="'Kkubulrim'">꾸불림체</option></select></div>
@@ -236,9 +246,12 @@
                             <div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="25"></div>
                         </div>
                         <div style="border-top:1px solid #222; padding-top:10px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <label>배경 이미지 설정</label>
-                                <button id="r19Btn" class="r19-btn" title="19금 배지 토글"></button>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <label style="margin:0;">배경 이미지 설정</label>
+                                <div class="r19-switch-wrap" id="r19Btn">
+                                    <div class="r19-switch" id="r19Toggle"></div>
+                                    <span class="r19-label">19금 마크 표기</span>
+                                </div>
                             </div>
                             <input type="file" id="bgFile" accept="image/*" class="btn-dim">
                             <div class="compact-row" style="margin-top:8px;">
@@ -256,7 +269,6 @@
     </div>
 
     <script>
-        // 1. 초기 데이터
         const archList = { "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"], "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"], "VANGUARD - 2": ["신드롬", "바이브", "리암"], "AGENT": ["카토", "샤드", "블루"], "ACOLYTE": ["블루", "피카"], "CORE": ["닥터 밴스", "퓨어"], "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"], "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"] };
         const cap = document.getElementById('capture-area'), wrapper = document.getElementById('preview-wrapper'), editor = document.getElementById('editor');
         const catSel = document.getElementById('catSel'), charSel = document.getElementById('charSel'), displayTitle = document.getElementById('display-title');
@@ -266,7 +278,7 @@
         const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [버그 1 픽스: 서식 색상 완벽 복구 (Selection Memory)]
+        // [버그 1: 서식 색상 완벽 복구 (Selection Memory)]
         let savedRange = null;
         function saveSelection() { const s = window.getSelection(); if(s.rangeCount > 0) savedRange = s.getRangeAt(0); }
         editor.addEventListener('mouseup', saveSelection); editor.addEventListener('keyup', saveSelection); editor.addEventListener('mouseleave', saveSelection);
@@ -274,14 +286,8 @@
         function exec(cmd, val = null) {
             editor.focus();
             if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
-            // 형광펜 강제 적용 로직
-            if(cmd === 'backColor' && val) {
-                document.execCommand('styleWithCSS', false, true);
-                document.execCommand('hiliteColor', false, val);
-                document.execCommand('backColor', false, val);
-            } else {
-                document.execCommand(cmd, false, val);
-            }
+            document.execCommand('styleWithCSS', false, true); // <font> 대신 <span style> 사용 강제
+            document.execCommand(cmd, false, val);
             saveSelection();
         }
 
@@ -289,14 +295,15 @@
         document.getElementById('iBtn').onmousedown = (e) => { e.preventDefault(); exec('italic'); };
         document.getElementById('uBtn').onmousedown = (e) => { e.preventDefault(); exec('underline'); };
         document.getElementById('fColor').oninput = (e) => { exec('foreColor', e.target.value); };
-        document.getElementById('hiBtn').onmousedown = (e) => { e.preventDefault(); exec('backColor', 'rgba(255, 235, 59, 0.6)'); };
+        document.getElementById('hiBtn').onmousedown = (e) => { e.preventDefault(); exec('backColor', 'rgba(255, 235, 59, 0.5)'); };
         document.getElementById('removeHiBtn').onmousedown = (e) => { e.preventDefault(); exec('backColor', 'transparent'); };
 
-        // [스티커 엔진: 클릭/이동 독립화]
+        // [스티커 엔진]
         document.getElementById('stickerFile').onchange = function(e) {
             const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader(); r.onload = (ev) => { createSticker(ev.target.result); }; r.readAsDataURL(file);
-            setTimeout(() => { this.value = ""; }, 100);
+            const reader = new FileReader();
+            reader.onload = (ev) => { createSticker(ev.target.result); };
+            reader.readAsDataURL(file); setTimeout(() => { this.value = ""; }, 100);
         };
 
         function createSticker(src) {
@@ -342,15 +349,13 @@
             window.addEventListener('mouseup', () => { isM = false; isR = false; });
         }
 
-        // [버그 3 픽스: 테마 렌더링 초기화 격리]
+        // [버그 3: 테마 레이아웃 완벽 격리]
         function render() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
-            // 모든 특수 요소 강제 끄기
             document.querySelectorAll('.y2k-item, .diary-item, .sf-item').forEach(el => el.style.display = 'none');
             document.getElementById('c3-box').style.display = 'none'; document.getElementById('c4-box').style.display = 'none';
 
-            // 선택 테마만 켜기
             if(t === 'y2k') { document.querySelectorAll('.y2k-item').forEach(el => el.style.display = 'flex'); document.getElementById('c3-box').style.display = 'flex'; document.getElementById('c4-box').style.display = 'flex'; }
             if(t === 'diary') document.querySelectorAll('.diary-item').forEach(el => el.style.display = 'flex');
             if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
@@ -362,16 +367,18 @@
             displayTitle.innerText = `[${catSel.value}] ${charSel.value}`; displayTitle.style.fontFamily = fontSel.value;
             editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
             
-            if(t === 'y2k' || t === 'diary') cap.style.setProperty('--text-color', '#000'); else cap.style.setProperty('--text-color', '#fff');
+            // 색상 오류 근본 원인 제거: --editor-color를 통한 제어
+            if(t === 'y2k' || t === 'diary') cap.style.setProperty('--editor-color', '#000000'); else cap.style.setProperty('--editor-color', '#ffffff');
             
             const txtBody = document.getElementById('text-body') || document.getElementById('y2k-screen-wrap');
             if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
             else { txtBody.id="text-body"; txtBody.className=""; txtBody.style.padding='0'; }
 
             applyBlurToBg();
+            saveSettings();
         }
 
-        // [버그 2 픽스: 백그라운드 블러 캔버스 우회 처리 (html2canvas 왜곡 방지)]
+        // [버그 2: 백그라운드 블러 캔버스 우회 처리 (html2canvas 왜곡 방지)]
         function applyBlurToBg() {
             if(!rawBgImageSrc) { bgImg.style.display = 'none'; return; }
             bgImg.style.display = 'block';
@@ -387,13 +394,14 @@
         }
 
         document.getElementById('bgFile').onchange = (e) => { const r = new FileReader(); r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; r.readAsDataURL(e.target.files[0]); };
-        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; render(); };
+        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; render(); };
 
         // 19금 배지
         const r19Btn = document.getElementById('r19Btn');
+        const r19Toggle = document.getElementById('r19Toggle');
         r19Btn.onclick = () => {
-            r19Btn.classList.toggle('active');
-            document.getElementById('r19-badge').style.display = r19Btn.classList.contains('active') ? 'flex' : 'none';
+            r19Toggle.classList.toggle('active');
+            document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
         // 낙서 모드
@@ -407,7 +415,8 @@
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); render(); };
         document.getElementById('manualBtn').onclick = () => alert("여기에다 내용적으세요 보스!");
-        document.querySelectorAll('input, select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
+        document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { localStorage.clear(); location.reload(); } };
+        document.querySelectorAll('input:not(#fColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
         
         function updateLayout() {
             const w = 1080, h = ratioSel.value === '1:1' ? 1080 : 1920;
@@ -415,7 +424,7 @@
             cap.style.width = w + 'px'; cap.style.height = h + 'px'; dCanvas.width = w; dCanvas.height = h; dCtx.drawImage(b,0,0);
             const sc = wrapper.clientWidth / w; cap.style.transform = `scale(${sc})`; wrapper.style.height = (h*sc) + 'px';
         }
-        window.onresize = updateLayout; window.onload = () => { catSel.dispatchEvent(new Event('change')); updateLayout(); render(); };
+        window.onresize = updateLayout; window.onload = () => { loadSettings(); updateLayout(); render(); };
 
         // [버그 5 수리: 고화질 타임아웃 캡처 (눌림 방지)]
         document.getElementById('saveBtn').onclick = () => {
@@ -427,6 +436,9 @@
                 });
             }, 150);
         };
+
+        function saveSettings() { localStorage.setItem('arch_final_v16_data', JSON.stringify({ cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, size: sizeSlide.value, c1: c1.value, c2: c2.value, c3: c3.value, c4: c4.value, pad: padSlide.value, rad: radSlide.value, blur: blurSlide.value, html: editor.innerHTML })); }
+        function loadSettings() { const s = JSON.parse(localStorage.getItem('arch_final_v16_data')); if(s) { catSel.value = s.cat; catSel.dispatchEvent(new Event('change')); charSel.value = s.char; ratioSel.value = s.rat; themeSel.value = s.thm; fontSel.value = s.fnt; sizeSlide.value = s.size; c1.value = s.c1; c2.value = s.c2; if(s.c3) c3.value = s.c3; if(s.c4) c4.value = s.c4; padSlide.value = s.pad; radSlide.value = s.rad; if(s.blur) blurSlide.value = s.blur; editor.innerHTML = s.html; } else catSel.dispatchEvent(new Event('change')); }
     </script>
 </body>
 </html>
