@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCH EXCERPT STUDIO V12</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+        @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'KoPubDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'MaruBuri'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'ChosunIlbo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+        :root {
+            --bg: #050506; --panel: #111112; --border: #222225;
+            --accent: #f47b20; --text: #f0f0f0; --dim: #666;
+        }
+
+        body { background: var(--bg); color: var(--text); font-family: "Pretendard Variable", sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+
+        .header-area { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
+        .sub-warning { font-size: 0.75rem; color: var(--dim); margin-top: 8px; font-weight: bold; letter-spacing: 1px; }
+
+        .container { width: 100%; max-width: 1300px; }
+        .editor-layout { display: flex; flex-direction: column; gap: 20px; }
+
+        @media (min-width: 1000px) {
+            .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
+            .preview-section { flex: 1; position: sticky; top: 20px; }
+            .panel-section { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
+            body { padding: 40px; }
+        }
+
+        .preview-wrapper { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
+        .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none; }
+        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
+        .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
+        .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
+
+        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: inherit; }
+        .rich-text i, .rich-text em { font-style: italic !important; }
+        .rich-text b, .rich-text strong { font-weight: bold !important; }
+
+        /* ==================== [레이아웃 테마 복구 엔진] ==================== */
+        /* [Theme 1] Standard */
+        .theme-standard .card { position: relative; z-index: 2; background: transparent !important; padding: var(--pad, 80px); border-radius: 0; border: none !important; width: 80%; box-shadow: none !important; }
+
+        /* [Theme 2] Y2K Kitsch Music Player */
+        .theme-y2k { background: var(--c3, #fdf0f5) !important; }
+        .theme-y2k .card { width: 85%; background: var(--c1, #dcbdf2); border: 4px solid #000; border-radius: 16px; padding: 0; box-shadow: 12px 12px 0px #000; display: flex; flex-direction: column; position: relative; z-index: 2; }
+        .theme-y2k .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; }
+        .theme-y2k .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #000; letter-spacing: -1px; display:flex; align-items: center; gap: 10px;}
+        .theme-y2k .y2k-brand::before { content: '✨'; font-size: 24px; }
+        .theme-y2k .y2k-window-controls { display: flex; gap: 8px; }
+        .theme-y2k .y2k-window-controls span { width: 18px; height: 18px; border: 3px solid #000; background: #fff; box-shadow: 2px 2px 0px #000; border-radius: 50%;}
+        .theme-y2k .y2k-window-controls span:nth-child(1) { background: #ffea75; }
+        .theme-y2k .y2k-window-controls span:nth-child(2) { background: #a2fca2; }
+        .theme-y2k .y2k-window-controls span:nth-child(3) { background: #ff7e7e; }
+        .theme-y2k .y2k-screen-wrap { padding: 30px; background: transparent; }
+        .theme-y2k .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; background-image: linear-gradient(#f0f0f5 2px, transparent 2px), linear-gradient(90deg, #f0f0f5 2px, transparent 2px); background-size: 30px 30px; color: #000 !important; }
+        .theme-y2k .y2k-ui-elements { padding: 0 30px 40px 30px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
+        .theme-y2k .y2k-bar { width: 50%; height: 12px; background: #fff; border: 3px solid #000; border-radius: 6px; box-shadow: 2px 2px 0px #000; position: relative; }
+        .theme-y2k .y2k-bar::after { content:''; position: absolute; left:0; top:0; width:45%; height:100%; background: var(--c2, #ffb3d9); border-right: 3px solid #000; }
+        .theme-y2k .y2k-btns { display: flex; gap: 15px; }
+        .theme-y2k .y2k-btn { width: 55px; height: 50px; border: 3px solid #000; background: #fff; border-radius: 12px; box-shadow: 4px 4px 0px #000; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #000; font-weight: 900; }
+
+        /* [Theme 3] Diary */
+        .theme-diary { background: var(--c1, #f4f1ea) !important; }
+        .theme-diary .card { width: 80%; background: #fff; padding: var(--pad, 80px); box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-radius: 5px; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 40px 40px; border: 1px solid #ddd; z-index: 2; color: #000 !important; }
+        .theme-diary .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 10; }
+
+        /* [Theme 4] SF Tech */
+        .theme-sf { background: #020204 !important; }
+        .theme-sf .card { width: 85%; padding: var(--pad, 70px); background: var(--c2, rgba(0, 15, 25, 0.7)); border: 1px solid var(--c1, #0ff); position: relative; box-shadow: inset 0 0 60px rgba(0,255,255,0.05); backdrop-filter: blur(10px); z-index: 2; }
+        .sf-line { position: absolute; background: var(--c1, #0ff); }
+        .sf-h { height: 2px; width: 80px; } .sf-v { width: 2px; height: 80px; }
+        .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
+
+        /* ================================================================= */
+
+        /* [스티커 및 개별 컨트롤 구조 고도화] */
+        .sticker { position: absolute; z-index: 20; padding: 15px; transform-origin: center; display: inline-block; box-sizing: border-box; }
+        .sticker img { display: block; max-width: 200px; height: auto; pointer-events: none; user-select: none; }
+        .sticker-active { border: 2px dashed var(--accent) !important; background: rgba(244,123,32,0.08); }
+        .sticker-ctrl { position: absolute; width: 28px; height: 28px; background: #000; border: 2px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 24px; color: #fff; font-size: 12px; cursor: pointer; user-select: none; }
+        .sticker-active .sticker-ctrl { display: block !important; }
+        
+        .sticker-del { top: -14px; right: -14px; background: #ff4d4d; }
+        .sticker-resize { bottom: -14px; right: -14px; background: var(--accent); cursor: se-resize; }
+        .sticker-up { top: -14px; left: -14px; background: #4caf50; }
+        .sticker-down { bottom: -14px; left: -14px; background: #2196f3; }
+
+        /* [Panel Component 디자인] */
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        label { font-size: 0.7rem; color: var(--dim); font-weight: 800; text-transform: uppercase; margin-bottom: 3px; display: block; }
+        select, input[type="text"], textarea { width: 100%; padding: 10px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
+        
+        /* ⚙️ 세련된 뮤직플레이어 트랙 라인 슬라이더 디자인 고정 */
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; background: rgba(255,255,255,0.08); height: 2px; border-radius: 1px; outline: none; margin: 12px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+        .toolbar { display: flex; gap: 6px; background: #000; padding: 10px; border-radius: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
+        .tool-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .tool-btn.active { background: var(--accent); color: #000; }
+        .color-pick-btn { width: 32px; height: 32px; border: none; padding: 0; background: transparent; cursor: pointer; border-radius: 50%; overflow: hidden; }
+
+        .color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .color-item { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px 12px; border-radius: 6px; border: 1px solid #222; font-size: 11px;}
+        .color-item input { width: 35px; height: 25px; border: none; background: none; cursor: pointer; }
+
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-main { background: var(--accent); color: #fff; padding: 16px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 900; cursor: pointer; width: 100%; }
+        .btn-dim { background: #1a1a1c; color: var(--dim); border: 1px solid var(--border); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%; }
+        
+        details { background: #0c0c0d; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        summary { padding: 15px; font-weight: bold; cursor: pointer; color: var(--accent); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .details-in { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .slider-box { display: flex; flex-direction: column; width: 100%; }
+        .compact-row { display: flex; gap: 15px; align-items: flex-end; }
+        .compact-row > div { flex: 1; min-width: 0; }
+        .small-del-btn { background: #331111; color: #f55; border: 1px solid #442222; width: 60px; height: 32px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-bottom: 5px;}
+    </style>
+</head>
+<body>
+
+    <div class="header-area">
+        <h1>ARCH EXCERPT STUDIO V12</h1>
+        <div class="sub-warning">ARCH 에이전트 전용 사이트 입니다. ARCH 이외의 사용금지.</div>
+    </div>
+
+    <div class="container">
+        <div class="editor-layout">
+            
+            <div class="preview-section">
+                <div class="preview-wrapper" id="preview-wrapper">
+                    <div id="capture-area" class="theme-standard">
+                        <div id="display-title" class="excerpt-title"></div>
+                        <div class="watermark">ARCH @체리망고</div>
+                        <img id="bgImg" class="bg-img" style="display:none;">
+                        <canvas id="drawing-canvas" width="1080" height="1080"></canvas>
+
+                        <div id="card" class="card">
+                            <div class="sf-line sf-h sf-t sf-l"></div><div class="sf-line sf-v sf-t sf-l"></div>
+                            <div class="sf-line sf-h sf-t sf-r"></div><div class="sf-line sf-v sf-t sf-r"></div>
+                            <div class="sf-line sf-h sf-b sf-l"></div><div class="sf-line sf-v sf-b sf-l"></div>
+                            <div class="sf-line sf-h sf-b sf-r"></div><div class="sf-line sf-v sf-b sf-r"></div>
+
+                            <div id="diaryTape" class="tape" style="display:none;"></div>
+
+                            <div id="y2k-top" class="y2k-top-bar" style="display:none;">
+                                <span class="y2k-brand">Retro Music Vibe</span>
+                                <div class="y2k-window-controls"><span></span><span></span><span></span></div>
+                            </div>
+
+                            <div id="y2k-screen" class="y2k-screen-wrap">
+                                <div id="text-body" class="y2k-screen" style="padding:0; border:none; background:transparent; box-shadow:none;">
+                                    <div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대사를 입력하십시오.</div>
+                                </div>
+                            </div>
+
+                            <div id="y2k-ui" class="y2k-ui-elements" style="display:none;">
+                                <div class="y2k-bar"></div>
+                                <div class="y2k-btns">
+                                    <div class="y2k-btn">⏮</div>
+                                    <div class="y2k-btn" style="background:var(--c2, #ffb3d9)">▶</div>
+                                    <div class="y2k-btn">⏭</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <button class="btn-dim" id="manualBtn" style="color:#88a;">📑 사용설명서 보기</button>
+
+                <div class="panel" style="padding: 15px;">
+                    <label>텍스트 서식 무기고</label>
+                    <div class="toolbar">
+                        <button class="tool-btn" id="bBtn"><b>B</b></button>
+                        <button class="tool-btn" id="iBtn"><i>I</i></button>
+                        <button class="tool-btn" id="uBtn"><u>U</u></button>
+                        <input type="color" class="color-pick-btn" id="fontColorPick" value="#ffffff">
+                        <button class="tool-btn" id="hiBtn">🖍️</button>
+                        <button class="tool-btn" id="clearFormatBtn"><i class="fa-solid fa-eraser"></i></button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <label>🎨 데코레이션 부대</label>
+                    <div class="toolbar">
+                        <button class="tool-btn" id="drawBtn">🖌️ 낙서 OFF</button>
+                        <button class="tool-btn" id="clearBtn" style="color:#f66;">포맷</button>
+                        <input type="color" class="color-pick-btn" id="penColor" value="#ff0000">
+                        <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px; margin:0;">
+                    </div>
+                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim" style="margin-top:5px;">
+                </div>
+
+                <div class="panel">
+                    <label>ARCH LIST (발췌 작품 소속)</label>
+                    <div class="row-2"><select id="catSel"></select><select id="charSel"></select></div>
+                    <div class="row-2">
+                        <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1</option><option value="9:16">9:16</option></select></div>
+                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">Sci-Fi</option></select></div>
+                    </div>
+                    <div class="row-2">
+                        <div><label>폰트</label><select id="fontSel"><option value="'Pretendard Variable'">프리텐다드</option><option value="'JoseonGulim'">조선굴림</option><option value="'KoPubDotum'">코펍돋움</option><option value="'MaruBuri'">마루부리</option><option value="'ChosunIlbo'">조선일보명조</option><option value="'LeeSeoyun'">이서윤체</option><option value="'Kkubulrim'">꾸불림체</option></select></div>
+                        <div><label>크기</label><input type="range" id="sizeSlide" min="30" max="110" value="45"></div>
+                    </div>
+                    
+                    <label id="colorCtrlLabel">🎨 테마 레이아웃 디테일 컬러 스케일</label>
+                    <div class="color-grid" id="colorGridContainer">
+                        <div class="color-item"><span>C1 (메인/몸체)</span><input type="color" id="c1" value="#dcbdf2"></div>
+                        <div class="color-item"><span>C2 (포인트/바)</span><input type="color" id="c2" value="#ffb3d9"></div>
+                        <div class="color-item" id="y2k-c3-item"><span>C3 (바깥 배경)</span><input type="color" id="c3" value="#fdf0f5"></div>
+                        <div class="color-item" id="y2k-c4-item"><span>C4 (내부 스크린)</span><input type="color" id="c4" value="#ffffff"></div>
+                    </div>
+                </div>
+
+                <details>
+                    <summary>ADVANCED CUSTOM ⚙️</summary>
+                    <div class="details-in">
+                        <div class="advanced-row compact-row">
+                            <div class="slider-box"><label>Padding</label><input type="range" id="padSlide" min="20" max="160" value="80"></div>
+                            <div class="slider-box"><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="25"></div>
+                        </div>
+                        <div style="border-top:1px solid #222; padding-top:10px;">
+                            <label>배경 매핑 이미지</label>
+                            <input type="file" id="bgFile" accept="image/*" class="btn-dim">
+                            <div class="compact-row" style="margin-top:8px;">
+                                <div class="slider-box"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
+                                <button class="small-del-btn" id="delBgBtn">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <button class="btn-main" id="saveBtn">RENDER & SAVE PNG</button>
+                <button class="btn-dim" id="resetBtn">FACTORY RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const archList = { "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"], "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"], "VANGUARD - 2": ["신드롬", "바이브", "리암"], "AGENT": ["카토", "샤드", "블루"], "ACOLYTE": ["블루", "피카"], "CORE": ["닥터 밴스", "퓨어"], "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"], "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"] };
+        const cap = document.getElementById('capture-area'), wrapper = document.getElementById('preview-wrapper'), editor = document.getElementById('editor');
+        const catSel = document.getElementById('catSel'), charSel = document.getElementById('charSel'), displayTitle = document.getElementById('display-title');
+        const ratioSel = document.getElementById('ratioSel'), themeSel = document.getElementById('themeSel'), fontSel = document.getElementById('fontSel'), sizeSlide = document.getElementById('sizeSlide');
+        const padSlide = document.getElementById('padSlide'), radSlide = document.getElementById('radSlide'), blurSlide = document.getElementById('blurSlide');
+        const bgImg = document.getElementById('bgImg'), dCanvas = document.getElementById('drawing-canvas'), dCtx = dCanvas.getContext('2d');
+        
+        const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
+        const y2kTop = document.getElementById('y2k-top'), y2kUi = document.getElementById('y2k-ui'), textBody = document.getElementById('text-body'), diaryTape = document.getElementById('diaryTape');
+
+        let drawMode = false, isDrawing = false, currentZ = 30;
+
+        // 낙서 보존용 오프스크린 가상 레이어 구축
+        const backupCanvas = document.createElement('canvas');
+        const backupCtx = backupCanvas.getContext('2d');
+
+        // [서식 지정 핵심 복구 프로토콜]
+        function exec(cmd, val = null) {
+            editor.focus();
+            document.execCommand(cmd, false, val);
+        }
+        document.getElementById('bBtn').onclick = () => exec('bold');
+        document.getElementById('iBtn').onclick = () => exec('italic');
+        document.getElementById('uBtn').onclick = () => exec('underline');
+        document.getElementById('clearFormatBtn').onclick = () => exec('removeFormat');
+        document.getElementById('fontColorPick').onchange = (e) => exec('foreColor', e.target.value);
+        document.getElementById('hiBtn').onclick = () => exec('backColor', 'rgba(255, 235, 5 yellow, 0.45)');
+
+        // [스티커 다중 업로드 및 이벤트 충돌 완전 분쇄 엔진]
+        document.getElementById('stickerFile').onchange = function(e) {
+            // 업로드 순간 낙서 데이터 임시 대치 보관
+            backupCanvas.width = dCanvas.width; backupCanvas.height = dCanvas.height;
+            backupCtx.clearRect(0,0,dCanvas.width,dCanvas.height);
+            backupCtx.drawImage(dCanvas, 0, 0);
+
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => { 
+                createSticker(ev.target.result); 
+                // 복원 단행
+                dCtx.clearRect(0,0,dCanvas.width,dCanvas.height);
+                dCtx.drawImage(backupCanvas, 0, 0);
+            };
+            reader.readAsDataURL(file);
+            this.value = "";
+        };
+
+        function createSticker(src) {
+            const stk = document.createElement('div');
+            stk.className = 'sticker';
+            stk.style.left = '200px'; stk.style.top = '200px'; stk.style.zIndex = ++currentZ;
+            
+            const img = document.createElement('img');
+            img.src = src;
+            stk.appendChild(img);
+
+            // 외부 UI 컨트롤러 탑재 (이벤트 캡처 방지 주입)
+            const addCtrl = (cls, html, mousedownFn) => {
+                const c = document.createElement('div');
+                c.className = 'sticker-ctrl ' + cls; c.innerHTML = html;
+                c.addEventListener('mousedown', (e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    mousedownFn(e);
+                });
+                stk.appendChild(c);
+            };
+
+            addCtrl('sticker-del', '<i class="fa-solid fa-xmark"></i>', () => stk.remove());
+            addCtrl('sticker-resize', '<i class="fa-solid fa-arrows-left-right"></i>', () => {}); // 하단 통합 제어
+            addCtrl('sticker-up', '<i class="fa-solid fa-angles-up"></i>', () => stk.style.zIndex = ++currentZ);
+            addCtrl('sticker-down', '<i class="fa-solid fa-angles-down"></i>', () => stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1));
+
+            cap.appendChild(stk);
+            initStickerPhysics(stk, img);
+        }
+
+        // 축소 캔버스 마우스 픽셀 스케일 보정 완벽 매핑
+        function initStickerPhysics(stk, img) {
+            let isMoving = false, isResizing = false;
+            let startX, startY, startLen, startRot = 0, startScale = 1, center = {};
+
+            stk.addEventListener('mousedown', (e) => {
+                if(drawMode || e.target.classList.contains('sticker-ctrl')) return;
+                e.stopPropagation();
+                document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
+                stk.classList.add('sticker-active');
+                isMoving = true;
+                startX = e.clientX; startY = e.clientY;
+            });
+
+            const resizeBtn = stk.querySelector('.sticker-resize');
+            resizeBtn.addEventListener('mousedown', (e) => {
+                e.stopPropagation(); e.preventDefault();
+                isResizing = true;
+                
+                const pRect = cap.getBoundingClientRect();
+                const s = 1080 / pRect.width;
+                const rect = stk.getBoundingClientRect();
+                
+                center = {
+                    x: (rect.left + rect.width/2 - pRect.left)*s,
+                    y: (rect.top + rect.height/2 - pRect.top)*s
+                };
+
+                startX = (e.clientX - pRect.left)*s;
+                startY = (e.clientY - pRect.top)*s;
+                startLen = Math.hypot(startX - center.x, startY - center.y);
+                startAngle = Math.atan2(startY - center.y, startX - center.x);
+
+                const transform = window.getComputedStyle(stk).transform;
+                if(transform && transform !== 'none') {
+                    const v = transform.split('(')[1].split(')')[0].split(',');
+                    startRot = Math.atan2(parseFloat(v[1]), parseFloat(v[0]));
+                    startScale = Math.sqrt(v[0]*v[0] + v[1]*v[1]);
+                } else { startRot = 0; startScale = 1; }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                const pRect = cap.getBoundingClientRect();
+                const s = 1080 / pRect.width;
+
+                if(isMoving) {
+                    stk.style.left = (parseFloat(stk.style.left || 0) + (e.clientX - startX)*s) + 'px';
+                    stk.style.top = (parseFloat(stk.style.top || 0) + (e.clientY - startY)*s) + 'px';
+                    startX = e.clientX; startY = e.clientY;
+                }
+                if(isResizing) {
+                    const curX = (e.clientX - pRect.left)*s, curY = (e.clientY - pRect.top)*s;
+                    const curLen = Math.hypot(curX - center.x, curY - center.y);
+                    const curAngle = Math.atan2(curY - center.y, curX - center.x);
+                    const finalScale = (curLen / startLen) * startScale;
+                    const finalAngle = (curAngle - startAngle) + startRot;
+                    stk.style.transform = `scale(${finalScale}) rotate(${finalAngle * (180/Math.PI)}deg)`;
+                }
+            });
+
+            window.addEventListener('mouseup', () => { isMoving = false; isResizing = false; });
+            cap.addEventListener('mousedown', (e) => { if(e.target === cap || e.target === dCanvas) stk.classList.remove('sticker-active'); });
+        }
+
+        // [4. 디자인 레이아웃 및 색상 테마 완벽 동기화 복구]
+        for(let cat in archList) catSel.add(new Option(cat, cat));
+        catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(c => charSel.add(new Option(c, c))); render(); };
+
+        function save() {
+            const data = {
+                cat: catSel.value, char: charSel.value, ratio: ratioSel.value, theme: themeSel.value,
+                font: fontSel.value, size: sizeSlide.value, c1: c1.value, c2: c2.value, c3: c3.value, c4: c4.value,
+                pad: padSlide.value, rad: radSlide.value, blur: blurSlide.value, content: editor.innerHTML
+            };
+            localStorage.setItem('arch_v12_final', JSON.stringify(data));
+        }
+
+        function load() {
+            const s = JSON.parse(localStorage.getItem('arch_v12_final'));
+            if(s) {
+                catSel.value = s.cat; catSel.dispatchEvent(new Event('change')); charSel.value = s.char;
+                ratioSel.value = s.ratio; themeSel.value = s.theme; fontSel.value = s.font;
+                sizeSlide.value = s.size; c1.value = s.c1; c2.value = s.c2;
+                if(s.c3) c3.value = s.c3; if(s.c4) c4.value = s.c4;
+                padSlide.value = s.pad; radSlide.value = s.rad; blurSlide.value = s.blur;
+                if(s.content) editor.innerHTML = s.content;
+            } else { catSel.dispatchEvent(new Event('change')); }
+        }
+
+        function render() {
+            const t = themeSel.value;
+            cap.className = 'theme-' + t;
+
+            // 테마별 레이아웃 UI 블록 토글 가시성 전면 복구
+            y2kTop.style.display = t === 'y2k' ? 'flex' : 'none';
+            y2kUi.style.display = t === 'y2k' ? 'flex' : 'none';
+            diaryTape.style.display = t === 'diary' ? 'block' : 'none';
+            document.querySelectorAll('.sf-line').forEach(l => l.style.display = t === 'sf' ? 'block' : 'none');
+            document.getElementById('y2k-c3-item').style.display = t === 'y2k' ? 'flex' : 'none';
+            document.getElementById('y2k-c4-item').style.display = t === 'y2k' ? 'flex' : 'none';
+
+            if(bgImg.src && bgImg.style.display !== 'none') { bgImg.style.position = "absolute"; bgImg.style.zIndex = "1"; }
+
+            // CSS 테마 변수 유실 복구 주입
+            cap.style.setProperty('--c1', c1.value); cap.style.setProperty('--c2', c2.value);
+            cap.style.setProperty('--c3', c3.value); cap.style.setProperty('--c4', c4.value);
+            cap.style.setProperty('--pad', padSlide.value + 'px'); cap.style.setProperty('--rad', radSlide.value + 'px');
+
+            displayTitle.innerText = `[${catSel.value}] ${charSel.value}`;
+            displayTitle.style.fontFamily = fontSel.value;
+            editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
+            bgImg.style.filter = `blur(${blurSlide.value}px)`;
+
+            // 철저한 독립 흑백 모드 유지
+            if(t === 'y2k' || t === 'diary') { cap.style.setProperty('--text-color', '#000000'); }
+            else { cap.style.setProperty('--text-color', '#ffffff'); }
+
+            save();
+        }
+
+        function updateLayout() {
+            const w = 1080, h = ratioSel.value === '1:1' ? 1080 : 1920;
+            
+            // 해상도 조절 낙서 유실 가드링
+            backupCanvas.width = dCanvas.width; backupCanvas.height = dCanvas.height;
+            backupCtx.clearRect(0,0,dCanvas.width,dCanvas.height);
+            backupCtx.drawImage(dCanvas, 0, 0);
+
+            cap.style.width = w + 'px'; cap.style.height = h + 'px';
+            dCanvas.width = w; dCanvas.height = h;
+            
+            dCtx.drawImage(backupCanvas, 0, 0);
+
+            const scale = wrapper.clientWidth / w;
+            cap.style.transform = `scale(${scale})`;
+            wrapper.style.height = (h*scale) + 'px';
+        }
+
+        // [낙서 기능 리스너]
+        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "🖌️ 낙서 ON" : "🖌️ 낙서 OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
+        dCanvas.onmousedown = (e) => { if(!drawMode) return; isDrawing = true; const r = dCanvas.getBoundingClientRect(); const s = 1080/r.width; dCtx.beginPath(); dCtx.moveTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.strokeStyle = document.getElementById('penColor').value; dCtx.lineWidth = parseInt(document.getElementById('penSize').value); dCtx.lineCap="round"; dCtx.lineJoin="round"; };
+        dCanvas.onmousemove = (e) => { if(!isDrawing) return; const r = dCanvas.getBoundingClientRect(); const s = 1080/r.width; dCtx.lineTo((e.clientX-r.left)*s, (e.clientY-r.top)*s); dCtx.stroke(); };
+        window.addEventListener('mouseup', () => isDrawing = false);
+        document.getElementById('clearBtn').onclick = () => dCtx.clearRect(0,0,1080,1080);
+
+        // 슬라이더 조작 시 레이아웃 꼬임 및 과부하 방지 격리
+        document.querySelectorAll('input, select').forEach(el => {
+            if(el.id === 'ratioSel') el.onchange = () => { updateLayout(); render(); };
+            else if(el.id === 'themeSel') el.onchange = () => { render(); updateLayout(); };
+            else { el.oninput = render; el.onchange = render; }
+        });
+
+        document.getElementById('bgFile').onchange = (e) => { const reader = new FileReader(); reader.onload = (ev) => { bgImg.src = ev.target.result; bgImg.style.display = 'block'; }; reader.readAsDataURL(e.target.files[0]); };
+        document.getElementById('delBgBtn').onclick = () => { bgImg.src = ""; bgImg.style.display = "none"; render(); };
+        document.getElementById('resetBtn').onclick = () => { if(confirm("팩토리 초기화를 진행합니까?")) { localStorage.clear(); location.reload(); } };
+        document.getElementById('saveBtn').onclick = () => { document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active')); const orig = cap.style.transform; cap.style.transform = 'scale(1)'; html2canvas(cap, { scale: 1, useCORS: true }).then(canvas => { cap.style.transform = orig; const a = document.createElement('a'); a.download = 'ARCH_V12_CAPTURE.png'; a.href = canvas.toDataURL(); a.click(); }); };
+
+        window.onresize = updateLayout;
+        window.onload = () => { load(); updateLayout(); render(); };
+    </script>
+</body>
+</html>
