@@ -414,7 +414,7 @@
         // 유틸
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); render(); };
-        document.getElementById('manualBtn').onclick = () => alert("여기에다 내용적으세요 보스!");
+        document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다.");
         document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { localStorage.clear(); location.reload(); } };
         document.querySelectorAll('input:not(#fColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
         
