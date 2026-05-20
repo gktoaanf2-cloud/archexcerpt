@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCH EXCERPT STUDIO V4</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+        
+        @font-face { font-family: 'KoPubDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'MaruBuri'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'ChosunIlbo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+        :root {
+            --bg-base: #0a0a0a;
+            --bg-panel: #161616;
+            --border-color: #2a2a2a;
+            --accent: #f47b20;
+            --text-main: #f0f0f0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: "Pretendard Variable", sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { font-size: 1.5rem; text-align: center; text-transform: uppercase; margin-bottom: 30px; color: #fff; letter-spacing: 2px;}
+
+        .container { width: 100%; max-width: 1200px; }
+        .editor-layout { display: flex; flex-direction: column; gap: 20px; }
+
+        @media (min-width: 900px) {
+            .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
+            .preview-section { flex: 1; position: sticky; top: 20px; }
+            .panel-section { width: 450px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px;}
+            body { padding: 40px 20px; }
+        }
+
+        .preview-wrapper {
+            width: 100%; background: #000; border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; position: relative; display: flex; justify-content: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        #capture-area {
+            position: absolute; top: 0; left: 0; transform-origin: top left; overflow: hidden;
+            background-color: var(--c1, #121212); display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+        }
+
+        /* 워터마크 & 작품명 (모든 테마 공통) */
+        .watermark { position: absolute; bottom: 20px; right: 25px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; letter-spacing: 1px; pointer-events: none; }
+        .excerpt-title { position: absolute; bottom: 20px; left: 25px; font-size: 22px; font-weight: bold; color: var(--c2, #fff); z-index: 100; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+        /* 1. 일반(Standard) 테마 */
+        .theme-standard { background-color: var(--c1, #121212) !important; }
+        .theme-standard .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .theme-standard .content-card {
+            position: relative; z-index: 2; background: rgba(0,0,0,var(--card-opacity, 0.6)); padding: var(--card-padding, 80px);
+            border-radius: var(--card-radius, 20px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            width: 80%; display: flex; flex-direction: column; justify-content: center; color: var(--c2, #ffffff);
+        }
+
+        /* 2. Y2K 뮤직 플레이어 테마 (세련된 복고풍) */
+        .theme-y2k { background: #0f0f15 !important; }
+        .theme-y2k .content-card { 
+            position: relative; z-index: 2;
+            background: linear-gradient(145deg, #e6e6e6, #a8a8a8); 
+            border-radius: 30px; width: 85%; padding: 30px; 
+            box-shadow: 20px 20px 60px #060608, -20px -20px 60px #181822, inset 0 3px 6px rgba(255,255,255,0.8); 
+            display: flex; flex-direction: column; border: 1px solid #fff;
+        }
+        .theme-y2k .y2k-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px;}
+        .theme-y2k .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #555; letter-spacing: -1px; }
+        .theme-y2k .y2k-screen { 
+            background: var(--c1, #9eaeb5); border-radius: 15px; padding: var(--card-padding, 50px);
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.3); border: 2px solid #777;
+            color: var(--c2, #1a2b22); min-height: 400px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .theme-y2k .y2k-controls { margin-top: 30px; display: flex; justify-content: center; gap: 25px; }
+        .theme-y2k .y2k-btn { 
+            width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            box-shadow: 5px 5px 10px #858585, -5px -5px 10px #ffffff; display: flex; align-items: center; justify-content: center;
+            color: #555; font-size: 24px; font-weight: bold; border: 1px solid #fff;
+        }
+        
+        /* 3. 다이어리(Diary) 테마 */
+        .theme-diary { background-color: var(--c1, #fdfbf7) !important; background-image: linear-gradient(rgba(0,0,0,0.05) 2px, transparent 2px); background-size: 100% 60px; }
+        .theme-diary .content-card { width: 80%; padding: var(--card-padding, 60px); background: rgba(255,255,255,0.7); position: relative; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); color: var(--c2, #333); }
+        .theme-diary .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 200px; height: 50px; background: rgba(255, 235, 150, 0.7); box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 2px; }
+
+        /* 4. SF 테크 테마 */
+        .theme-sf { background-color: #030305 !important; background-image: radial-gradient(circle, rgba(255,255,255,0.05) 2px, transparent 2px); background-size: 30px 30px; }
+        .theme-sf .content-card { width: 85%; padding: var(--card-padding, 60px); border: 1px solid var(--c1, #0ff); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,255,255,0.05); background: rgba(0, 5, 10, var(--card-opacity, 0.8)); position: relative; color: var(--c2, #0ff); border-radius: var(--card-radius, 0px); backdrop-filter: blur(10px); }
+        .theme-sf .sf-corner { position: absolute; width: 50px; height: 50px; border: 3px solid var(--c1, #0ff); }
+        .theme-sf .sf-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .theme-sf .sf-tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .theme-sf .sf-bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .theme-sf .sf-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* 공통 에디터 */
+        .rich-text-area { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; font-size: 50px; line-height: 1.6; }
+
+        /* 컨트롤 패널 */
+        .panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .row { display: flex; gap: 15px; }
+        .row > div { flex: 1; }
+        label { font-size: 0.8rem; color: #aaa; margin-bottom: 8px; display: block; font-weight: bold; }
+        select, input[type="range"], input[type="file"], input[type="text"] { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        
+        .toolbar { display: flex; gap: 5px; background: #222; padding: 12px; border-radius: 6px; align-items: center; flex-wrap: wrap; }
+        .tool-btn { background: #333; color: #fff; border: 1px solid #444; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+        .tool-btn:hover { background: #555; }
+        
+        /* 색상 컨트롤 UI */
+        .color-control-box { display: flex; gap: 15px; background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; }
+        .color-control-box > div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        input[type="color"] { width: 100%; height: 35px; border: none; padding: 0; background: transparent; cursor: pointer; }
+
+        /* 커스텀 디테일 창 (Details / Summary) */
+        details { background: #222; border-radius: 8px; border: 1px solid #333; }
+        summary { padding: 15px; font-weight: bold; cursor: pointer; outline: none; color: var(--accent); }
+        .details-content { padding: 15px; border-top: 1px solid #333; display: flex; flex-direction: column; gap: 15px; }
+
+        .btn-export { background: var(--accent); color: #fff; padding: 16px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; width: 100%;}
+        .btn-export:hover { background: #e66a15; transform: translateY(-2px); }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ARCH EXCERPT STUDIO</h1>
+
+        <div class="editor-layout">
+            
+            <div class="preview-section">
+                <div class="preview-wrapper" id="preview-wrapper">
+                    <div id="capture-area" class="theme-standard">
+                        
+                        <!-- 고정 요소: 작품명 & 워터마크 -->
+                        <div id="display-title" class="excerpt-title"></div>
+                        <div class="watermark">ARCH @체리망고</div>
+
+                        <img id="bgImage" class="bg-image" style="display:none;">
+                        
+                        <div id="card-container" class="content-card">
+                            
+                            <!-- Y2K 전용 -->
+                            <div id="y2k-top" class="y2k-top-bar" style="display:none;">
+                                <span class="y2k-brand">SONY</span>
+                                <span style="font-size:12px; color:#555; font-weight:bold;">DIGITAL AUDIO PLAYER</span>
+                            </div>
+                            
+                            <!-- SF 전용 코너 -->
+                            <div id="sf-tl" class="sf-corner sf-tl" style="display:none;"></div>
+                            <div id="sf-tr" class="sf-corner sf-tr" style="display:none;"></div>
+                            <div id="sf-bl" class="sf-corner sf-bl" style="display:none;"></div>
+                            <div id="sf-br" class="sf-corner sf-br" style="display:none;"></div>
+                            
+                            <!-- 다이어리 테이프 -->
+                            <div id="diary-tape" class="tape" style="display:none;"></div>
+
+                            <!-- 공통 텍스트 박스 (Y2K일땐 여기가 스크린) -->
+                            <div id="text-body" class="y2k-screen" style="padding:0; border:none; background:transparent; box-shadow:none;">
+                                <div id="editor" class="rich-text-area" contenteditable="true" spellcheck="false">여기에 대사를 입력하십시오, 보스.</div>
+                            </div>
+
+                            <!-- Y2K 전용 버튼부 -->
+                            <div id="y2k-controls" class="y2k-controls" style="display:none;">
+                                <div class="y2k-btn">⏮</div>
+                                <div class="y2k-btn">▶</div>
+                                <div class="y2k-btn">⏭</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <!-- 1. 텍스트 에디팅 툴바 -->
+                <div class="panel" style="padding: 15px;">
+                    <div class="toolbar">
+                        <span style="font-size:0.8rem; color:#aaa; margin-right:5px; font-weight:bold;">부분 서식:</span>
+                        <button class="tool-btn" onclick="document.execCommand('bold',false,null)">B</button>
+                        <button class="tool-btn" onclick="document.execCommand('italic',false,null)">I</button>
+                        <button class="tool-btn" onclick="document.execCommand('underline',false,null)">U</button>
+                        <input type="color" class="color-picker" id="partialColor" onchange="document.execCommand('foreColor',false,this.value)">
+                        <button class="tool-btn" onclick="document.execCommand('removeFormat',false,null)" style="font-size: 0.8rem;">초기화</button>
+                    </div>
+                </div>
+
+                <!-- 2. 작품 선택기 (2단) -->
+                <div class="panel">
+                    <label>발췌 작품 카테고리 & 캐릭터 (좌측 하단 표기)</label>
+                    <div class="row">
+                        <select id="catSelect"></select>
+                        <select id="charSelect"></select>
+                    </div>
+                </div>
+
+                <!-- 3. 메인 디자인 설정 -->
+                <div class="panel">
+                    <div class="row">
+                        <div>
+                            <label>비율 (해상도)</label>
+                            <select id="ratioSelect">
+                                <option value="1:1">1:1 (1080 x 1080)</option>
+                                <option value="9:16">9:16 (1080 x 1920)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>테마 레이아웃</label>
+                            <select id="themeSelect">
+                                <option value="standard">일반 (Standard)</option>
+                                <option value="y2k">Y2K 뮤직 플레이어</option>
+                                <option value="diary">다이어리 (Diary)</option>
+                                <option value="sf">SF 테크 (Sci-Fi)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <label>전체 폰트</label>
+                            <select id="fontSelect">
+                                <option value="'Pretendard Variable', sans-serif">프리텐다드</option>
+                                <option value="'KoPubDotum', sans-serif">코펍돋움</option>
+                                <option value="'MaruBuri', serif">마루부리</option>
+                                <option value="'ChosunIlbo', serif">조선일보명조</option>
+                                <option value="'Noto Serif KR', serif">본명조</option>
+                                <option value="'LeeSeoyun', cursive">이서윤체</option>
+                                <option value="'Kkubulrim', cursive">꾸불림체</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>폰트 크기</label>
+                            <input type="range" id="fontSizeSlider" min="30" max="120" value="50">
+                        </div>
+                    </div>
+
+                    <label style="margin-top:10px;">🎨 테마 색상 (1~2종 제한 커스텀)</label>
+                    <div class="color-control-box">
+                        <div>
+                            <span style="font-size: 11px; color:#aaa;">색상 1 (배경/메인)</span>
+                            <input type="color" id="color1" value="#121212">
+                        </div>
+                        <div>
+                            <span style="font-size: 11px; color:#aaa;">색상 2 (글자/포인트)</span>
+                            <input type="color" id="color2" value="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 상세 레이아웃 커스텀 창 -->
+                <details>
+                    <summary>⚙️ 상세 레이아웃 임의 커스텀 (고급 설정)</summary>
+                    <div class="details-content">
+                        <div>
+                            <label>내부 여백 (Padding)</label>
+                            <input type="range" id="paddingSlider" min="20" max="150" value="80">
+                        </div>
+                        <div>
+                            <label>테두리 둥글기 (Border Radius)</label>
+                            <input type="range" id="radiusSlider" min="0" max="100" value="20">
+                        </div>
+                        <div>
+                            <label>카드 배경 투명도 (Opacity)</label>
+                            <input type="range" id="opacitySlider" min="0" max="10" value="6">
+                        </div>
+                        <hr style="border:0; border-top:1px solid #333; width:100%;">
+                        <div>
+                            <label>배경 이미지 삽입 (일반 테마용)</label>
+                            <input type="file" id="bgUpload" accept="image/*">
+                            <label style="margin-top:10px;">이미지 블러(Blur)</label>
+                            <input type="range" id="blurSlider" min="0" max="30" value="0">
+                        </div>
+                    </div>
+                </details>
+
+                <button class="btn-export" id="exportBtn">💾 PNG 고화질 렌더링</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 캐릭터 데이터베이스 
+        const categoryData = {
+            "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"],
+            "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"],
+            "VANGUARD - 2": ["신드롬", "바이브", "리암"],
+            "AGENT": ["카토", "샤드", "블루"],
+            "ACOLYTE": ["블루", "피카"],
+            "CORE": ["닥터 밴스", "퓨어"],
+            "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"],
+            "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"]
+        };
+
+        // DOM Elements
+        const captureArea = document.getElementById('capture-area');
+        const previewWrapper = document.getElementById('preview-wrapper');
+        const editor = document.getElementById('editor');
+        const textBody = document.getElementById('text-body');
+        const displayTitle = document.getElementById('display-title');
+        
+        // Selectors
+        const catSelect = document.getElementById('catSelect');
+        const charSelect = document.getElementById('charSelect');
+        const ratioSelect = document.getElementById('ratioSelect');
+        const themeSelect = document.getElementById('themeSelect');
+        const fontSelect = document.getElementById('fontSelect');
+        
+        // Sliders & Colors
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const color1 = document.getElementById('color1');
+        const color2 = document.getElementById('color2');
+        const paddingSlider = document.getElementById('paddingSlider');
+        const radiusSlider = document.getElementById('radiusSlider');
+        const opacitySlider = document.getElementById('opacitySlider');
+        const blurSlider = document.getElementById('blurSlider');
+        const bgUpload = document.getElementById('bgUpload');
+        
+        // Theme Elements
+        const bgImage = document.getElementById('bgImage');
+        const y2kTop = document.getElementById('y2k-top');
+        const y2kControls = document.getElementById('y2k-controls');
+        const diaryTape = document.getElementById('diary-tape');
+        const sfTl = document.getElementById('sf-tl');
+        const sfTr = document.getElementById('sf-tr');
+        const sfBl = document.getElementById('sf-bl');
+        const sfBr = document.getElementById('sf-br');
+
+        // 2. 카테고리 초기화
+        for (let cat in categoryData) {
+            catSelect.add(new Option(cat, cat));
+        }
+        function updateCharSelect() {
+            charSelect.innerHTML = "";
+            let chars = categoryData[catSelect.value];
+            chars.forEach(c => charSelect.add(new Option(c, c)));
+            updateTitleText();
+        }
+        catSelect.addEventListener('change', updateCharSelect);
+
+        // 3. 로컬 스토리지 (자동 저장/불러오기)
+        function saveSettings() {
+            const settings = {
+                cat: catSelect.value, char: charSelect.value,
+                ratio: ratioSelect.value, theme: themeSelect.value, font: fontSelect.value,
+                size: fontSizeSlider.value, c1: color1.value, c2: color2.value,
+                pad: paddingSlider.value, rad: radiusSlider.value, opac: opacitySlider.value, blur: blurSlider.value,
+                content: editor.innerHTML
+            };
+            localStorage.setItem('archSettings_v4', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const s = JSON.parse(localStorage.getItem('archSettings_v4'));
+            if(s) {
+                if(s.cat) { catSelect.value = s.cat; updateCharSelect(); }
+                if(s.char) charSelect.value = s.char;
+                if(s.ratio) ratioSelect.value = s.ratio;
+                if(s.theme) themeSelect.value = s.theme;
+                if(s.font) fontSelect.value = s.font;
+                if(s.size) fontSizeSlider.value = s.size;
+                if(s.c1) color1.value = s.c1;
+                if(s.c2) color2.value = s.c2;
+                if(s.pad) paddingSlider.value = s.pad;
+                if(s.rad) radiusSlider.value = s.rad;
+                if(s.opac) opacitySlider.value = s.opac;
+                if(s.blur) blurSlider.value = s.blur;
+                if(s.content && s.content !== "") editor.innerHTML = s.content;
+            } else {
+                updateCharSelect(); // 최초 실행시 캐릭터 채우기
+            }
+        }
+
+        // 모든 input에 저장 트리거 부여
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('change', saveSettings);
+            el.addEventListener('input', saveSettings);
+        });
+        editor.addEventListener('input', saveSettings);
+
+        // 4. 이벤트 바인딩 및 렌더링 로직
+        function updateTitleText() {
+            displayTitle.innerText = `[${catSelect.value}] ${charSelect.value}`;
+        }
+        charSelect.addEventListener('change', updateTitleText);
+
+        function updateTheme() {
+            const t = themeSelect.value;
+            captureArea.className = `theme-${t}`;
+            
+            bgImage.style.display = (t === 'standard' && bgImage.src) ? 'block' : 'none';
+            y2kTop.style.display = t === 'y2k' ? 'flex' : 'none';
+            y2kControls.style.display = t === 'y2k' ? 'flex' : 'none';
+            diaryTape.style.display = t === 'diary' ? 'block' : 'none';
+            
+            const sfDisplay = t === 'sf' ? 'block' : 'none';
+            sfTl.style.display = sfDisplay; sfTr.style.display = sfDisplay; sfBl.style.display = sfDisplay; sfBr.style.display = sfDisplay;
+
+            if(t === 'y2k') {
+                textBody.className = "y2k-screen";
+                textBody.style.padding = 'var(--card-padding, 50px)';
+                textBody.style.background = 'var(--c1)';
+                textBody.style.border = '2px solid #777';
+                textBody.style.boxShadow = 'inset 0 5px 15px rgba(0,0,0,0.3)';
+            } else {
+                textBody.className = "";
+                textBody.style.padding = '0';
+                textBody.style.background = 'transparent';
+                textBody.style.border = 'none';
+                textBody.style.boxShadow = 'none';
+            }
+        }
+        themeSelect.addEventListener('change', updateTheme);
+
+        function applyCSSVars() {
+            captureArea.style.setProperty('--c1', color1.value);
+            captureArea.style.setProperty('--c2', color2.value);
+            captureArea.style.setProperty('--card-padding', paddingSlider.value + 'px');
+            captureArea.style.setProperty('--card-radius', radiusSlider.value + 'px');
+            captureArea.style.setProperty('--card-opacity', opacitySlider.value / 10);
+            
+            editor.style.fontFamily = fontSelect.value;
+            editor.style.fontSize = fontSizeSlider.value + 'px';
+            bgImage.style.filter = `blur(${blurSlider.value}px)`;
+        }
+
+        // 실시간 변경 감지 적용
+        [color1, color2, paddingSlider, radiusSlider, opacitySlider, fontSelect, fontSizeSlider, blurSlider].forEach(el => {
+            el.addEventListener('input', applyCSSVars);
+            el.addEventListener('change', applyCSSVars);
+        });
+
+        bgUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    bgImage.src = event.target.result;
+                    if(themeSelect.value === 'standard') bgImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function updateLayoutSize() {
+            const width = 1080;
+            const height = ratioSelect.value === '1:1' ? 1080 : 1920;
+            
+            captureArea.style.width = width + 'px';
+            captureArea.style.height = height + 'px';
+
+            const containerWidth = previewWrapper.clientWidth;
+            const scale = containerWidth / width;
+            
+            captureArea.style.transform = `scale(${scale})`;
+            previewWrapper.style.height = (height * scale) + 'px';
+        }
+        window.addEventListener('resize', updateLayoutSize);
+        ratioSelect.addEventListener('change', updateLayoutSize);
+
+        // 초기화 가동
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            updateTitleText();
+            updateTheme();
+            applyCSSVars();
+            
+            // 공유 데이터 수신 덮어쓰기
+            const parsedUrl = new URL(window.location.href);
+            const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
+            if (sharedText) {
+                editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>');
+                saveSettings();
+            }
+            setTimeout(updateLayoutSize, 100);
+        });
+
+        // 추출 엔진
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const originalTransform = captureArea.style.transform;
+            captureArea.style.transform = 'scale(1)';
+            
+            html2canvas(captureArea, {
+                scale: 1, useCORS: true, backgroundColor: null, logging: false
+            }).then(canvas => {
+                captureArea.style.transform = originalTransform; 
+                const link = document.createElement('a');
+                link.download = `ARCH_EXCERPT_${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                captureArea.style.transform = originalTransform;
+                alert("렌더링 오류가 발생했습니다. 브라우저 설정을 확인해 주십시오.");
+            });
+        });
+    </script>
+</body>
+</html>
