@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCH EXCERPT STUDIO V6</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+        
+        @font-face { font-family: 'KoPubDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'MaruBuri'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'ChosunIlbo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-display: swap; }
+
+        :root {
+            --bg-base: #050506;
+            --bg-panel: #111112;
+            --border: #222225;
+            --accent: #f47b20;
+            --text: #f0f0f0;
+        }
+
+        body {
+            background: var(--bg-base);
+            color: var(--text);
+            font-family: "Pretendard Variable", sans-serif;
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; margin-bottom: 30px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+        .container { width: 100%; max-width: 1300px; }
+        .editor-layout { display: flex; flex-direction: column; gap: 20px; }
+
+        @media (min-width: 1000px) {
+            .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
+            .preview-section { flex: 1; position: sticky; top: 20px; }
+            .panel-section { width: 440px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px;}
+            body { padding: 40px; }
+        }
+
+        .preview-wrapper {
+            width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+
+        #capture-area {
+            position: absolute; top: 0; left: 0; transform-origin: top left;
+            background: var(--c1, #000); display: flex; align-items: center; justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; letter-spacing: 1px; pointer-events: none;}
+        .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none;}
+
+        /* 공통 리치 텍스트 에디터 (이탤릭 보장) */
+        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+        .rich-text i, .rich-text em { font-style: italic !important; }
+        .rich-text b, .rich-text strong { font-weight: bold !important; }
+
+        /* [Theme 1] Standard */
+        .theme-standard { background: var(--c1, #121212) !important; }
+        .theme-standard .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .theme-standard .card {
+            position: relative; z-index: 2; background: var(--c2, rgba(0,0,0,0.6)); padding: var(--pad, 80px);
+            border-radius: var(--rad, 20px); border: 1px solid rgba(255,255,255,0.1); width: 80%;
+        }
+
+        /* [Theme 2] Y2K Kitsch Music Player (키치 & 세련된 복고풍) */
+        .theme-y2k { background: #fdf0f5 !important; background-image: radial-gradient(#ffd1e8 2px, transparent 2px); background-size: 30px 30px;}
+        .theme-y2k .card {
+            width: 85%; background: var(--c1, #dcbdf2); border: 4px solid #000; border-radius: 16px; padding: 0;
+            box-shadow: 12px 12px 0px #000; display: flex; flex-direction: column; position: relative; z-index: 2;
+        }
+        .theme-y2k .y2k-top-bar { 
+            background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; 
+            display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0;
+        }
+        .theme-y2k .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #000; letter-spacing: -1px; display:flex; align-items: center; gap: 10px;}
+        .theme-y2k .y2k-brand::before { content: '✨'; font-size: 24px; }
+        .theme-y2k .y2k-window-controls { display: flex; gap: 8px; }
+        .theme-y2k .y2k-window-controls span { width: 18px; height: 18px; border: 3px solid #000; background: #fff; box-shadow: 2px 2px 0px #000; border-radius: 50%;}
+        .theme-y2k .y2k-window-controls span:nth-child(1) { background: #ffea75; }
+        .theme-y2k .y2k-window-controls span:nth-child(2) { background: #a2fca2; }
+        .theme-y2k .y2k-window-controls span:nth-child(3) { background: #ff7e7e; }
+        
+        .theme-y2k .y2k-screen-wrap { padding: 30px; background: transparent; }
+        .theme-y2k .y2k-screen {
+            background: #fff; border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px);
+            box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center;
+            background-image: linear-gradient(#f0f0f5 2px, transparent 2px), linear-gradient(90deg, #f0f0f5 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        .theme-y2k .y2k-ui-elements {
+            padding: 0 30px 40px 30px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;
+        }
+        .theme-y2k .y2k-bar { width: 50%; height: 12px; background: #fff; border: 3px solid #000; border-radius: 6px; box-shadow: 2px 2px 0px #000; position: relative; }
+        .theme-y2k .y2k-bar::after { content:''; position: absolute; left:0; top:0; width:45%; height:100%; background: #ffea75; border-right: 3px solid #000; border-radius: 3px 0 0 3px;}
+        .theme-y2k .y2k-btns { display: flex; gap: 15px; }
+        .theme-y2k .y2k-btn {
+            width: 55px; height: 50px; border: 3px solid #000; background: #fff; border-radius: 12px;
+            box-shadow: 4px 4px 0px #000; display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: #000; font-weight: 900;
+        }
+        .theme-y2k .y2k-btn.play { background: #ffea75; }
+
+        /* [Theme 3] Diary (Memo & Grid) */
+        .theme-diary { background: var(--c1, #f4f1ea) !important; }
+        .theme-diary .card {
+            width: 80%; background: #fff; padding: var(--pad, 80px); 
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.08); position: relative; border-radius: 5px;
+            background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px);
+            background-size: 40px 40px; border: 1px solid #ddd;
+        }
+        .theme-diary .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* [Theme 4] SF Tech */
+        .theme-sf { background: #020204 !important; }
+        .theme-sf .card {
+            width: 85%; padding: var(--pad, 70px); background: var(--c2, rgba(0, 15, 25, 0.7)); border: 1px solid var(--c1, #0ff);
+            position: relative; box-shadow: inset 0 0 60px rgba(0,255,255,0.05); backdrop-filter: blur(10px);
+        }
+        .sf-line { position: absolute; background: var(--c1, #0ff); }
+        .sf-h { height: 2px; width: 80px; } .sf-v { width: 2px; height: 80px; }
+        .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
+
+        /* 컨트롤 패널 */
+        .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        label { font-size: 0.75rem; color: #888; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        select, input[type="text"], textarea, input[type="range"] { width: 100%; padding: 12px; background: #000; border: 1px solid #222; color: #fff; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        
+        .toolbar { display: flex; gap: 8px; background: #000; padding: 10px; border-radius: 8px; align-items: center; border: 1px solid #222; }
+        .tool-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .color-picker-btn { width: 32px; height: 32px; border: none; padding: 0; background: transparent; cursor: pointer; border-radius: 50%; overflow: hidden; }
+
+        .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-item { display: flex; align-items: center; gap: 10px; background: #000; padding: 10px; border-radius: 6px; border: 1px solid #222; }
+        .color-item input { width: 40px; height: 30px; border: none; background: none; cursor: pointer; }
+
+        details { background: #111; border-radius: 8px; border: 1px solid #222; overflow: hidden; }
+        summary { padding: 15px; font-weight: bold; cursor: pointer; color: var(--accent); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary::after { content: '＋'; font-size: 12px; }
+        .details-in { padding: 20px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 15px; }
+
+        .btn-export { background: var(--accent); color: #fff; padding: 16px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 900; cursor: pointer; transition: 0.2s; width: 100%;}
+        .btn-export:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .btn-reset { background: #222; color: #aaa; border: 1px solid #333; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s;}
+        .btn-reset:hover { background: #333; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <h1>ARCH EXCERPT STUDIO V6</h1>
+
+    <div class="container">
+        <div class="editor-layout">
+            
+            <div class="preview-section">
+                <div class="preview-wrapper" id="preview-wrapper">
+                    <div id="capture-area" class="theme-standard">
+                        <div id="display-title" class="excerpt-title"></div>
+                        <div class="watermark">ARCH @체리망고</div>
+                        <img id="bgImg" class="bg-img" style="display:none;">
+                        
+                        <div id="card" class="card">
+                            <div class="sf-line sf-h sf-t sf-l"></div><div class="sf-line sf-v sf-t sf-l"></div>
+                            <div class="sf-line sf-h sf-t sf-r"></div><div class="sf-line sf-v sf-t sf-r"></div>
+                            <div class="sf-line sf-h sf-b sf-l"></div><div class="sf-line sf-v sf-b sf-l"></div>
+                            <div class="sf-line sf-h sf-b sf-r"></div><div class="sf-line sf-v sf-b sf-r"></div>
+
+                            <div id="diaryTape" class="tape" style="display:none;"></div>
+
+                            <div id="y2k-top" class="y2k-top-bar" style="display:none;">
+                                <span class="y2k-brand">Retro Music Vibe</span>
+                                <div class="y2k-window-controls"><span></span><span></span><span></span></div>
+                            </div>
+                            
+                            <div id="y2k-screen" class="y2k-screen-wrap">
+                                <div id="text-body" class="y2k-screen" style="padding:0; border:none; background:transparent; box-shadow:none;">
+                                    <div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대사를 입력하십시오.</div>
+                                </div>
+                            </div>
+
+                            <div id="y2k-ui" class="y2k-ui-elements" style="display:none;">
+                                <div class="y2k-bar"></div>
+                                <div class="y2k-btns">
+                                    <div class="y2k-btn">⏮</div>
+                                    <div class="y2k-btn play">▶</div>
+                                    <div class="y2k-btn">⏭</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel" style="padding: 15px;">
+                    <label>텍스트 서식 툴</label>
+                    <div class="toolbar">
+                        <button class="tool-btn" onclick="document.execCommand('bold')">B</button>
+                        <button class="tool-btn" onclick="document.execCommand('italic')">I</button>
+                        <button class="tool-btn" onclick="document.execCommand('underline')">U</button>
+                        <input type="color" class="color-picker-btn" id="pColor" onchange="document.execCommand('foreColor', false, this.value)">
+                        <button class="tool-btn" onclick="document.execCommand('removeFormat')" style="font-size:11px">초기화</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <label>ARCH LIST (발췌 작품 카테고리)</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <select id="catSel"></select>
+                        <select id="charSel"></select>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div>
+                            <label>레이아웃 비율</label>
+                            <select id="ratioSel">
+                                <option value="1:1">1:1 Square</option>
+                                <option value="9:16">9:16 Vertical</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>디자인 테마</label>
+                            <select id="themeSel">
+                                <option value="standard">Standard (일반)</option>
+                                <option value="y2k">Y2K Music Player</option>
+                                <option value="diary">Diary (다이어리)</option>
+                                <option value="sf">Sci-Fi (SF 테크)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div>
+                            <label>폰트 설정</label>
+                            <select id="fontSel">
+                                <option value="'Pretendard Variable'">프리텐다드</option>
+                                <option value="'KoPubDotum'">코펍돋움</option>
+                                <option value="'MaruBuri'">마루부리</option>
+                                <option value="'ChosunIlbo'">조선일보명조</option>
+                                <option value="'Noto Serif KR'">본명조</option>
+                                <option value="'LeeSeoyun'">이서윤체</option>
+                                <option value="'Kkubulrim'">꾸불림체</option>
+                                <option value="'JoseonGulim'">조선굴림체</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>글자 크기</label>
+                            <input type="range" id="sizeSlider" min="30" max="110" value="45">
+                        </div>
+                    </div>
+
+                    <label style="margin-top:10px;">🎨 테마 레이아웃 커스텀 색상 (폰트 색상과 무관)</label>
+                    <div class="color-row">
+                        <div class="color-item"><span>C1 (배경/메인)</span><input type="color" id="c1" value="#dcbdf2"></div>
+                        <div class="color-item"><span>C2 (포인트)</span><input type="color" id="c2" value="#ffb3d9"></div>
+                    </div>
+                </div>
+
+                <details>
+                    <summary>ADVANCED CUSTOM (상세 조절)</summary>
+                    <div class="details-in">
+                        <label>카드 여백 (Padding)</label>
+                        <input type="range" id="padSlider" min="20" max="160" value="80">
+                        <label>카드 곡률 (Radius)</label>
+                        <input type="range" id="radSlider" min="0" max="100" value="25">
+                        <hr style="border:0; border-top:1px solid #222;">
+                        <label>배경 이미지 업로드 (Standard/SF용)</label>
+                        <input type="file" id="bgUp" accept="image/*">
+                    </div>
+                </details>
+
+                <button class="btn-export" id="exportBtn">SAVE AS PNG (고화질 저장)</button>
+                <button class="btn-reset" id="resetBtn">모든 설정 초기화</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const archList = {
+            "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"],
+            "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"],
+            "VANGUARD - 2": ["신드롬", "바이브", "리암"],
+            "AGENT": ["카토", "샤드", "블루"],
+            "ACOLYTE": ["블루", "피카"],
+            "CORE": ["닥터 밴스", "퓨어"],
+            "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"],
+            "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"]
+        };
+
+        const captureArea = document.getElementById('capture-area');
+        const previewWrapper = document.getElementById('preview-wrapper');
+        const editor = document.getElementById('editor');
+        const catSel = document.getElementById('catSel');
+        const charSel = document.getElementById('charSel');
+        const displayTitle = document.getElementById('display-title');
+        
+        const ratioSel = document.getElementById('ratioSel');
+        const themeSel = document.getElementById('themeSel');
+        const fontSel = document.getElementById('fontSel');
+        const sizeSlider = document.getElementById('sizeSlider');
+        const c1 = document.getElementById('c1');
+        const c2 = document.getElementById('c2');
+        const padSlider = document.getElementById('padSlider');
+        const radSlider = document.getElementById('radSlider');
+        const bgUp = document.getElementById('bgUp');
+        const bgImg = document.getElementById('bgImg');
+
+        const y2kTop = document.getElementById('y2k-top');
+        const y2kUi = document.getElementById('y2k-ui');
+        const textBody = document.getElementById('text-body');
+        const diaryTape = document.getElementById('diaryTape');
+
+        // 카테고리 초기화
+        for (let cat in archList) { catSel.add(new Option(cat, cat)); }
+        function updateChars() {
+            charSel.innerHTML = "";
+            archList[catSel.value].forEach(c => charSel.add(new Option(c, c)));
+            refreshTitle();
+        }
+        catSel.onchange = updateChars;
+        charSel.onchange = refreshTitle;
+
+        function refreshTitle() {
+            displayTitle.innerText = `[${catSel.value}] ${charSel.value}`;
+            // 타이틀 폰트는 선택한 메인 폰트를 따라감
+            displayTitle.style.fontFamily = fontSel.value;
+        }
+
+        // 전체 설정 초기화
+        document.getElementById('resetBtn').onclick = () => {
+            if(confirm("모든 설정을 초기화하시겠습니까?")) {
+                localStorage.removeItem('arch_v6_save');
+                location.reload();
+            }
+        };
+
+        function save() {
+            const data = {
+                cat: catSel.value, char: charSel.value, ratio: ratioSel.value, theme: themeSel.value,
+                font: fontSel.value, size: sizeSlider.value, c1: c1.value, c2: c2.value,
+                pad: padSlider.value, rad: radSlider.value, content: editor.innerHTML
+            };
+            localStorage.setItem('arch_v6_save', JSON.stringify(data));
+        }
+
+        function load() {
+            const s = JSON.parse(localStorage.getItem('arch_v6_save'));
+            if(s) {
+                catSel.value = s.cat; updateChars(); charSel.value = s.char;
+                ratioSel.value = s.ratio; themeSel.value = s.theme; fontSel.value = s.font;
+                sizeSlider.value = s.size; c1.value = s.c1; c2.value = s.c2;
+                padSlider.value = s.pad; radSlider.value = s.rad;
+                if(s.content) editor.innerHTML = s.content;
+            } else { updateChars(); }
+        }
+
+        function render() {
+            const t = themeSel.value;
+            captureArea.className = `theme-${t}`;
+            
+            y2kTop.style.display = t === 'y2k' ? 'flex' : 'none';
+            y2kUi.style.display = t === 'y2k' ? 'flex' : 'none';
+            diaryTape.style.display = t === 'diary' ? 'block' : 'none';
+            document.querySelectorAll('.sf-line').forEach(l => l.style.display = t === 'sf' ? 'block' : 'none');
+
+            captureArea.style.setProperty('--c1', c1.value);
+            captureArea.style.setProperty('--c2', c2.value);
+            captureArea.style.setProperty('--pad', padSlider.value + 'px');
+            captureArea.style.setProperty('--rad', radSlider.value + 'px');
+            
+            editor.style.fontFamily = fontSel.value;
+            editor.style.fontSize = sizeSlider.value + 'px';
+
+            // 테마별 기본 폰트 색상 강제 지정 (사용자 부분서식은 유지됨)
+            if(t === 'y2k' || t === 'diary') {
+                captureArea.style.setProperty('--text-color', '#000000');
+                if(!editor.style.color || editor.style.color === 'rgb(255, 255, 255)') {
+                    editor.style.color = '#000000';
+                }
+            } else {
+                captureArea.style.setProperty('--text-color', '#ffffff');
+                if(!editor.style.color || editor.style.color === 'rgb(0, 0, 0)') {
+                    editor.style.color = '#ffffff';
+                }
+            }
+
+            if(t === 'y2k') {
+                textBody.className = "y2k-screen";
+                textBody.style.padding = 'var(--pad, 50px)';
+            } else {
+                textBody.className = "";
+                textBody.style.padding = '0';
+            }
+
+            refreshTitle();
+            updateLayout();
+            save();
+        }
+
+        function updateLayout() {
+            const w = 1080;
+            const h = ratioSel.value === '1:1' ? 1080 : 1920;
+            captureArea.style.width = w + 'px';
+            captureArea.style.height = h + 'px';
+            const scale = previewWrapper.clientWidth / w;
+            captureArea.style.transform = `scale(${scale})`;
+            previewWrapper.style.height = (h * scale) + 'px';
+        }
+
+        bgUp.onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => { bgImg.src = ev.target.result; bgImg.style.display = 'block'; };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        document.querySelectorAll('input, select').forEach(el => el.oninput = render);
+        editor.oninput = save;
+        window.onresize = updateLayout;
+
+        document.getElementById('exportBtn').onclick = () => {
+            const orig = captureArea.style.transform;
+            captureArea.style.transform = 'scale(1)';
+            html2canvas(captureArea, { scale: 1, useCORS: true }).then(canvas => {
+                captureArea.style.transform = orig;
+                const a = document.createElement('a');
+                a.download = `ARCH_EXCERPT_${Date.now()}.png`;
+                a.href = canvas.toDataURL();
+                a.click();
+            });
+        };
+
+        window.onload = () => { load(); render(); };
+    </script>
+</body>
+</html>
