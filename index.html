@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCH LOG EXCERPT TOOL</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link href="https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.css" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'JoseonGulim';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff');
+            font-weight: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --bg-base: #070708;
+            --bg-panel: #121214;
+            --border-color: #222226;
+            --accent: #a855f7; /* 기본 퍼플 엑센트 */
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: "Pretendard Variable", Pretendard, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0;
+            color: #fff;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+            letter-spacing: 1px;
+        }
+
+        /* 프리뷰 영역 */
+        .preview-box {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 컨트롤 패널 */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        textarea, input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .color-pickers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .color-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .color-item span {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        input[type="color"] {
+            border: none;
+            width: 100%;
+            height: 30px;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-export {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-export:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-paste {
+            background: #222226;
+            color: #fff;
+            border: 1px solid #33333a;
+            font-size: 0.85rem;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>ARCH EXCERPT</h1>
+            <p>AI Chat Log Visualizer</p>
+        </div>
+
+        <!-- 실시간 프리뷰 캔버스 -->
+        <div class="preview-box">
+            <canvas id="excerptCanvas" width="1080" height="1080"></canvas>
+        </div>
+
+        <!-- 조작 패널 -->
+        <div class="panel">
+            <div class="control-group">
+                <button class="btn btn-paste" id="pasteBtn">📋 클립보드에서 붙여넣기</button>
+            </div>
+
+            <div class="control-group">
+                <div class="label-row"><span>발췌 내용 (대사)</span></div>
+                <textarea id="logInput" placeholder="공유하거나 붙여넣은 텍스트가 여기에 표시됩니다."></textarea>
+            </div>
+
+            <div class="control-group">
+                <div class="label-row"><span>화자 이름 (선택사항)</span></div>
+                <input type="text" id="speakerInput" placeholder="이름을 입력하면 상단에 강조 표시됩니다.">
+            </div>
+
+            <div class="control-group">
+                <div class="label-row"><span>폰트 선택</span></div>
+                <select id="fontFamily">
+                    <option value="pretendard">프리텐다드 (Pretendard)</option>
+                    <option value="chosun">조선 굴림체 (JoseonGulim)</option>
+                    <option value="gulim">일반 굴림체 (Gulim)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <div class="label-row"><span>글꼴 크기</span> <span id="sizeVal">42px</span></div>
+                <input type="range" id="fontSize" min="24" max="72" value="42">
+            </div>
+
+            <div class="control-group">
+                <div class="label-row"><span>디자인 테마 색상 설정</span></div>
+                <div class="color-pickers">
+                    <div class="color-item">
+                        <span>포인트선</span>
+                        <input type="color" id="colorAccent" value="#a855f7">
+                    </div>
+                    <div class="color-item">
+                        <span>카드 배경</span>
+                        <input type="color" id="colorBg" value="#121214">
+                    </div>
+                    <div class="color-item">
+                        <span>글자 색상</span>
+                        <input type="color" id="colorText" value="#e5e7eb">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-export" id="exportBtn">💾 발췌 이미지 저장</button>
+        </div>
+    </div>
+
+    <script>
+        // PWA 서비스 워커 등록
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log("SW Register Error", err));
+        }
+
+        const canvas = document.getElementById('excerptCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 상태 관리
+        const state = {
+            text: "보스, 안드로이드 공유 메뉴에서 이 앱을 선택하시거나 문장을 복사해 붙여넣으십시오. 완벽한 레이아웃으로 타격해 드립니다.",
+            speaker: "SYSTEM",
+            fontFamily: "pretendard",
+            fontSize: 42,
+            colorAccent: "#a855f7",
+            colorBg: "#121214",
+            colorText: "#e5e7eb"
+        };
+
+        // UI 요소 연결
+        const logInput = document.getElementById('logInput');
+        const speakerInput = document.getElementById('speakerInput');
+        const fontFamily = document.getElementById('fontFamily');
+        const fontSize = document.getElementById('fontSize');
+        const sizeVal = document.getElementById('sizeVal');
+        const colorAccent = document.getElementById('colorAccent');
+        const colorBg = document.getElementById('colorBg');
+        const colorText = document.getElementById('colorText');
+        const exportBtn = document.getElementById('exportBtn');
+        const pasteBtn = document.getElementById('pasteBtn');
+
+        // 초기 인풋 값 반영
+        logInput.value = state.text;
+        speakerInput.value = state.speaker;
+
+        // 안드로이드 공유(Share Target) 데이터 수신 및 파싱 엔진
+        window.addEventListener('DOMContentLoaded', () => {
+            const parsedUrl = new URL(window.location.href);
+            const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
+            if (sharedText) {
+                state.text = decodeURIComponent(sharedText);
+                logInput.value = state.text;
+                state.speaker = ""; // 공유 시 화자는 비워둠
+                speakerInput.value = "";
+                draw();
+            }
+        });
+
+        // 이벤트 리스너 바인딩
+        logInput.oninput = (e) => { state.text = e.target.value; draw(); };
+        speakerInput.oninput = (e) => { state.speaker = e.target.value; draw(); };
+        fontFamily.onchange = (e) => { state.fontFamily = e.target.value; draw(); };
+        fontSize.oninput = (e) => { 
+            state.fontSize = parseInt(e.target.value); 
+            sizeVal.innerText = state.fontSize + "px"; 
+            draw(); 
+        };
+        colorAccent.oninput = (e) => { 
+            state.colorAccent = e.target.value; 
+            document.documentElement.style.setProperty('--accent', e.target.value);
+            draw(); 
+        };
+        colorBg.oninput = (e) => { state.colorBg = e.target.value; draw(); };
+        colorText.oninput = (e) => { state.colorText = e.target.value; draw(); };
+
+        // 클립보드 붙여넣기 편리 기능
+        pasteBtn.onclick = async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if(text) {
+                    logInput.value = text;
+                    state.text = text;
+                    draw();
+                }
+            } catch (err) {
+                alert("클립보드 접근 권한이 필요합니다, 보스.");
+            }
+        };
+
+        // 텍스트 래핑 렌더링 함수 (한국어 및 줄바꿈 최적화)
+        function getWrappedLines(context, text, maxWidth) {
+            const lines = text.split('\n');
+            let resultLines = [];
+
+            lines.forEach(line => {
+                let currentLine = '';
+                // 글자 단위 쪼개기 (공백 포함 공평하게 처리하여 캔버스 삐져나감 완벽 방지)
+                for (let i = 0; i < line.length; i++) {
+                    let char = line[i];
+                    let testLine = currentLine + char;
+                    let metrics = context.measureText(testLine);
+                    if (metrics.width > maxWidth && i > 0) {
+                        resultLines.push(currentLine);
+                        currentLine = char;
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+                resultLines.push(currentLine);
+            });
+            return resultLines;
+        }
+
+        // 고화질 발췌 작화 엔진 (Canvas)
+        function draw() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // 1. 외부 투명 배경 처리 (갤러리 업로드시 이질감 방지용 아크 블랙 마스터 색상)
+            ctx.fillStyle = "#070708";
+            ctx.fillRect(0, 0, w, h);
+
+            // 폰트 패밀리 지정
+            let fontFace = "'Pretendard', sans-serif";
+            if(state.fontFamily === 'chosun') fontFace = "'JoseonGulim', sans-serif";
+            if(state.fontFamily === 'gulim') fontFace = "'Gulim', 굴림, sans-serif";
+
+            ctx.font = `${state.fontSize}px ${fontFace}`;
+            
+            // 2. 가변 길이 및 카드 배치를 위한 패딩 연산
+            const cardPadding = 60;
+            const cardWidth = w - 160; // 좌우 여백 80씩
+            const maxTextWidth = cardWidth - (cardPadding * 2) - 40; // 내부 선 마진 보정
+            
+            const lines = getWrappedLines(ctx, state.text, maxTextWidth);
+            const lineHeight = state.fontSize * 1.6;
+            
+            // 화자 이름 영역 높이 계산
+            const hasSpeaker = state.speaker.trim() !== "";
+            const speakerHeight = hasSpeaker ? 70 : 0;
+            
+            // 텍스트 총량에 맞춘 카드 동적 높이 계산
+            const cardHeight = (lines.length * lineHeight) + (cardPadding * 2) + speakerHeight + 20;
+
+            // 3. 카드를 캔버스 정중앙에 배치
+            const cardX = 80;
+            const cardY = (h - cardHeight) / 2;
+
+            // 4. 메인 카드 바디 렌더링 (Glassmorphic Dark)
+            ctx.save();
+            ctx.fillStyle = state.colorBg;
+            ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+            ctx.shadowBlur = 40;
+            ctx.shadowOffsetY = 20;
+            ctx.beginPath();
+            ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 16);
+            ctx.fill();
+            ctx.restore();
+
+            // 5. 보스 지시사양: 세련된 포인트 디자인 스트립 (좌측 수직 오버레이 바)
+            ctx.fillStyle = state.colorAccent;
+            ctx.beginPath();
+            // 카드의 라운드 코너를 고려하여 살짝 안쪽에서 정밀 타격
+            ctx.roundRect(cardX + 15, cardY + 25, 6, cardHeight - 50, 3);
+            ctx.fill();
+
+            // 6. 화자 이름 드로잉 (존재할 경우)
+            let textStartY = cardY + cardPadding + 25;
+            if(hasSpeaker) {
+                ctx.save();
+                ctx.fillStyle = state.colorAccent;
+                ctx.font = `bold ${state.fontSize * 0.9}px ${fontFace}`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillText(state.speaker, cardX + cardPadding + 15, cardY + cardPadding);
+                ctx.restore();
+                textStartY += speakerHeight;
+            }
+
+            // 7. 대사 본문 최종 본딩
+            ctx.save();
+            ctx.fillStyle = state.colorText;
+            ctx.font = `${state.fontSize}px ${fontFace}`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            
+            lines.forEach((line, index) => {
+                ctx.fillText(line, cardX + cardPadding + 15, textStartY + (index * lineHeight));
+            });
+            ctx.restore();
+        }
+
+        // 이미지 파일 다운로드 장치
+        exportBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.download = 'ARCH_Excerpt_' + Date.now() + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+
+        // 최초 기동시 랜더러 가동
+        setTimeout(draw, 300);
+    </script>
+</body>
+</html>

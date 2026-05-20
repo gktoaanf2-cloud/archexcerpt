@@ -1,0 +1,26 @@
+{
+  "name": "ARCH LOG EXCERPT TOOL",
+  "short_name": "ARCH발췌",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#070708",
+  "theme_color": "#a855f7",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3756/3756641.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
