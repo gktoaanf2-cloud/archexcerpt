@@ -426,6 +426,14 @@
         }
         window.onresize = updateLayout; window.onload = () => { loadSettings(); updateLayout(); render(); };
 
+        // PWA 공유 텍스트 수신용 안테나 
+const parsedUrl = new URL(window.location.href);
+const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
+if (sharedText) { 
+    editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); 
+    saveSettings(); 
+}
+
         // [버그 5 수리: 고화질 타임아웃 캡처 (눌림 방지)]
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
