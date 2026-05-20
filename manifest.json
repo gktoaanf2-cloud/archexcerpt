@@ -1,9 +1,9 @@
 {
-  "name": "ARCH EXCERPT STUDIO",
-  "short_name": "ARCH발췌",
+  "name": "ARCH EXCERPT STUDIO V5",
+  "short_name": "ARCH발췌V5",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0a0a0a",
+  "background_color": "#050506",
   "theme_color": "#f47b20",
   "icons": [
     {
@@ -16,11 +16,9 @@
   "share_target": {
     "action": "index.html",
     "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
     "params": {
       "title": "title",
-      "text": "text",
-      "url": "url"
+      "text": "text"
     }
   }
 }
