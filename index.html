@@ -39,7 +39,7 @@
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
-        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
+        #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; touch-action: none; }
         
         .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
         .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
@@ -199,7 +199,7 @@
                         <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
                     </div>
                     <label>🦄 스티커 추가</label>
-                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim" onclick="this.value=null;">
+                    <input type="file" id="stickerFile" accept="image/png, image/jpeg, image/jpg, image/webp" class="btn-dim">
                 </div>
 
                 <div class="panel">
@@ -238,7 +238,7 @@
                                     <span class="r19-label">19금 마크 표기</span>
                                 </div>
                             </div>
-                            <input type="file" id="bgFile" accept="image/*" class="btn-dim" onclick="this.value=null;">
+                            <input type="file" id="bgFile" accept="image/png, image/jpeg, image/jpg, image/webp" class="btn-dim">
                             <div class="compact-row" style="margin-top:8px;">
                                 <div style="flex:2"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
                                 <button id="delBgBtn" style="background:#311; color:#f55; border:1px solid #422; border-radius:4px; height:32px; padding:0 10px; cursor:pointer; font-size:11px; margin-bottom:12px;">삭제</button>
@@ -263,7 +263,7 @@
         const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [모바일 버그수정 2: 서식 엔진 모바일 동기화 (Selection Tracking)]
+        // [모바일 서식 엔진 동기화]
         let savedRange = null;
         document.addEventListener('selectionchange', () => {
             const sel = window.getSelection();
@@ -284,7 +284,7 @@
             const btn = document.getElementById(id);
             const handler = (e) => { e.preventDefault(); exec(cmd, val); };
             btn.addEventListener('mousedown', handler);
-            btn.addEventListener('touchstart', handler, {passive: false}); // 모바일 가상키보드 유지용 방어막
+            btn.addEventListener('touchstart', handler, {passive: false});
         };
 
         bindFmt('bBtn', 'bold');
@@ -292,15 +292,18 @@
         bindFmt('uBtn', 'underline');
         bindFmt('hiBtn', 'backColor', 'rgba(255, 235, 59, 0.5)');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
-
-        // 색상 픽커는 터치를 막으면 창이 안 열리므로 별도 처리
         document.getElementById('fColor').addEventListener('input', (e) => { exec('foreColor', e.target.value); });
 
-        // [모바일 버그수정 1: 스티커 및 이미지 업로드]
-        document.getElementById('stickerFile').addEventListener('change', function(e) {
-            const file = e.target.files[0]; if(!file) return;
+        // [모바일 터치 스티커 엔진]
+        const stickerInput = document.getElementById('stickerFile');
+        stickerInput.addEventListener('change', function(e) {
+            const file = e.target.files[0]; 
+            if(!file) return;
             const reader = new FileReader();
-            reader.onload = (ev) => { createSticker(ev.target.result); };
+            reader.onload = (ev) => { 
+                createSticker(ev.target.result); 
+                e.target.value = ''; // 모바일 튕김 방지 후위 초기화
+            };
             reader.readAsDataURL(file);
         });
 
@@ -334,6 +337,7 @@
                 e.stopPropagation(); document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
                 stk.classList.add('sticker-active'); isM = true; 
                 sX = e.clientX || e.touches[0].clientX; sY = e.clientY || e.touches[0].clientY;
+                if(e.pointerId) stk.setPointerCapture(e.pointerId);
             };
             stk.addEventListener('mousedown', startMove); stk.addEventListener('touchstart', startMove, {passive: false});
 
@@ -414,9 +418,12 @@
             img.src = rawBgImageSrc;
         }
 
-        document.getElementById('bgFile').addEventListener('change', function(e) {
+        const bgInput = document.getElementById('bgFile');
+        bgInput.addEventListener('change', function(e) {
             const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader(); r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; r.readAsDataURL(file);
+            const r = new FileReader(); 
+            r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); e.target.value = ''; }; 
+            r.readAsDataURL(file);
         });
         document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; render(); };
 
@@ -427,7 +434,7 @@
             document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
-        // [낙서 엔진]
+        // [낙서 모바일 터치 대응]
         drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "🖌️ 낙서 ON" : "🖌️ 낙서 OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
         
         const startDraw = (e) => {
