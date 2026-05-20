@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arch-v8-cache';
+const CACHE_NAME = 'arch-v11-cache';
 const ASSETS = ['index.html', 'manifest.json'];
 
 self.addEventListener('install', (e) => {
