@@ -67,24 +67,23 @@
         .drawing-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
         #drawing-canvas { width: 100%; height: 100%; pointer-events: none; touch-action: none; display: block; }
         
-        .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; }
+        .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
         .info-title { font-size: 22px; font-weight: 800; color: var(--text-color, #fff); letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
         .info-watermark { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.6); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
         #r19-badge span { font-size: 11px; }
 
-        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
+        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: keep-all; word-wrap: break-word; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        /* [핵심] 바탕색 파괴를 막기 위한 Card 공통 초기화 */
-        #card { box-sizing: border-box; transition: none; display: block; position: relative; z-index: 2; width: 85%; }
+        #card { box-sizing: border-box; transition: none; display: flex; flex-direction: column; }
         
         /* [Standard] */
-        .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; padding: var(--pad, 80px); border-radius: var(--rad, 0px); }
+        .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 방탄 렌더링 - Block 기반] */
+        /* [Polaroid 방탄 렌더링] */
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
         .theme-polaroid #card { 
             width: 75%; 
@@ -92,23 +91,22 @@
             padding: 30px !important; 
             border: 1px solid #e0e0e0 !important; 
             box-shadow: 5px 15px 40px rgba(0,0,0,0.3) !important; 
-            border-radius: var(--rad, 3px);
-            display: block !important;
+            position: relative; z-index: 2; border-radius: 3px;
         }
         .polaroid-screen {
             background: var(--c4, #dedede);
             width: 100%; min-height: 400px;
-            display: block; 
+            display: flex; align-items: center; justify-content: center; 
             color: #000 !important;
             border: 1px solid rgba(0,0,0,0.1); 
             box-sizing: border-box; position: relative;
         }
         .polaroid-spacer { display: none; }
-        .theme-polaroid .polaroid-spacer { display: block; width: 100%; height: 110px; background: transparent; }
+        .theme-polaroid .polaroid-spacer { display: block; width: 100%; min-height: 110px; flex-shrink: 0; background: transparent; }
 
-        /* [Y2K] (얘만 특수하게 Flex 허용) */
+        /* [Y2K] */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
-        .theme-y2k #card { background: var(--c1, #dcbdf2) !important; border: 4px solid #000 !important; border-radius: var(--rad, 16px); padding: 0 !important; box-shadow: 12px 12px 0px #000 !important; overflow: hidden; display: flex !important; flex-direction: column; }
+        .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2) !important; border: 4px solid #000 !important; border-radius: 16px; padding: 0 !important; box-shadow: 12px 12px 0px #000 !important; position: relative; z-index: 2; overflow: hidden;}
         .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #000; letter-spacing: -1px; display:flex; align-items: center; gap: 10px;}
         .y2k-brand::before { content: '✨'; font-size: 24px; }
@@ -127,36 +125,35 @@
 
         /* [Diary] */
         .theme-diary { background: var(--c1, #f4f1ea) !important; }
-        .theme-diary #card { background: #fff !important; padding: var(--pad, 80px) !important; box-shadow: 15px 15px 0px rgba(0,0,0,0.08) !important; border-left: 60px solid #fff; border-radius: var(--rad, 5px); color: #000 !important; display: block !important; }
+        .theme-diary #card { width: 85%; background: #fff !important; padding: var(--pad, 80px) !important; box-shadow: 15px 15px 0px rgba(0,0,0,0.08) !important; position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; color: #000 !important; }
         .diary-holes { position: absolute; left: -45px; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 40px 0; z-index: 10; }
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [SF 터미널 방탄 렌더링 - Calc 완벽 제거 & 바탕색 강제 고정] */
+        /* [SF 터미널 방탄 렌더링] */
         .theme-sf { background: #050505 !important; }
         .theme-sf #card { 
+            width: 85%; 
+            padding: calc(var(--pad, 60px) + 20px) var(--pad, 60px) !important; 
             background: #0d1017 !important; 
-            padding: var(--pad, 60px) !important; 
             border: 1px solid rgba(255, 255, 255, 0.15) !important; 
+            position: relative; 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important; 
-            border-radius: var(--rad, 0px);
-            display: block !important;
-            background-clip: padding-box !important; /* 바탕색 짤림 원천 방지 */
+            z-index: 2; 
         }
         
-        /* calc() 없이 절대 좌표로 이너 프레임 설정 */
         .sf-inner-frame {
-            position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+            position: absolute; top: 12px; left: 12px; 
+            width: calc(100% - 24px); height: calc(100% - 24px);
             border: 1px solid rgba(255,255,255,0.06);
             pointer-events: none; z-index: 1; box-sizing: border-box;
         }
         
         .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.6; }
         .sf-h { height: 1px; width: 15px; } .sf-v { width: 1px; height: 15px; }
-        .sf-t { top: -1px; } .sf-b { bottom: -1px; } 
-        .sf-l { left: -1px; } .sf-r { right: -1px; }
+        .sf-t { top: -1px; } .sf-b { top: calc(100% - 1px); } 
+        .sf-l { left: -1px; } .sf-r { left: calc(100% - 1px); }
         
-        /* calc() 없이 텍스트 정렬 활용하여 좌우 완벽 배치 */
         .sf-deco-text { 
             position: absolute; 
             color: var(--c2, #ffffff); 
@@ -169,9 +166,9 @@
             white-space: nowrap;
         }
         .sf-deco-text.top-left { top: -20px; left: 0px; font-weight: bold; opacity: 0.8;}
-        .sf-deco-text.top-right { top: -20px; right: 0px; text-align: right; }
-        .sf-deco-text.bottom-left { bottom: -20px; left: 0px; opacity: 0.3; }
-        .sf-deco-text.bottom-right { bottom: -20px; right: 0px; opacity: 0.3; text-align: right; }
+        .sf-deco-text.top-right { top: -20px; left: calc(100% - 70px); }
+        .sf-deco-text.bottom-left { top: calc(100% + 8px); left: 0px; opacity: 0.3; }
+        .sf-deco-text.bottom-right { top: calc(100% + 8px); left: calc(100% - 100px); opacity: 0.3; }
 
         /* 스티커 엔진 UI */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
@@ -760,15 +757,18 @@
             }
         };
 
-        // 캡처 오류 방지 최종 하드코어 세팅
+        // [최종 렌더링 엔진 방어] 캡처 엔진 가상 해상도 주입
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
+            
+            const w = 1080;
+            const h = ratioSel.value === '1:1' ? 1080 : 1920;
             
             window.scrollTo(0, 0); 
             const oldT = cap.style.transform; 
             const oldOverflow = wrapper.style.overflow; 
             
-            cap.style.transform = 'scale(1)'; 
+            cap.style.transform = 'none'; 
             wrapper.style.overflow = 'visible'; 
             
             setTimeout(() => {
@@ -777,8 +777,10 @@
                     useCORS: true, 
                     allowTaint: true,
                     backgroundColor: '#000', 
-                    width: cap.offsetWidth,
-                    height: cap.offsetHeight,
+                    width: w,          // 명시적 캔버스 넓이
+                    height: h,         // 명시적 캔버스 높이
+                    windowWidth: w,    // ⭐️ 캡처 엔진의 가상 브라우저 너비를 1080px로 강제 고정! (짤림 100% 방지)
+                    windowHeight: h,   // ⭐️ 캡처 엔진의 가상 브라우저 높이 강제 고정!
                     logging: false
                 }).then(canvas => {
                     cap.style.transform = oldT; 
