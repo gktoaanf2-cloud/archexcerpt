@@ -57,7 +57,7 @@
         .preview-wrapper { 
             width: 100%; background: #000; 
             border: 1px solid var(--border-glow); 
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--holo); 
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); 
             overflow: hidden; position: relative; 
         }
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
@@ -107,23 +107,50 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [미학적으로 업그레이드된 SF 테마 (NieR / 무기미도 스타일)] */
-        .theme-sf { background: #020204 !important; }
-        .theme-sf::after { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px); pointer-events: none; z-index: 90; mix-blend-mode: screen; }
-        .theme-sf #card { width: 88%; padding: calc(var(--pad, 70px) + 20px) var(--pad, 70px); background: rgba(5, 10, 15, 0.85); border: 1px solid rgba(0, 255, 255, 0.15); position: relative; box-shadow: inset 0 0 80px rgba(0, 255, 255, 0.05), 0 0 20px rgba(0, 255, 255, 0.05); backdrop-filter: blur(15px); z-index: 2; overflow: hidden; }
-        /* 배경 타겟팅 그리드 효과 */
-        .theme-sf #card::before { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; z-index: 1; }
+        /* [미학적으로 완전 개편된 SF 테마 - NieR / 무기미도 스타일] */
+        .theme-sf { background: #050505 !important; }
+        .theme-sf #card { 
+            width: 85%; 
+            padding: calc(var(--pad, 60px) + 20px) var(--pad, 60px); 
+            background: rgba(10, 11, 14, 0.65); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            position: relative; 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2; 
+        }
         
-        .sf-line { position: absolute; background: var(--c1, #0ff); z-index: 5; box-shadow: 0 0 8px var(--c1, #0ff); opacity: 0.8; }
-        .sf-h { height: 2px; width: 40px; } .sf-v { width: 2px; height: 40px; }
+        /* 내부 이너 프레임 (여백의 미 극대화) */
+        .theme-sf #card::before { 
+            content:''; position: absolute; 
+            top: 12px; left: 12px; right: 12px; bottom: 12px; 
+            border: 1px solid rgba(255,255,255,0.04); 
+            pointer-events: none; z-index: 1; 
+        }
+        
+        /* 극도로 얇고 날카로운 모서리 브라켓 (1px) */
+        .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.65; }
+        .sf-h { height: 1px; width: 18px; } .sf-v { width: 1px; height: 18px; }
         .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
         
-        /* SF 장식 텍스트 */
-        .sf-deco-text { position: absolute; color: var(--c1, #0ff); font-family: monospace; font-size: 11px; letter-spacing: 3px; opacity: 0.6; z-index: 10; pointer-events: none; text-shadow: 0 0 5px var(--c1, #0ff); }
-        .sf-deco-text.top-left { top: 15px; left: 20px; }
-        .sf-deco-text.top-right { top: 15px; right: 20px; animation: sf-blink 2s infinite; }
-        .sf-deco-text.bottom-right { bottom: 15px; right: 20px; }
-        @keyframes sf-blink { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.1; } }
+        /* 폰트를 정제하고, 빛번짐(Text-shadow)을 제거한 미니멀 터미널 텍스트 */
+        .sf-deco-text { 
+            position: absolute; 
+            color: var(--c2, #ffffff); 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10px; 
+            letter-spacing: 4px; 
+            opacity: 0.45; 
+            z-index: 10; 
+            pointer-events: none; 
+        }
+        
+        /* 텍스트 배치: 카드 프레임 바깥/안쪽 경계선에 걸치도록 세팅 */
+        .sf-deco-text.top-left { top: -22px; left: 0; font-weight: bold; opacity: 0.7;}
+        .sf-deco-text.top-right { top: -22px; right: 0; }
+        .sf-deco-text.bottom-left { bottom: -22px; left: 0; opacity: 0.3; }
+        .sf-deco-text.bottom-right { bottom: -22px; right: 0; opacity: 0.3; }
 
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
@@ -218,13 +245,16 @@
                         <div id="r19-badge">19금<span>주딱ON</span></div>
 
                         <div id="card" class="card">
+                            <!-- 극도로 절제된 SF 단말기 디테일 -->
                             <div class="sf-item sf-line sf-h sf-t sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-l" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-t sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-r" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-b sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-l" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-b sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-r" style="display:none;"></div>
-                            <div class="sf-item sf-deco-text top-left" style="display:none;">SYS.INIT // TERMINAL_804</div>
-                            <div class="sf-item sf-deco-text top-right" style="display:none;">REC 🔴</div>
-                            <div class="sf-item sf-deco-text bottom-right" style="display:none;">SECURE_LINK_ESTABLISHED</div>
+                            
+                            <div class="sf-item sf-deco-text top-left" style="display:none;">SYS.DATA_LOG // 0x00A8F</div>
+                            <div class="sf-item sf-deco-text top-right" style="display:none;">[ CLR : 0 ]</div>
+                            <div class="sf-item sf-deco-text bottom-left" style="display:none;">WARNING_</div>
+                            <div class="sf-item sf-deco-text bottom-right" style="display:none;">CH. OVERRIDE</div>
 
                             <div class="diary-item diary-holes" id="diaryHoles" style="display:none;">
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
@@ -302,6 +332,7 @@
                         <select id="charSel"></select>
                     </div>
                     
+                    <!-- 커스텀 자캐/앤오 입력 모드 -->
                     <div id="custom-mode" style="display:none; flex-direction:column; gap:10px;">
                         <div class="row-2">
                             <input type="text" id="customCat" placeholder="UNKNOWN">
@@ -407,11 +438,9 @@
         bindFmt('alignRightBtn', 'justifyRight');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
 
-        // [커스텀 형광펜 렌더링 엔진]
         const hlColorInput = document.getElementById('hlColor');
         const hiBtn = document.getElementById('hiBtn');
         
-        // 형광펜 버튼 클릭 시 컬러피커의 색상을 가져와 투명도(0.4)를 입혀 적용
         const applyHighlight = (e) => {
             e.preventDefault();
             const hex = hlColorInput.value;
@@ -421,7 +450,6 @@
         hiBtn.addEventListener('mousedown', applyHighlight);
         hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
         
-        // 형광펜 색상 변경 시 버튼 UI 색상도 변경되도록 동기화
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('input', (e) => { exec('foreColor', e.target.value); });
 
