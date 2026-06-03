@@ -61,7 +61,6 @@
             overflow: hidden; position: relative; 
         }
         
-        /* 캡처 영역 안정화: html2canvas 오류 방지 */
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
@@ -79,35 +78,37 @@
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        #card { box-sizing: border-box; transition: none; /* 렌더링 시 트랜지션 버그 방지 */ }
+        /* 모든 카드의 기본 트랜지션 제거 (html2canvas 렌더링 방해 원천 차단) */
+        #card { box-sizing: border-box; transition: none; display: flex; flex-direction: column; }
         
         /* [Standard] */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 방탄 렌더링] */
+        /* [Polaroid 방탄 렌더링] 
+           padding-bottom 꼼수 대신 투명한 더미 블록(.polaroid-spacer)을 이용해 여백 확보 */
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
         .theme-polaroid #card { 
             width: 75%; 
             background: #fdfdfd !important; 
             padding: 30px !important; 
-            padding-bottom: 120px !important; /* 하단 짱짱한 여백 강제 고정 */
             border: 1px solid #e0e0e0 !important; 
             box-shadow: 5px 15px 40px rgba(0,0,0,0.3) !important; 
             position: relative; z-index: 2; border-radius: 3px;
         }
         .polaroid-screen {
             background: var(--c4, #dedede);
-            width: 100%;
-            min-height: 400px;
+            width: 100%; min-height: 400px;
             display: flex; align-items: center; justify-content: center; 
             color: #000 !important;
-            border: 2px solid rgba(0,0,0,0.05); /* Inset 섀도우 대신 안전한 border 사용 */
-            box-sizing: border-box;
+            border: 1px solid rgba(0,0,0,0.1); 
+            box-sizing: border-box; position: relative;
         }
+        .polaroid-spacer { display: none; }
+        .theme-polaroid .polaroid-spacer { display: block; width: 100%; height: 90px; background: transparent; }
 
         /* [Y2K] */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
-        .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2) !important; border: 4px solid #000 !important; border-radius: 16px; padding: 0 !important; box-shadow: 12px 12px 0px #000 !important; display: flex; flex-direction: column; position: relative; z-index: 2; overflow: hidden;}
+        .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2) !important; border: 4px solid #000 !important; border-radius: 16px; padding: 0 !important; box-shadow: 12px 12px 0px #000 !important; position: relative; z-index: 2; overflow: hidden;}
         .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #000; letter-spacing: -1px; display:flex; align-items: center; gap: 10px;}
         .y2k-brand::before { content: '✨'; font-size: 24px; }
@@ -131,22 +132,29 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [SF 방탄 렌더링 - NieR/무기미도 스타일 유지] */
+        /* [SF 터미널 방탄 렌더링 - NieR/무기미도 스타일] */
         .theme-sf { background: #050505 !important; }
         .theme-sf #card { 
             width: 85%; 
             padding: calc(var(--pad, 60px) + 20px) var(--pad, 60px) !important; 
-            background: #0d1017 !important; /* 렌더링 파괴 주범인 rgba 투명도 걷어내고 솔리드 다크로 변경 */
+            background: #0d1017 !important; /* 렌더링 파괴 주범인 투명도 걷어내고 완벽한 솔리드 다크 */
             border: 1px solid rgba(255, 255, 255, 0.15) !important; 
             position: relative; 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important; /* 안정적인 드롭 섀도우 */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important; 
             z-index: 2; 
         }
         
-        .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.8; }
+        .sf-inner-frame {
+            position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            pointer-events: none; z-index: 1;
+        }
+        
+        .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.6; }
         .sf-h { height: 1px; width: 15px; } .sf-v { width: 1px; height: 15px; }
         .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
         
+        /* 텍스트 좌표를 %와 명확한 픽셀로 고정하여 캡처 시 날아가지 않도록 함 */
         .sf-deco-text { 
             position: absolute; 
             color: var(--c2, #ffffff); 
@@ -156,12 +164,14 @@
             opacity: 0.5; 
             z-index: 10; 
             pointer-events: none; 
+            white-space: nowrap;
         }
-        .sf-deco-text.top-left { top: -20px; left: 0; font-weight: bold; opacity: 0.8;}
-        .sf-deco-text.top-right { top: -20px; right: 0; }
-        .sf-deco-text.bottom-left { bottom: -20px; left: 0; opacity: 0.3; }
-        .sf-deco-text.bottom-right { bottom: -20px; right: 0; opacity: 0.3; }
+        .sf-deco-text.top-left { top: -20px; left: 0px; font-weight: bold; opacity: 0.8;}
+        .sf-deco-text.top-right { top: -20px; right: 0px; }
+        .sf-deco-text.bottom-left { bottom: -20px; left: 0px; opacity: 0.3; }
+        .sf-deco-text.bottom-right { bottom: -20px; right: 0px; opacity: 0.3; }
 
+        /* 스티커 엔진 UI */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
         .sticker-active { border: 1px solid rgba(255,255,255,0.5) !important; background: rgba(255,255,255,0.05); }
@@ -172,6 +182,7 @@
         .sticker-up { top: -13px; left: -13px; background: #333; }
         .sticker-down { bottom: -13px; left: -13px; background: #333; }
 
+        /* 제어 패널 UI */
         .panel { 
             background: var(--panel); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -259,6 +270,8 @@
 
                         <div id="card" class="card">
                             
+                            <!-- SF 터미널 요소 -->
+                            <div class="sf-item sf-inner-frame" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-t sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-l" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-t sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-r" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-b sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-l" style="display:none;"></div>
@@ -269,17 +282,20 @@
                             <div class="sf-item sf-deco-text bottom-left" style="display:none;">WARNING_</div>
                             <div class="sf-item sf-deco-text bottom-right" style="display:none;">CH. OVERRIDE</div>
 
+                            <!-- Diary 요소 -->
                             <div class="diary-item diary-holes" id="diaryHoles" style="display:none;">
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
                             </div>
                             <div class="diary-item tape" id="diaryTape" style="display:none;"></div>
 
+                            <!-- Y2K 요소 -->
                             <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
                                 <span class="y2k-brand">Retro Player</span>
                                 <div class="y2k-window-controls"><span></span><span></span><span></span></div>
                             </div>
 
+                            <!-- 텍스트 에디터 메인 영역 -->
                             <div id="y2k-screen-wrap">
                                 <div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div>
                             </div>
@@ -288,6 +304,9 @@
                                 <div class="y2k-bar"></div>
                                 <div class="y2k-btns">⏮ ● ⏭</div>
                             </div>
+                            
+                            <!-- 폴라로이드 더미 캡션 스페이서 (렌더링 짤림 완벽 방어) -->
+                            <div class="polaroid-spacer"></div>
                         </div>
                     </div>
                 </div>
@@ -409,7 +428,6 @@
         const ratioSel = document.getElementById('ratioSel'), themeSel = document.getElementById('themeSel'), fontSel = document.getElementById('fontSel'), sizeSlide = document.getElementById('sizeSlide');
         const padSlide = document.getElementById('padSlide'), radSlide = document.getElementById('radSlide'), blurSlide = document.getElementById('blurSlide');
         const bgImg = document.getElementById('bgImg'), dCanvas = document.getElementById('drawing-canvas'), dCtx = dCanvas.getContext('2d');
-        const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         
         let isCustomMode = false;
         const customToggleBtn = document.getElementById('customToggleBtn');
@@ -450,6 +468,7 @@
         bindFmt('alignRightBtn', 'justifyRight');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
 
+        // [버그 픽스 1] 이벤트 루프 최적화: 컬러 휠 및 버튼 색상 변경을 즉시 처리 (DOM 새로고침 배제)
         const hlColorInput = document.getElementById('hlColor');
         const hiBtn = document.getElementById('hiBtn');
         
@@ -462,8 +481,17 @@
         hiBtn.addEventListener('mousedown', applyHighlight);
         hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
         
+        // 텍스트/형광펜 색상 휠 조작 시 버튼 색상만 바꾸고 무거운 렌더링 호출 금지!
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
+
+        // C1~C4 색상 휠 조작 시 CSS 변수만 다이렉트로 교체 (캔버스 블러 재생성 완전 차단!)
+        const colorPickers = ['c1', 'c2', 'c3', 'c4'];
+        colorPickers.forEach(id => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                cap.style.setProperty(`--${id}`, e.target.value);
+            });
+        });
 
         customToggleBtn.onclick = () => {
             isCustomMode = !isCustomMode;
@@ -472,10 +500,10 @@
             customToggleBtn.style.color = isCustomMode ? "#fff" : "var(--text)";
             presetMode.style.display = isCustomMode ? 'none' : 'grid';
             customMode.style.display = isCustomMode ? 'flex' : 'none';
-            render();
+            renderDOM(); // 텍스트만 업데이트
         };
 
-        [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', render));
+        [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', renderDOM));
 
         const stickerInput = document.getElementById('stickerFile');
         stickerInput.addEventListener('change', function(e) {
@@ -556,7 +584,8 @@
             window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        function render() {
+        // [최적화 2] 텍스트, 폰트, 테마 클래스만 교체하는 가벼운 함수 (블러 연산 제외)
+        function renderDOM() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
             document.querySelectorAll('.y2k-item, .diary-item, .sf-item').forEach(el => el.style.display = 'none');
@@ -570,9 +599,13 @@
             if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
             if(t === 'polaroid') { document.getElementById('c4-box').style.display = 'flex'; }
 
-            cap.style.setProperty('--c1', c1.value); cap.style.setProperty('--c2', c2.value);
-            cap.style.setProperty('--c3', c3.value); cap.style.setProperty('--c4', c4.value);
-            cap.style.setProperty('--pad', padSlide.value + 'px'); cap.style.setProperty('--rad', radSlide.value + 'px');
+            // 초기 설정값 로드 시 컬러도 꽂아주기
+            cap.style.setProperty('--c1', document.getElementById('c1').value); 
+            cap.style.setProperty('--c2', document.getElementById('c2').value);
+            cap.style.setProperty('--c3', document.getElementById('c3').value); 
+            cap.style.setProperty('--c4', document.getElementById('c4').value);
+            cap.style.setProperty('--pad', padSlide.value + 'px'); 
+            cap.style.setProperty('--rad', radSlide.value + 'px');
             
             if(isCustomMode) {
                 const cCatText = customCat.value || 'UNKNOWN';
@@ -595,11 +628,10 @@
             if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
             else if(t === 'polaroid') { txtBody.id="text-body"; txtBody.className="polaroid-screen"; txtBody.style.padding='var(--pad, 40px)'; }
             else { txtBody.id="text-body"; txtBody.className=""; txtBody.style.padding='0'; }
-
-            applyBlurToBg();
         }
 
-        function applyBlurToBg() {
+        // [최적화 3] 오직 "배경 이미지 등록", "블러 수치 변경" 시에만 호출되는 무거운 함수
+        function updateBackground() {
             if(!rawBgImageSrc) { bgImg.style.display = 'none'; return; }
             bgImg.style.display = 'block';
             if(blurSlide.value == 0) { bgImg.style.backgroundImage = `url(${rawBgImageSrc})`; return; }
@@ -617,11 +649,12 @@
         bgInput.addEventListener('change', function(e) {
             const file = e.target.files[0]; if(!file) return;
             const r = new FileReader(); 
-            r.onload = (ev) => { rawBgImageSrc = ev.target.result; render(); }; 
+            r.onload = (ev) => { rawBgImageSrc = ev.target.result; updateBackground(); }; 
             r.readAsDataURL(file);
             setTimeout(() => { e.target.value = ''; }, 100);
         });
-        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; render(); };
+        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; };
+        document.getElementById('blurSlide').addEventListener('change', updateBackground);
 
         const r19Btn = document.getElementById('r19Btn');
         const r19Toggle = document.getElementById('r19Toggle');
@@ -658,12 +691,19 @@
         document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까? (Clear Canvas?)")) dCtx.clearRect(0,0,1080,1080); };
         
         for(let c in archList) catSel.add(new Option(c, c));
-        catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); render(); };
+        catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); renderDOM(); };
         catSel.dispatchEvent(new Event('change'));
 
         document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다. 이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2");
         document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { location.reload(); } };
-        document.querySelectorAll('input:not(#fColor), input:not(#hlColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
+        
+        // [버그 픽스 1 핵심] 컬러 피커를 제외한 입력 도구들만 DOM 렌더링 호출
+        document.querySelectorAll('input:not([type="color"]), select').forEach(el => { 
+            el.addEventListener('input', (e) => {
+                if (el.id === 'ratioSel' || el.id === 'themeSel') updateLayout(); 
+                renderDOM(); 
+            });
+        });
         
         function updateLayout() {
             const w = 1080, h = ratioSel.value === '1:1' ? 1080 : 1920;
@@ -674,29 +714,27 @@
         window.onresize = updateLayout; 
         
         window.onload = () => { 
-            updateLayout(); render(); 
+            updateLayout(); renderDOM(); 
             const parsedUrl = new URL(window.location.href);
             const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
             if (sharedText) { editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); }
         };
 
-        // [핵심] 렌더링 파괴 방지 하드코어 캡처 로직
+        // [버그 픽스 2 핵심] 레이아웃 파괴 방지 하드코어 캡처 렌더링 세팅
         document.getElementById('saveBtn').onclick = () => {
-            document.querySelectorAll('.sticker').forEach(s => {
-                s.classList.remove('sticker-active');
-            });
+            document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
-            window.scrollTo(0, 0); // 스크롤 위치에 따른 캡처 어긋남 방지
+            window.scrollTo(0, 0); 
             const oldT = cap.style.transform; 
-            cap.style.transform = 'scale(1)'; // 트랜스폼 리셋
+            cap.style.transform = 'scale(1)'; 
             
-            // 브라우저 렌더링 재계산(Repaint) 대기 시간 300ms로 증가 (안정성 200% 확보)
+            // html2canvas가 레이아웃을 계산할 수 있도록 대기 시간 연장
             setTimeout(() => {
                 html2canvas(cap, { 
                     scale: 1, 
                     useCORS: true, 
                     allowTaint: true,
-                    backgroundColor: '#000000', // 배경 투명화 방지
+                    backgroundColor: '#000', // 투명화 깨짐 방어
                     logging: false
                 }).then(canvas => {
                     cap.style.transform = oldT; 
@@ -706,8 +744,8 @@
                     a.click();
                 }).catch(err => {
                     cap.style.transform = oldT;
-                    console.error(err);
-                    alert("캡처 중 오류가 발생했습니다. 다시 시도해주세요.");
+                    console.error("Capture Error: ", err);
+                    alert("이미지 렌더링 중 오류가 발생했습니다.");
                 });
             }, 300);
         };
