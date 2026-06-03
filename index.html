@@ -65,7 +65,6 @@
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
         #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; touch-action: none; }
         
-        /* [개선된 타이포그래피 정보 그룹 (워터마크 & 타이틀 통합)] */
         .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; }
         .info-title { font-size: 22px; font-weight: 800; color: var(--text-color, #fff); letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
         .info-watermark { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.6); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
@@ -77,7 +76,7 @@
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        #card { box-sizing: border-box; }
+        #card { box-sizing: border-box; transition: 0.3s; }
         
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
@@ -108,11 +107,23 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
+        /* [미학적으로 업그레이드된 SF 테마 (NieR / 무기미도 스타일)] */
         .theme-sf { background: #020204 !important; }
-        .theme-sf #card { width: 88%; padding: var(--pad, 70px); background: var(--c2, rgba(0, 15, 25, 0.7)); border: 1px solid var(--c1, #0ff); position: relative; box-shadow: inset 0 0 60px rgba(0,255,255,0.05); backdrop-filter: blur(10px); z-index: 2; }
-        .sf-line { position: absolute; background: var(--c1, #0ff); z-index: 5; }
-        .sf-h { height: 3px; width: 60px; } .sf-v { width: 3px; height: 60px; }
-        .sf-t { top: -2px; } .sf-b { bottom: -2px; } .sf-l { left: -2px; } .sf-r { right: -2px; }
+        .theme-sf::after { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px); pointer-events: none; z-index: 90; mix-blend-mode: screen; }
+        .theme-sf #card { width: 88%; padding: calc(var(--pad, 70px) + 20px) var(--pad, 70px); background: rgba(5, 10, 15, 0.85); border: 1px solid rgba(0, 255, 255, 0.15); position: relative; box-shadow: inset 0 0 80px rgba(0, 255, 255, 0.05), 0 0 20px rgba(0, 255, 255, 0.05); backdrop-filter: blur(15px); z-index: 2; overflow: hidden; }
+        /* 배경 타겟팅 그리드 효과 */
+        .theme-sf #card::before { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; z-index: 1; }
+        
+        .sf-line { position: absolute; background: var(--c1, #0ff); z-index: 5; box-shadow: 0 0 8px var(--c1, #0ff); opacity: 0.8; }
+        .sf-h { height: 2px; width: 40px; } .sf-v { width: 2px; height: 40px; }
+        .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
+        
+        /* SF 장식 텍스트 */
+        .sf-deco-text { position: absolute; color: var(--c1, #0ff); font-family: monospace; font-size: 11px; letter-spacing: 3px; opacity: 0.6; z-index: 10; pointer-events: none; text-shadow: 0 0 5px var(--c1, #0ff); }
+        .sf-deco-text.top-left { top: 15px; left: 20px; }
+        .sf-deco-text.top-right { top: 15px; right: 20px; animation: sf-blink 2s infinite; }
+        .sf-deco-text.bottom-right { bottom: 15px; right: 20px; }
+        @keyframes sf-blink { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.1; } }
 
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
@@ -152,10 +163,10 @@
         input[type="range"]::-webkit-slider-thumb:hover { background: #fff; }
 
         .toolbar { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
-        .tool-btn { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .tool-btn { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; cursor: pointer; font-size: 12px; transition: 0.2s; display:flex; align-items:center; justify-content:center;}
         .tool-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
         .tool-btn.active { background: var(--accent); color: #000; }
-        .color-pick { width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.3); padding: 0; background: transparent; cursor: pointer; overflow: hidden; }
+        .color-pick { width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.3); padding: 0; background: transparent; cursor: pointer; overflow: hidden; border-radius: 4px; }
 
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
@@ -196,7 +207,6 @@
                 <div class="preview-wrapper" id="preview-wrapper">
                     <div id="capture-area" class="theme-standard">
                         
-                        <!-- 신규 적용: 컴팩트 인포메이션 그룹 -->
                         <div id="info-group" class="info-group">
                             <div id="display-title" class="info-title"></div>
                             <div id="display-watermark" class="info-watermark"></div>
@@ -212,6 +222,9 @@
                             <div class="sf-item sf-line sf-h sf-t sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-r" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-b sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-l" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-b sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-r" style="display:none;"></div>
+                            <div class="sf-item sf-deco-text top-left" style="display:none;">SYS.INIT // TERMINAL_804</div>
+                            <div class="sf-item sf-deco-text top-right" style="display:none;">REC 🔴</div>
+                            <div class="sf-item sf-deco-text bottom-right" style="display:none;">SECURE_LINK_ESTABLISHED</div>
 
                             <div class="diary-item diary-holes" id="diaryHoles" style="display:none;">
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
@@ -250,8 +263,18 @@
                         <button class="tool-btn" id="alignCenterBtn"><i class="fa-solid fa-align-center"></i></button>
                         <button class="tool-btn" id="alignRightBtn"><i class="fa-solid fa-align-right"></i></button>
                         
-                        <input type="color" class="color-pick" id="fColor">
-                        <button class="tool-btn" id="hiBtn">HL ON</button>
+                        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 4px;"></div>
+                        
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <label style="margin:0; font-size:9px;">TEXT</label>
+                            <input type="color" class="color-pick" id="fColor" value="#ffffff">
+                        </div>
+                        
+                        <div style="display:flex; align-items:center; gap:5px; margin-left: 5px;">
+                            <label style="margin:0; font-size:9px;">HL COLOR</label>
+                            <input type="color" class="color-pick" id="hlColor" value="#ffeb3b">
+                        </div>
+                        <button class="tool-btn" id="hiBtn" style="color:#ffeb3b; font-weight:bold;">HL ON</button>
                         <button class="tool-btn" id="removeHiBtn">HL OFF</button>
                     </div>
                 </div>
@@ -271,23 +294,20 @@
                 <div class="panel">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <label style="margin:0;">데이터 셋업 (Data Setup)</label>
-                        <!-- 커스텀 모드 토글 버튼 추가 -->
                         <button class="tool-btn" id="customToggleBtn" style="font-size:10px; border-color:rgba(255,255,255,0.5);">CUSTOM OFF</button>
                     </div>
                     
-                    <!-- 기존 프리셋 셀렉터 -->
                     <div id="preset-mode" class="row-2">
                         <select id="catSel"></select>
                         <select id="charSel"></select>
                     </div>
                     
-                    <!-- 커스텀 자캐/앤오 입력 모드 -->
                     <div id="custom-mode" style="display:none; flex-direction:column; gap:10px;">
                         <div class="row-2">
-                            <input type="text" id="customCat" placeholder="세계관/소속 (ex: 사룡장락)">
-                            <input type="text" id="customChar" placeholder="캐릭터명 (ex: 류사현)">
+                            <input type="text" id="customCat" placeholder="UNKNOWN">
+                            <input type="text" id="customChar" placeholder="UNKNOWN">
                         </div>
-                        <input type="text" id="customCreator" placeholder="워터마크 (ex: TRPG @보스)">
+                        <input type="text" id="customCreator" placeholder="SAMPLE">
                     </div>
 
                     <div class="row-2" style="margin-top: 15px;">
@@ -348,7 +368,6 @@
         const bgImg = document.getElementById('bgImg'), dCanvas = document.getElementById('drawing-canvas'), dCtx = dCanvas.getContext('2d');
         const c1 = document.getElementById('c1'), c2 = document.getElementById('c2'), c3 = document.getElementById('c3'), c4 = document.getElementById('c4');
         
-        // 커스텀 모드 변수
         let isCustomMode = false;
         const customToggleBtn = document.getElementById('customToggleBtn');
         const presetMode = document.getElementById('preset-mode');
@@ -357,7 +376,6 @@
         
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [모바일 서식 엔진 동기화]
         let savedRange = null;
         document.addEventListener('selectionchange', () => {
             const sel = window.getSelection();
@@ -387,12 +405,26 @@
         bindFmt('alignLeftBtn', 'justifyLeft');
         bindFmt('alignCenterBtn', 'justifyCenter');
         bindFmt('alignRightBtn', 'justifyRight');
-
-        bindFmt('hiBtn', 'backColor', 'rgba(255, 255, 255, 0.4)');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
+
+        // [커스텀 형광펜 렌더링 엔진]
+        const hlColorInput = document.getElementById('hlColor');
+        const hiBtn = document.getElementById('hiBtn');
+        
+        // 형광펜 버튼 클릭 시 컬러피커의 색상을 가져와 투명도(0.4)를 입혀 적용
+        const applyHighlight = (e) => {
+            e.preventDefault();
+            const hex = hlColorInput.value;
+            let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+            exec('backColor', `rgba(${r}, ${g}, ${b}, 0.4)`);
+        };
+        hiBtn.addEventListener('mousedown', applyHighlight);
+        hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
+        
+        // 형광펜 색상 변경 시 버튼 UI 색상도 변경되도록 동기화
+        hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('input', (e) => { exec('foreColor', e.target.value); });
 
-        // [커스텀 모드 토글 로직]
         customToggleBtn.onclick = () => {
             isCustomMode = !isCustomMode;
             customToggleBtn.innerText = isCustomMode ? "CUSTOM ON" : "CUSTOM OFF";
@@ -405,7 +437,6 @@
 
         [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', render));
 
-        // [모바일 터치 스티커 엔진]
         const stickerInput = document.getElementById('stickerFile');
         stickerInput.addEventListener('change', function(e) {
             const file = e.target.files[0]; 
@@ -485,7 +516,6 @@
             window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        // [테마 및 텍스트 렌더링 엔진]
         function render() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
@@ -504,12 +534,11 @@
             cap.style.setProperty('--c3', c3.value); cap.style.setProperty('--c4', c4.value);
             cap.style.setProperty('--pad', padSlide.value + 'px'); cap.style.setProperty('--rad', radSlide.value + 'px');
             
-            // 타이틀 및 워터마크 표시 로직 분기
             if(isCustomMode) {
                 const cCatText = customCat.value || 'UNKNOWN';
-                const cCharText = customChar.value || 'NAME';
+                const cCharText = customChar.value || 'UNKNOWN';
                 displayTitle.innerText = `${cCatText} | ${cCharText}`;
-                displayWatermark.innerText = customCreator.value || 'CUSTOM @CREATOR';
+                displayWatermark.innerText = customCreator.value || 'SAMPLE';
             } else {
                 displayTitle.innerText = `${catSel.value} | ${charSel.value}`;
                 displayWatermark.innerText = `ARCH @체리망고`;
@@ -560,7 +589,6 @@
             document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
-        // [낙서 모바일 터치 대응]
         drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "PEN ON" : "PEN OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
         
         const startDraw = (e) => {
@@ -588,12 +616,11 @@
         window.addEventListener('mouseup', endDraw); window.addEventListener('touchend', endDraw);
         document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까? (Clear Canvas?)")) dCtx.clearRect(0,0,1080,1080); };
         
-        // 시스템 유틸
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); render(); };
         document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다. 이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2");
         document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { location.reload(); } };
-        document.querySelectorAll('input:not(#fColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
+        document.querySelectorAll('input:not(#fColor), input:not(#hlColor), select').forEach(el => { el.oninput = (el.id === 'ratioSel' || el.id === 'themeSel') ? () => { updateLayout(); render(); } : render; });
         
         function updateLayout() {
             const w = 1080, h = ratioSel.value === '1:1' ? 1080 : 1920;
@@ -603,7 +630,6 @@
         }
         window.onresize = updateLayout; 
         
-        // [PWA 앱 공유 텍스트 수신 안테나]
         window.onload = () => { 
             updateLayout(); render(); 
             const parsedUrl = new URL(window.location.href);
