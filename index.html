@@ -10,7 +10,7 @@
     
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+        /* 폰트 임포트 생략 없이 유지 */
         @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
         @font-face { font-family: 'KoPubDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'MaruBuri'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -18,12 +18,33 @@
         @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
 
-        :root { --bg: #050506; --panel: #111112; --border: #222225; --accent: #f47b20; --text: #f0f0f0; --dim: #888; }
-        body { background: var(--bg); color: var(--text); font-family: "Pretendard Variable", sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; user-select: none;}
+        /* [UI 전면 개편] 무기미도 / 니어 오토마타 스타일의 세련된 화이트 라인 & 홀로그램 */
+        :root { 
+            --bg: #090a0c; 
+            --panel: rgba(15, 16, 20, 0.45); 
+            --border: rgba(255, 255, 255, 0.15); 
+            --border-glow: rgba(255, 255, 255, 0.4);
+            --accent: #ffffff; 
+            --text: #e0e0e0; 
+            --dim: #7a7a85; 
+            --holo: rgba(0, 255, 255, 0.15);
+        }
 
-        .header-area { text-align: center; margin-bottom: 30px; }
-        h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 4px; margin: 0; text-transform: uppercase; }
-        .sub-warning { font-size: 0.75rem; color: var(--dim); margin-top: 8px; font-weight: bold; letter-spacing: 1px; }
+        body { 
+            background: var(--bg); 
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
+            color: var(--text); 
+            font-family: "Pretendard Variable", sans-serif; 
+            margin: 0; padding: 20px; 
+            display: flex; flex-direction: column; align-items: center; overflow-x: hidden; user-select: none;
+        }
+
+        .header-area { text-align: center; margin-bottom: 30px; position: relative; }
+        .header-area::after { content: ''; display: block; width: 40px; height: 1px; background: var(--accent); margin: 15px auto 0; box-shadow: 0 0 8px var(--accent); }
+        h1 { font-size: 1.5rem; font-weight: 300; letter-spacing: 6px; margin: 0; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .sub-warning { font-size: 0.7rem; color: var(--dim); margin-top: 8px; font-weight: normal; letter-spacing: 2px; }
 
         .container { width: 100%; max-width: 1300px; }
         .editor-layout { display: flex; flex-direction: column; gap: 20px; }
@@ -35,16 +56,22 @@
             body { padding: 40px; }
         }
 
-        .preview-wrapper { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        /* 캔버스 및 발췌 렌더링 영역 */
+        .preview-wrapper { 
+            width: 100%; background: #000; 
+            border: 1px solid var(--border-glow); 
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--holo); 
+            overflow: hidden; position: relative; 
+        }
         #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
         #drawing-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; touch-action: none; }
         
-        .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.2); font-weight: 800; z-index: 100; pointer-events: none; }
-        .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; }
+        .watermark { position: absolute; bottom: 30px; right: 40px; font-size: 18px; color: rgba(255,255,255,0.4); font-weight: 300; letter-spacing: 2px; z-index: 100; pointer-events: none; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .excerpt-title { position: absolute; bottom: 30px; left: 40px; font-size: 24px; font-weight: 800; color: var(--text-color, #fff); z-index: 100; pointer-events: none; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
-        #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
+        #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
         #r19-badge span { font-size: 11px; }
 
         .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: break-all; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
@@ -53,8 +80,15 @@
 
         #card { box-sizing: border-box; }
         
+        /* 테마별 스타일 */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
 
+        /* 신규 테마: 폴라로이드 (Polaroid) */
+        .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
+        .theme-polaroid #card { width: 80%; background: var(--c4, #ffffff); padding: 40px 40px 120px 40px; box-shadow: 10px 15px 30px rgba(0,0,0,0.3); position: relative; z-index: 2; color: #000 !important; }
+        .theme-polaroid #card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); pointer-events: none; }
+
+        /* 기존 테마들 (Y2K, Diary, SF) */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
         .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2); border: 4px solid #000; border-radius: 16px; padding: 0; box-shadow: 12px 12px 0px #000; display: flex; flex-direction: column; position: relative; z-index: 2; overflow: hidden;}
         .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -85,51 +119,81 @@
         .sf-h { height: 3px; width: 60px; } .sf-v { width: 3px; height: 60px; }
         .sf-t { top: -2px; } .sf-b { bottom: -2px; } .sf-l { left: -2px; } .sf-r { right: -2px; }
 
+        /* 스티커 엔진 */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
         .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
-        .sticker-active { border: 2px dashed var(--accent) !important; background: rgba(244,123,32,0.05); }
-        .sticker-ctrl { position: absolute; width: 30px; height: 30px; background: #000; border: 2px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 26px; color: #fff; cursor: pointer; font-size: 14px; touch-action: none;}
+        .sticker-active { border: 1px solid rgba(255,255,255,0.5) !important; background: rgba(255,255,255,0.05); }
+        .sticker-ctrl { position: absolute; width: 26px; height: 26px; background: #000; border: 1px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 24px; color: #fff; cursor: pointer; font-size: 12px; touch-action: none;}
         .sticker-active .sticker-ctrl { display: block !important; }
-        .sticker-del { top: -15px; right: -15px; background: #ff4d4d; }
-        .sticker-resize { bottom: -15px; right: -15px; background: var(--accent); cursor: se-resize; }
-        .sticker-up { top: -15px; left: -15px; background: #4caf50; }
-        .sticker-down { bottom: -15px; left: -15px; background: #2196f3; }
+        .sticker-del { top: -13px; right: -13px; background: #ff4d4d; }
+        .sticker-resize { bottom: -13px; right: -13px; background: #fff; color: #000; cursor: se-resize; }
+        .sticker-up { top: -13px; left: -13px; background: #333; }
+        .sticker-down { bottom: -13px; left: -13px; background: #333; }
 
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        label { font-size: 0.7rem; color: var(--dim); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
-        select, input[type="text"], textarea { width: 100%; padding: 10px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 2px; border-radius: 1px; outline: none; margin: 15px 0; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        .toolbar { display: flex; gap: 6px; background: #000; padding: 10px; border-radius: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
-        .tool-btn { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        /* [글래스모피즘] 제어 패널 UI */
+        .panel { 
+            background: var(--panel); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); 
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.02);
+            padding: 20px; display: flex; flex-direction: column; gap: 15px; 
+            position: relative;
+        }
+        /* 패널 모서리 데코레이션 (니어 느낌) */
+        .panel::before { content:''; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top: 1px solid #fff; border-left: 1px solid #fff; }
+        .panel::after { content:''; position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom: 1px solid #fff; border-right: 1px solid #fff; }
+
+        label { font-size: 0.65rem; color: var(--text); font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; display: block; opacity: 0.8;}
+        
+        select, input[type="text"], textarea { 
+            width: 100%; padding: 10px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid var(--border); 
+            color: #fff; 
+            box-sizing: border-box; font-size: 0.85rem; outline: none; transition: 0.3s;
+        }
+        select:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(255,255,255,0.2); }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 1px; outline: none; margin: 15px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border: 1px solid #fff; background: #000; cursor: pointer; transition: 0.2s; }
+        input[type="range"]::-webkit-slider-thumb:hover { background: #fff; }
+
+        .toolbar { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
+        .tool-btn { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .tool-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
         .tool-btn.active { background: var(--accent); color: #000; }
-        .color-pick { width: 32px; height: 32px; border: none; padding: 0; background: transparent; cursor: pointer; border-radius: 50%; overflow: hidden; }
+        .color-pick { width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.3); padding: 0; background: transparent; cursor: pointer; overflow: hidden; }
 
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-main { background: var(--accent); color: #fff; padding: 16px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s;}
-        .btn-main:hover { filter: brightness(1.2); transform: translateY(-2px); }
-        .btn-dim { background: #1a1a1c; color: var(--dim); border: 1px solid var(--border); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; width: 100%; }
         
-        details { background: #0c0c0d; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-        summary { padding: 15px; font-weight: bold; cursor: pointer; color: var(--accent); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .btn-main { background: transparent; color: #fff; padding: 16px; border: 1px solid var(--accent); font-size: 0.9rem; font-weight: 300; letter-spacing: 3px; cursor: pointer; width: 100%; transition: 0.3s; position: relative; overflow: hidden; }
+        .btn-main::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); transition: 0.3s; }
+        .btn-main:hover::before { left: 0; }
+        .btn-main:hover { box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+
+        .btn-dim { background: rgba(0,0,0,0.5); color: var(--dim); border: 1px solid var(--border); padding: 10px; cursor: pointer; font-size: 11px; width: 100%; letter-spacing: 1px; transition: 0.2s;}
+        .btn-dim:hover { border-color: #fff; color: #fff; }
+        
+        details { background: rgba(0,0,0,0.3); border: 1px solid var(--border); }
+        summary { padding: 15px; font-weight: 300; letter-spacing: 2px; cursor: pointer; color: var(--accent); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
         .details-in { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; }
         
         .compact-row { display: flex; gap: 15px; align-items: flex-end; }
         .compact-row > div { flex: 1; }
         .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .color-item { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px 12px; border-radius: 6px; border: 1px solid #222; font-size: 11px;}
+        .color-item { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.4); padding: 6px 10px; border: 1px solid var(--border); font-size: 10px; font-family: monospace;}
         
         .r19-switch-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-        .r19-switch { width: 14px; height: 14px; border: 1px solid var(--dim); background: transparent; transform: rotate(45deg); transition: 0.3s; }
+        .r19-switch { width: 12px; height: 12px; border: 1px solid var(--dim); background: transparent; transition: 0.3s; }
         .r19-switch.active { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.8); }
-        .r19-label { font-size: 0.75rem; color: var(--dim); font-weight: bold; }
+        .r19-label { font-size: 0.7rem; color: var(--text); font-weight: 300; }
     </style>
 </head>
 <body>
 
     <div class="header-area">
         <h1>ARCH EXCERPT STUDIO</h1>
-        <div class="sub-warning">ARCH 에이전트 전용 사이트 입니다. ARCH 이외의 사용금지.</div>
+        <div class="sub-warning">SYSTEM ONLINE. UNAUTHORIZED ACCESS PROHIBITED.</div>
     </div>
 
     <div class="container">
@@ -176,79 +240,83 @@
             </div>
 
             <div class="panel-section">
-                <button class="btn-dim" id="manualBtn" style="color:#aab;">📑 사용설명서 보기</button>
+                <button class="btn-dim" id="manualBtn" style="color:#fff; border-color: rgba(255,255,255,0.4);">📑 DATA MANUAL (사용설명서)</button>
 
                 <div class="panel">
-                    <label>텍스트 서식 툴</label>
+                    <label>텍스트 포맷 (Format)</label>
                     <div class="toolbar">
-                        <button class="tool-btn" id="bBtn"><b>B</b></button>
-                        <button class="tool-btn" id="iBtn"><i>I</i></button>
-                        <button class="tool-btn" id="uBtn"><u>U</u></button>
+                        <button class="tool-btn" id="bBtn" style="font-weight:bold;">B</button>
+                        <button class="tool-btn" id="iBtn" style="font-style:italic;">I</button>
+                        <button class="tool-btn" id="uBtn" style="text-decoration:underline;">U</button>
+                        <button class="tool-btn" id="alignLeftBtn"><i class="fa-solid fa-align-left"></i></button>
+                        <button class="tool-btn" id="alignCenterBtn"><i class="fa-solid fa-align-center"></i></button>
+                        <button class="tool-btn" id="alignRightBtn"><i class="fa-solid fa-align-right"></i></button>
+                        
                         <input type="color" class="color-pick" id="fColor">
-                        <button class="tool-btn" id="hiBtn">🖍️ 칠하기</button>
-                        <button class="tool-btn" id="removeHiBtn" style="color:#f66;">🖍️ 지우기</button>
+                        <button class="tool-btn" id="hiBtn">HL ON</button>
+                        <button class="tool-btn" id="removeHiBtn">HL OFF</button>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <label>🎨 데코레이션</label>
+                    <label>데코레이션 (Decoration)</label>
                     <div class="toolbar">
-                        <button class="tool-btn" id="drawBtn">🖌️ 낙서 OFF</button>
-                        <button class="tool-btn" id="clearBtn" style="color:#f66;">전체삭제</button>
-                        <input type="color" class="color-pick" id="penColor" value="#ff0000">
+                        <button class="tool-btn" id="drawBtn">PEN OFF</button>
+                        <button class="tool-btn" id="clearBtn">CLEAR ALL</button>
+                        <input type="color" class="color-pick" id="penColor" value="#ffffff">
                         <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
                     </div>
-                    <label>🦄 스티커 추가</label>
+                    <label style="margin-top: 10px;">스티커 추가 (Add Sticker)</label>
                     <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
                 </div>
 
                 <div class="panel">
-                    <label>ARCH LIST</label>
+                    <label>ARCH 데이터 (Data Setup)</label>
                     <div class="row-2"><select id="catSel"></select><select id="charSel"></select></div>
                     <div class="row-2">
-                        <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1</option><option value="9:16">9:16</option></select></div>
-                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF 서식</option></select></div>
+                        <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1 (SQUARE)</option><option value="9:16">9:16 (STORY)</option></select></div>
+                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="polaroid">Polaroid (신규)</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
                     </div>
                     <div class="row-2">
                         <div><label>폰트</label><select id="fontSel"><option value="'Pretendard Variable'">프리텐다드</option><option value="'JoseonGulim'">조선굴림</option><option value="'KoPubDotum'">코펍돋움</option><option value="'MaruBuri'">마루부리</option><option value="'ChosunIlbo'">조선일보명조</option><option value="'LeeSeoyun'">이서윤체</option><option value="'Kkubulrim'">꾸불림체</option></select></div>
                         <div><label>크기</label><input type="range" id="sizeSlide" min="30" max="110" value="45"></div>
                     </div>
                     
-                    <label>🎨 레이아웃 색상</label>
+                    <label style="margin-top: 10px;">레이아웃 색상 (Color Matrix)</label>
                     <div class="color-grid">
-                        <div class="color-item"><span>C1</span><input type="color" id="c1" value="#dcbdf2"></div>
-                        <div class="color-item"><span>C2</span><input type="color" id="c2" value="#ffb3d9"></div>
-                        <div class="color-item" id="c3-box" style="display:none;"><span>C3</span><input type="color" id="c3" value="#fdf0f5"></div>
-                        <div class="color-item" id="c4-box" style="display:none;"><span>C4</span><input type="color" id="c4" value="#ffffff"></div>
+                        <div class="color-item"><span>C1</span><input type="color" id="c1" value="#000000" class="color-pick" style="border:none;"></div>
+                        <div class="color-item"><span>C2</span><input type="color" id="c2" value="#ffffff" class="color-pick" style="border:none;"></div>
+                        <div class="color-item" id="c3-box" style="display:none;"><span>C3</span><input type="color" id="c3" value="#fdf0f5" class="color-pick" style="border:none;"></div>
+                        <div class="color-item" id="c4-box" style="display:none;"><span>C4</span><input type="color" id="c4" value="#ffffff" class="color-pick" style="border:none;"></div>
                     </div>
                 </div>
 
                 <details>
-                    <summary>ADVANCED CUSTOM ⚙️</summary>
+                    <summary>ADVANCED PARAMETERS <i class="fa-solid fa-gear"></i></summary>
                     <div class="details-in">
                         <div class="compact-row">
                             <div><label>Padding</label><input type="range" id="padSlide" min="20" max="160" value="80"></div>
-                            <div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="25"></div>
+                            <div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="0"></div>
                         </div>
-                        <div style="border-top:1px solid #222; padding-top:10px;">
+                        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                <label style="margin:0;">배경 이미지 설정</label>
+                                <label style="margin:0;">배경 이미지 (Background)</label>
                                 <div class="r19-switch-wrap" id="r19Btn">
                                     <div class="r19-switch" id="r19Toggle"></div>
-                                    <span class="r19-label">19금 마크 표기</span>
+                                    <span class="r19-label">R-19 MARK</span>
                                 </div>
                             </div>
                             <input type="file" id="bgFile" accept="image/*" class="btn-dim">
                             <div class="compact-row" style="margin-top:8px;">
                                 <div style="flex:2"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
-                                <button id="delBgBtn" style="background:#311; color:#f55; border:1px solid #422; border-radius:4px; height:32px; padding:0 10px; cursor:pointer; font-size:11px; margin-bottom:12px;">삭제</button>
+                                <button id="delBgBtn" style="background:transparent; color:#f55; border:1px solid rgba(255,85,85,0.4); height:30px; padding:0 10px; cursor:pointer; font-size:10px; margin-bottom:12px; transition:0.2s;">DELETE</button>
                             </div>
                         </div>
                     </div>
                 </details>
 
                 <button class="btn-main" id="saveBtn">RENDER & SAVE PNG</button>
-                <button class="btn-dim" id="resetBtn">설정 초기화</button>
+                <button class="btn-dim" id="resetBtn">SYSTEM RESET</button>
             </div>
         </div>
     </div>
@@ -290,7 +358,12 @@
         bindFmt('bBtn', 'bold');
         bindFmt('iBtn', 'italic');
         bindFmt('uBtn', 'underline');
-        bindFmt('hiBtn', 'backColor', 'rgba(255, 235, 59, 0.5)');
+        // 신규 정렬 기능 연결
+        bindFmt('alignLeftBtn', 'justifyLeft');
+        bindFmt('alignCenterBtn', 'justifyCenter');
+        bindFmt('alignRightBtn', 'justifyRight');
+
+        bindFmt('hiBtn', 'backColor', 'rgba(255, 255, 255, 0.4)'); // 하이라이트 색상도 디자인에 맞게 변경
         bindFmt('removeHiBtn', 'backColor', 'transparent');
         document.getElementById('fColor').addEventListener('input', (e) => { exec('foreColor', e.target.value); });
 
@@ -376,17 +449,24 @@
             window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        // [테마 엔진]
+        // [테마 엔진 리팩토링]
         function render() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
+            // 모든 특수 레이아웃 요소 초기화
             document.querySelectorAll('.y2k-item, .diary-item, .sf-item').forEach(el => el.style.display = 'none');
             document.getElementById('c3-box').style.display = 'none'; document.getElementById('c4-box').style.display = 'none';
 
-            if(t === 'y2k') { document.querySelectorAll('.y2k-item').forEach(el => el.style.display = 'flex'); document.getElementById('c3-box').style.display = 'flex'; document.getElementById('c4-box').style.display = 'flex'; }
+            // 선택된 테마에 맞게 요소 활성화
+            if(t === 'y2k') { 
+                document.querySelectorAll('.y2k-item').forEach(el => el.style.display = 'flex'); 
+                document.getElementById('c3-box').style.display = 'flex'; document.getElementById('c4-box').style.display = 'flex'; 
+            }
             if(t === 'diary') document.querySelectorAll('.diary-item').forEach(el => el.style.display = 'flex');
             if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
+            if(t === 'polaroid') { document.getElementById('c4-box').style.display = 'flex'; } // 폴라로이드 배경색(종이색) 제어용
 
+            // CSS 변수 적용
             cap.style.setProperty('--c1', c1.value); cap.style.setProperty('--c2', c2.value);
             cap.style.setProperty('--c3', c3.value); cap.style.setProperty('--c4', c4.value);
             cap.style.setProperty('--pad', padSlide.value + 'px'); cap.style.setProperty('--rad', radSlide.value + 'px');
@@ -394,7 +474,9 @@
             displayTitle.innerText = `[${catSel.value}] ${charSel.value}`; displayTitle.style.fontFamily = fontSel.value;
             editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
             
-            if(t === 'y2k' || t === 'diary') cap.style.setProperty('--editor-color', '#000000'); else cap.style.setProperty('--editor-color', '#ffffff');
+            // 텍스트 색상 처리 로직 개선
+            if(t === 'y2k' || t === 'diary' || t === 'polaroid') cap.style.setProperty('--editor-color', '#000000'); 
+            else cap.style.setProperty('--editor-color', '#ffffff');
             
             const txtBody = document.getElementById('text-body') || document.getElementById('y2k-screen-wrap');
             if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
@@ -436,7 +518,7 @@
         };
 
         // [낙서 모바일 터치 대응]
-        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "🖌️ 낙서 ON" : "🖌️ 낙서 OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
+        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "PEN ON" : "PEN OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
         
         const startDraw = (e) => {
             if(!drawMode) return; isDrawing = true; e.preventDefault();
@@ -461,7 +543,7 @@
         
         const endDraw = () => isDrawing = false;
         window.addEventListener('mouseup', endDraw); window.addEventListener('touchend', endDraw);
-        document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까?")) dCtx.clearRect(0,0,1080,1080); };
+        document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까? (Clear Canvas?)")) dCtx.clearRect(0,0,1080,1080); };
         
         // 시스템 유틸
         for(let c in archList) catSel.add(new Option(c, c));
