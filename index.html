@@ -78,14 +78,12 @@
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
-        /* 모든 카드의 기본 트랜지션 제거 (html2canvas 렌더링 방해 원천 차단) */
         #card { box-sizing: border-box; transition: none; display: flex; flex-direction: column; }
         
         /* [Standard] */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 방탄 렌더링] 
-           padding-bottom 꼼수 대신 투명한 더미 블록(.polaroid-spacer)을 이용해 여백 확보 */
+        /* [Polaroid 완벽 방어형 레이아웃 - 짤림 100% 방지] */
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
         .theme-polaroid #card { 
             width: 75%; 
@@ -103,8 +101,9 @@
             border: 1px solid rgba(0,0,0,0.1); 
             box-sizing: border-box; position: relative;
         }
+        /* html2canvas가 잘라먹는 padding-bottom 대신 물리적 블록으로 여백 확보 */
         .polaroid-spacer { display: none; }
-        .theme-polaroid .polaroid-spacer { display: block; width: 100%; height: 90px; background: transparent; }
+        .theme-polaroid .polaroid-spacer { display: block; width: 100%; min-height: 110px; flex-shrink: 0; background: transparent; }
 
         /* [Y2K] */
         .theme-y2k { background: var(--c3, #fdf0f5) !important; }
@@ -132,29 +131,32 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [SF 터미널 방탄 렌더링 - NieR/무기미도 스타일] */
+        /* [SF 터미널 방탄 렌더링 - 짤림 100% 방지] */
         .theme-sf { background: #050505 !important; }
         .theme-sf #card { 
             width: 85%; 
             padding: calc(var(--pad, 60px) + 20px) var(--pad, 60px) !important; 
-            background: #0d1017 !important; /* 렌더링 파괴 주범인 투명도 걷어내고 완벽한 솔리드 다크 */
+            background: #0d1017 !important; 
             border: 1px solid rgba(255, 255, 255, 0.15) !important; 
             position: relative; 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important; 
             z-index: 2; 
         }
         
+        /* right, bottom 대신 완벽한 calc() 넓이 계산으로 짤림 원천 차단 */
         .sf-inner-frame {
-            position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+            position: absolute; top: 12px; left: 12px; 
+            width: calc(100% - 24px); height: calc(100% - 24px);
             border: 1px solid rgba(255,255,255,0.06);
-            pointer-events: none; z-index: 1;
+            pointer-events: none; z-index: 1; box-sizing: border-box;
         }
         
         .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.6; }
         .sf-h { height: 1px; width: 15px; } .sf-v { width: 1px; height: 15px; }
-        .sf-t { top: -1px; } .sf-b { bottom: -1px; } .sf-l { left: -1px; } .sf-r { right: -1px; }
+        /* 절대좌표를 가장 안전한 형태로 교체 */
+        .sf-t { top: -1px; } .sf-b { top: calc(100% - 1px); } 
+        .sf-l { left: -1px; } .sf-r { left: calc(100% - 1px); }
         
-        /* 텍스트 좌표를 %와 명확한 픽셀로 고정하여 캡처 시 날아가지 않도록 함 */
         .sf-deco-text { 
             position: absolute; 
             color: var(--c2, #ffffff); 
@@ -167,9 +169,9 @@
             white-space: nowrap;
         }
         .sf-deco-text.top-left { top: -20px; left: 0px; font-weight: bold; opacity: 0.8;}
-        .sf-deco-text.top-right { top: -20px; right: 0px; }
-        .sf-deco-text.bottom-left { bottom: -20px; left: 0px; opacity: 0.3; }
-        .sf-deco-text.bottom-right { bottom: -20px; right: 0px; opacity: 0.3; }
+        .sf-deco-text.top-right { top: -20px; left: calc(100% - 70px); }
+        .sf-deco-text.bottom-left { top: calc(100% + 8px); left: 0px; opacity: 0.3; }
+        .sf-deco-text.bottom-right { top: calc(100% + 8px); left: calc(100% - 100px); opacity: 0.3; }
 
         /* 스티커 엔진 UI */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
@@ -270,7 +272,6 @@
 
                         <div id="card" class="card">
                             
-                            <!-- SF 터미널 요소 -->
                             <div class="sf-item sf-inner-frame" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-t sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-l" style="display:none;"></div>
                             <div class="sf-item sf-line sf-h sf-t sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-r" style="display:none;"></div>
@@ -282,20 +283,17 @@
                             <div class="sf-item sf-deco-text bottom-left" style="display:none;">WARNING_</div>
                             <div class="sf-item sf-deco-text bottom-right" style="display:none;">CH. OVERRIDE</div>
 
-                            <!-- Diary 요소 -->
                             <div class="diary-item diary-holes" id="diaryHoles" style="display:none;">
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
                                 <div class="hole"></div><div class="hole"></div><div class="hole"></div>
                             </div>
                             <div class="diary-item tape" id="diaryTape" style="display:none;"></div>
 
-                            <!-- Y2K 요소 -->
                             <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
                                 <span class="y2k-brand">Retro Player</span>
                                 <div class="y2k-window-controls"><span></span><span></span><span></span></div>
                             </div>
 
-                            <!-- 텍스트 에디터 메인 영역 -->
                             <div id="y2k-screen-wrap">
                                 <div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div>
                             </div>
@@ -305,7 +303,6 @@
                                 <div class="y2k-btns">⏮ ● ⏭</div>
                             </div>
                             
-                            <!-- 폴라로이드 더미 캡션 스페이서 (렌더링 짤림 완벽 방어) -->
                             <div class="polaroid-spacer"></div>
                         </div>
                     </div>
@@ -415,7 +412,7 @@
                 </details>
 
                 <button class="btn-main" id="saveBtn">RENDER & SAVE PNG</button>
-                <button class="btn-dim" id="resetBtn">SYSTEM RESET</button>
+                <button class="btn-dim" id="resetBtn">SYSTEM RESET (설정 초기화)</button>
             </div>
         </div>
     </div>
@@ -451,6 +448,7 @@
             document.execCommand('styleWithCSS', false, true); 
             if(cmd === 'backColor' && val) document.execCommand('hiliteColor', false, val);
             document.execCommand(cmd, false, val);
+            saveSettings(); // 에디터 서식 변경 시 저장
         }
 
         const bindFmt = (id, cmd, val) => {
@@ -468,7 +466,6 @@
         bindFmt('alignRightBtn', 'justifyRight');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
 
-        // [버그 픽스 1] 이벤트 루프 최적화: 컬러 휠 및 버튼 색상 변경을 즉시 처리 (DOM 새로고침 배제)
         const hlColorInput = document.getElementById('hlColor');
         const hiBtn = document.getElementById('hiBtn');
         
@@ -481,16 +478,16 @@
         hiBtn.addEventListener('mousedown', applyHighlight);
         hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
         
-        // 텍스트/형광펜 색상 휠 조작 시 버튼 색상만 바꾸고 무거운 렌더링 호출 금지!
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
 
-        // C1~C4 색상 휠 조작 시 CSS 변수만 다이렉트로 교체 (캔버스 블러 재생성 완전 차단!)
+        // C1~C4 색상 휠 조작 최적화
         const colorPickers = ['c1', 'c2', 'c3', 'c4'];
         colorPickers.forEach(id => {
             document.getElementById(id).addEventListener('input', (e) => {
                 cap.style.setProperty(`--${id}`, e.target.value);
             });
+            document.getElementById(id).addEventListener('change', saveSettings); // 마우스 뗄 때 저장
         });
 
         customToggleBtn.onclick = () => {
@@ -500,10 +497,12 @@
             customToggleBtn.style.color = isCustomMode ? "#fff" : "var(--text)";
             presetMode.style.display = isCustomMode ? 'none' : 'grid';
             customMode.style.display = isCustomMode ? 'flex' : 'none';
-            renderDOM(); // 텍스트만 업데이트
+            renderDOM();
         };
 
         [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', renderDOM));
+        // 에디터 타이핑 시 즉시 저장
+        editor.addEventListener('input', saveSettings);
 
         const stickerInput = document.getElementById('stickerFile');
         stickerInput.addEventListener('change', function(e) {
@@ -584,7 +583,7 @@
             window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        // [최적화 2] 텍스트, 폰트, 테마 클래스만 교체하는 가벼운 함수 (블러 연산 제외)
+        // [버그 픽스 재정비] 텍스트 및 클래스만 교체
         function renderDOM() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
@@ -599,7 +598,6 @@
             if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
             if(t === 'polaroid') { document.getElementById('c4-box').style.display = 'flex'; }
 
-            // 초기 설정값 로드 시 컬러도 꽂아주기
             cap.style.setProperty('--c1', document.getElementById('c1').value); 
             cap.style.setProperty('--c2', document.getElementById('c2').value);
             cap.style.setProperty('--c3', document.getElementById('c3').value); 
@@ -628,9 +626,10 @@
             if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
             else if(t === 'polaroid') { txtBody.id="text-body"; txtBody.className="polaroid-screen"; txtBody.style.padding='var(--pad, 40px)'; }
             else { txtBody.id="text-body"; txtBody.className=""; txtBody.style.padding='0'; }
+
+            saveSettings();
         }
 
-        // [최적화 3] 오직 "배경 이미지 등록", "블러 수치 변경" 시에만 호출되는 무거운 함수
         function updateBackground() {
             if(!rawBgImageSrc) { bgImg.style.display = 'none'; return; }
             bgImg.style.display = 'block';
@@ -643,6 +642,7 @@
                 bgImg.style.backgroundImage = `url(${c.toDataURL()})`;
             };
             img.src = rawBgImageSrc;
+            saveSettings();
         }
 
         const bgInput = document.getElementById('bgFile');
@@ -653,7 +653,7 @@
             r.readAsDataURL(file);
             setTimeout(() => { e.target.value = ''; }, 100);
         });
-        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; };
+        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; saveSettings(); };
         document.getElementById('blurSlide').addEventListener('change', updateBackground);
 
         const r19Btn = document.getElementById('r19Btn');
@@ -663,7 +663,7 @@
             document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
         };
 
-        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "PEN ON" : "PEN OFF"; drawBtn.classList.toggle('active', drawMode); dCanvas.style.pointerEvents = drawMode ? "auto" : "none"; };
+        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "PEN ON" : "PEN OFF"; drawBtn.classList.toggle('active', drawMode); document.getElementById('drawing-canvas').style.pointerEvents = drawMode ? "auto" : "none"; };
         
         const startDraw = (e) => {
             if(!drawMode) return; isDrawing = true; e.preventDefault();
@@ -692,12 +692,16 @@
         
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); renderDOM(); };
-        catSel.dispatchEvent(new Event('change'));
 
         document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다. 이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2");
-        document.getElementById('resetBtn').onclick = () => { if(confirm("초기화하시겠습니까?")) { location.reload(); } };
         
-        // [버그 픽스 1 핵심] 컬러 피커를 제외한 입력 도구들만 DOM 렌더링 호출
+        document.getElementById('resetBtn').onclick = () => { 
+            if(confirm("모든 설정을 초기화하시겠습니까? (Reset Everything?)")) { 
+                localStorage.removeItem('arch_final_v_touch_v8'); 
+                location.reload(); 
+            } 
+        };
+        
         document.querySelectorAll('input:not([type="color"]), select').forEach(el => { 
             el.addEventListener('input', (e) => {
                 if (el.id === 'ratioSel' || el.id === 'themeSel') updateLayout(); 
@@ -713,14 +717,54 @@
         }
         window.onresize = updateLayout; 
         
+        // [완벽 부활] 디바이스 오프라인 저장 로직 (배경 이미지는 용량 문제로 제외)
+        function saveSettings() { 
+            const s = { 
+                cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, 
+                size: sizeSlide.value, c1: document.getElementById('c1').value, c2: document.getElementById('c2').value, 
+                c3: document.getElementById('c3').value, c4: document.getElementById('c4').value, pad: padSlide.value, 
+                rad: radSlide.value, blur: blurSlide.value, html: editor.innerHTML,
+                customMode: isCustomMode, customCat: customCat.value, customChar: customChar.value, customCreator: customCreator.value
+            }; 
+            localStorage.setItem('arch_final_v_touch_v8', JSON.stringify(s)); 
+        }
+
+        function loadSettings() { 
+            const s = JSON.parse(localStorage.getItem('arch_final_v_touch_v8')); 
+            if(s) { 
+                catSel.value = s.cat; 
+                if(archList[s.cat]) { charSel.innerHTML = ""; archList[s.cat].forEach(n => charSel.add(new Option(n, n))); }
+                charSel.value = s.char; ratioSel.value = s.rat; themeSel.value = s.thm; fontSel.value = s.fnt; sizeSlide.value = s.size; 
+                document.getElementById('c1').value = s.c1; document.getElementById('c2').value = s.c2; 
+                if(s.c3) document.getElementById('c3').value = s.c3; if(s.c4) document.getElementById('c4').value = s.c4; 
+                padSlide.value = s.pad; radSlide.value = s.rad; if(s.blur) blurSlide.value = s.blur; 
+                if(s.html) editor.innerHTML = s.html; 
+                
+                isCustomMode = s.customMode || false;
+                customCat.value = s.customCat || ''; customChar.value = s.customChar || ''; customCreator.value = s.customCreator || '';
+                
+                customToggleBtn.innerText = isCustomMode ? "CUSTOM ON" : "CUSTOM OFF";
+                customToggleBtn.style.background = isCustomMode ? "rgba(255,255,255,0.1)" : "transparent";
+                customToggleBtn.style.color = isCustomMode ? "#fff" : "var(--text)";
+                presetMode.style.display = isCustomMode ? 'none' : 'grid';
+                customMode.style.display = isCustomMode ? 'flex' : 'none';
+            } else {
+                catSel.dispatchEvent(new Event('change'));
+            }
+        }
+
         window.onload = () => { 
+            loadSettings(); // 설정 불러오기 완벽 복구
             updateLayout(); renderDOM(); 
             const parsedUrl = new URL(window.location.href);
             const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
-            if (sharedText) { editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); }
+            if (sharedText) { 
+                editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); 
+                saveSettings(); 
+            }
         };
 
-        // [버그 픽스 2 핵심] 레이아웃 파괴 방지 하드코어 캡처 렌더링 세팅
+        // 캡처 오류 방지 최종 하드코어 세팅
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
@@ -728,13 +772,12 @@
             const oldT = cap.style.transform; 
             cap.style.transform = 'scale(1)'; 
             
-            // html2canvas가 레이아웃을 계산할 수 있도록 대기 시간 연장
             setTimeout(() => {
                 html2canvas(cap, { 
                     scale: 1, 
                     useCORS: true, 
                     allowTaint: true,
-                    backgroundColor: '#000', // 투명화 깨짐 방어
+                    backgroundColor: '#000', // 투명화 깨짐 방지
                     logging: false
                 }).then(canvas => {
                     cap.style.transform = oldT; 
