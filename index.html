@@ -61,7 +61,7 @@
             overflow: hidden; position: relative; 
         }
         
-        #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
+        #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
         
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
         .drawing-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
@@ -83,7 +83,7 @@
         /* [Standard] */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 완벽 방어형 레이아웃 - 짤림 100% 방지] */
+        /* [Polaroid 방탄 렌더링] */
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
         .theme-polaroid #card { 
             width: 75%; 
@@ -101,7 +101,6 @@
             border: 1px solid rgba(0,0,0,0.1); 
             box-sizing: border-box; position: relative;
         }
-        /* html2canvas가 잘라먹는 padding-bottom 대신 물리적 블록으로 여백 확보 */
         .polaroid-spacer { display: none; }
         .theme-polaroid .polaroid-spacer { display: block; width: 100%; min-height: 110px; flex-shrink: 0; background: transparent; }
 
@@ -131,7 +130,7 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [SF 터미널 방탄 렌더링 - 짤림 100% 방지] */
+        /* [SF 터미널 방탄 렌더링] */
         .theme-sf { background: #050505 !important; }
         .theme-sf #card { 
             width: 85%; 
@@ -143,7 +142,6 @@
             z-index: 2; 
         }
         
-        /* right, bottom 대신 완벽한 calc() 넓이 계산으로 짤림 원천 차단 */
         .sf-inner-frame {
             position: absolute; top: 12px; left: 12px; 
             width: calc(100% - 24px); height: calc(100% - 24px);
@@ -153,7 +151,6 @@
         
         .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.6; }
         .sf-h { height: 1px; width: 15px; } .sf-v { width: 1px; height: 15px; }
-        /* 절대좌표를 가장 안전한 형태로 교체 */
         .sf-t { top: -1px; } .sf-b { top: calc(100% - 1px); } 
         .sf-l { left: -1px; } .sf-r { left: calc(100% - 1px); }
         
@@ -448,7 +445,7 @@
             document.execCommand('styleWithCSS', false, true); 
             if(cmd === 'backColor' && val) document.execCommand('hiliteColor', false, val);
             document.execCommand(cmd, false, val);
-            saveSettings(); // 에디터 서식 변경 시 저장
+            saveSettings(); 
         }
 
         const bindFmt = (id, cmd, val) => {
@@ -481,13 +478,12 @@
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
 
-        // C1~C4 색상 휠 조작 최적화
         const colorPickers = ['c1', 'c2', 'c3', 'c4'];
         colorPickers.forEach(id => {
             document.getElementById(id).addEventListener('input', (e) => {
                 cap.style.setProperty(`--${id}`, e.target.value);
             });
-            document.getElementById(id).addEventListener('change', saveSettings); // 마우스 뗄 때 저장
+            document.getElementById(id).addEventListener('change', saveSettings);
         });
 
         customToggleBtn.onclick = () => {
@@ -501,7 +497,6 @@
         };
 
         [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', renderDOM));
-        // 에디터 타이핑 시 즉시 저장
         editor.addEventListener('input', saveSettings);
 
         const stickerInput = document.getElementById('stickerFile');
@@ -583,7 +578,6 @@
             window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
         }
 
-        // [버그 픽스 재정비] 텍스트 및 클래스만 교체
         function renderDOM() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
@@ -717,7 +711,6 @@
         }
         window.onresize = updateLayout; 
         
-        // [완벽 부활] 디바이스 오프라인 저장 로직 (배경 이미지는 용량 문제로 제외)
         function saveSettings() { 
             const s = { 
                 cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, 
@@ -754,7 +747,7 @@
         }
 
         window.onload = () => { 
-            loadSettings(); // 설정 불러오기 완벽 복구
+            loadSettings(); 
             updateLayout(); renderDOM(); 
             const parsedUrl = new URL(window.location.href);
             const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
@@ -764,29 +757,37 @@
             }
         };
 
-        // 캡처 오류 방지 최종 하드코어 세팅
+        // [버그 픽스 핵심] wrapper의 overflow: hidden 속성을 임시 해제하여 캡처 엔진의 짤림 버그 원천 봉쇄
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
             window.scrollTo(0, 0); 
             const oldT = cap.style.transform; 
+            const oldOverflow = wrapper.style.overflow; // 기존 껍데기 속성 저장
+            
             cap.style.transform = 'scale(1)'; 
+            wrapper.style.overflow = 'visible'; // 강제 해제: 오른쪽 짤림 버그 100% 철벽 방어!
             
             setTimeout(() => {
                 html2canvas(cap, { 
                     scale: 1, 
                     useCORS: true, 
                     allowTaint: true,
-                    backgroundColor: '#000', // 투명화 깨짐 방지
+                    backgroundColor: '#000', 
+                    width: cap.offsetWidth, // 넓이 높이 명시적 할당
+                    height: cap.offsetHeight,
                     logging: false
                 }).then(canvas => {
                     cap.style.transform = oldT; 
+                    wrapper.style.overflow = oldOverflow; // 껍데기 속성 복구
+                    
                     const a = document.createElement('a'); 
                     a.download = `ARCH_EXCERPT_${Date.now()}.png`; 
                     a.href = canvas.toDataURL(); 
                     a.click();
                 }).catch(err => {
                     cap.style.transform = oldT;
+                    wrapper.style.overflow = oldOverflow;
                     console.error("Capture Error: ", err);
                     alert("이미지 렌더링 중 오류가 발생했습니다.");
                 });
