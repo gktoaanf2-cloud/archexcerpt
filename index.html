@@ -205,6 +205,9 @@
         select:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(255,255,255,0.2); }
         input::placeholder { color: rgba(255,255,255,0.3); }
         
+        /* 모자이크용 작은 셀렉트 디자인 */
+        #mosaicSel { width: auto; padding: 0 6px; height: 26px; border-radius: 4px; font-size: 11px; flex-shrink: 0; }
+        
         input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 1px; outline: none; margin: 15px 0; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border: 1px solid #fff; background: #000; cursor: pointer; transition: 0.2s; }
         input[type="range"]::-webkit-slider-thumb:hover { background: #fff; }
@@ -327,11 +330,23 @@
                         </div>
                         
                         <div style="display:flex; align-items:center; gap:5px; margin-left: 5px;">
-                            <label style="margin:0; font-size:9px;">HL COLOR</label>
+                            <label style="margin:0; font-size:9px;">HL</label>
                             <input type="color" class="color-pick" id="hlColor" value="#ffeb3b">
                         </div>
-                        <button class="tool-btn" id="hiBtn" style="color:#ffeb3b; font-weight:bold;">HL ON</button>
-                        <button class="tool-btn" id="removeHiBtn">HL OFF</button>
+                        <button class="tool-btn" id="hiBtn" style="color:#ffeb3b; font-weight:bold;">ON</button>
+                        <button class="tool-btn" id="removeHiBtn">OFF</button>
+
+                        <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                        
+                        <select id="mosaicSel">
+                            <option value="█">█ (블록)</option>
+                            <option value="♥">♥ (하트)</option>
+                            <option value="★">★ (별)</option>
+                            <option value="X">X (엑스)</option>
+                            <option value="?">? (물음표)</option>
+                        </select>
+                        <button class="tool-btn" id="mosaicBtn" style="font-weight:bold; border-color: rgba(255,255,255,0.4);">모자이크 적용</button>
+
                     </div>
                 </div>
 
@@ -431,6 +446,7 @@
         
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
+        // [모바일 드래그 영역 방어]
         let savedRange = null;
         document.addEventListener('selectionchange', () => {
             const sel = window.getSelection();
@@ -463,9 +479,9 @@
         bindFmt('alignRightBtn', 'justifyRight');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
 
+        // 형광펜
         const hlColorInput = document.getElementById('hlColor');
         const hiBtn = document.getElementById('hiBtn');
-        
         const applyHighlight = (e) => {
             e.preventDefault();
             const hex = hlColorInput.value;
@@ -474,15 +490,36 @@
         };
         hiBtn.addEventListener('mousedown', applyHighlight);
         hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
-        
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
 
+        // [신규] 텍스트 모자이크 (심볼 치환) 기능
+        const applyMosaic = (e) => {
+            e.preventDefault();
+            editor.focus();
+            if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
+            
+            const sel = window.getSelection();
+            if (!sel.rangeCount || sel.isCollapsed) return; // 드래그한 영역이 없으면 무시
+            
+            const text = sel.toString();
+            const sym = document.getElementById('mosaicSel').value;
+            
+            // 공백과 줄바꿈은 유지하고 일반 문자만 선택한 심볼로 치환
+            const obfuscated = text.replace(/[^\s\n]/g, sym); 
+            
+            // 렌더링에 안전한 순수 텍스트 덮어쓰기 명령
+            document.execCommand('insertText', false, obfuscated);
+            saveSettings();
+        };
+        const mosaicBtn = document.getElementById('mosaicBtn');
+        mosaicBtn.addEventListener('mousedown', applyMosaic);
+        mosaicBtn.addEventListener('touchstart', applyMosaic, {passive: false});
+
+
         const colorPickers = ['c1', 'c2', 'c3', 'c4'];
         colorPickers.forEach(id => {
-            document.getElementById(id).addEventListener('input', (e) => {
-                cap.style.setProperty(`--${id}`, e.target.value);
-            });
+            document.getElementById(id).addEventListener('input', (e) => { cap.style.setProperty(`--${id}`, e.target.value); });
             document.getElementById(id).addEventListener('change', saveSettings);
         });
 
@@ -757,7 +794,7 @@
             }
         };
 
-        // [최종 렌더링 엔진 방어] 캡처 엔진 가상 해상도 주입
+        // [최종 렌더링 방어] 캡처 엔진 가상 해상도 주입 & 모바일 짤림 방어
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
@@ -777,10 +814,10 @@
                     useCORS: true, 
                     allowTaint: true,
                     backgroundColor: '#000', 
-                    width: w,          // 명시적 캔버스 넓이
-                    height: h,         // 명시적 캔버스 높이
-                    windowWidth: w,    // ⭐️ 캡처 엔진의 가상 브라우저 너비를 1080px로 강제 고정! (짤림 100% 방지)
-                    windowHeight: h,   // ⭐️ 캡처 엔진의 가상 브라우저 높이 강제 고정!
+                    width: w,          
+                    height: h,         
+                    windowWidth: w,    
+                    windowHeight: h,   
                     logging: false
                 }).then(canvas => {
                     cap.style.transform = oldT; 
