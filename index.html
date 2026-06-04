@@ -83,7 +83,7 @@
         /* [Standard] */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 방탄 렌더링] */
+        /* [Polaroid] */
         .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
         .theme-polaroid #card { 
             width: 75%; 
@@ -130,7 +130,7 @@
         .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
         .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
 
-        /* [SF 터미널 방탄 렌더링] */
+        /* [SF Terminal] */
         .theme-sf { background: #050505 !important; }
         .theme-sf #card { 
             width: 85%; 
@@ -205,7 +205,6 @@
         select:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(255,255,255,0.2); }
         input::placeholder { color: rgba(255,255,255,0.3); }
         
-        /* 모자이크용 작은 셀렉트 디자인 */
         #mosaicSel { width: auto; padding: 0 6px; height: 26px; border-radius: 4px; font-size: 11px; flex-shrink: 0; }
         
         input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 1px; outline: none; margin: 15px 0; }
@@ -241,6 +240,34 @@
         .r19-switch { width: 12px; height: 12px; border: 1px solid var(--dim); background: transparent; transition: 0.3s; }
         .r19-switch.active { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.8); }
         .r19-label { font-size: 0.7rem; color: var(--text); font-weight: 300; }
+
+        /* [신규] 사용설명서 모달 UI 스타일 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--panel); border: 1px solid var(--border);
+            width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
+            padding: 30px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            position: relative; color: var(--text);
+        }
+        .modal-content::before { content:''; position:absolute; top:-1px; left:-1px; width:15px; height:15px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+        .modal-content::after { content:''; position:absolute; bottom:-1px; right:-1px; width:15px; height:15px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+        .modal-close {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: none; color: var(--dim); font-size: 20px; cursor: pointer; transition: 0.2s;
+        }
+        .modal-close:hover { color: #fff; }
+        .modal-title { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: #fff;}
+        .modal-section { margin-bottom: 25px; }
+        .modal-section h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; letter-spacing: 1px;}
+        .modal-section p, .modal-section li { font-size: 0.85rem; line-height: 1.6; color: #ccc; margin-bottom: 5px; }
+        .modal-section ul { padding-left: 20px; margin: 0; }
+        .modal-footer-msg { font-size: 0.8rem; text-align: center; color: var(--dim); margin-top: 30px; font-style: italic; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;}
     </style>
 </head>
 <body>
@@ -346,6 +373,7 @@
                             <option value="?">? (물음표)</option>
                         </select>
                         <button class="tool-btn" id="mosaicBtn" style="font-weight:bold; border-color: rgba(255,255,255,0.4);">착한말 적용</button>
+                        <button class="tool-btn" id="undoBtn" style="color:#ff8888; margin-left:auto;"><i class="fa-solid fa-rotate-left"></i> 되돌리기</button>
 
                     </div>
                 </div>
@@ -429,6 +457,36 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="manualModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="modal-title">DATA MANUAL</h2>
+            
+            <div class="modal-section">
+                <h3>📱 모바일 앱(PWA) 설치 가이드</h3>
+                <ul>
+                    <li><strong>iOS (사파리):</strong> 하단의 [공유] 버튼 ➔ [홈 화면에 추가]</li>
+                    <li><strong>Android (크롬):</strong> 우측 상단의 [메점 3개] 메뉴 ➔ [홈 화면에 추가] 혹은 [앱 설치]</li>
+                </ul>
+            </div>
+            
+            <div class="modal-section">
+                <h3>✨ 핵심 기능 안내</h3>
+                <ul>
+                    <li><strong>공유 안테나:</strong> 앱을 설치한 뒤, 텍스트를 복사하고 공유하기(Share)를 통해 이 앱으로 보내면 텍스트가 자동으로 입력됩니다.</li>
+                    <li><strong>착한말 (모자이크):</strong> 드래그한 텍스트를 특수 기호(█, ♥ 등)로 치환합니다. [되돌리기] 버튼으로 언제든 복구 가능합니다.</li>
+                    <li><strong>커스텀 모드:</strong> 데이터 셋업에서 [CUSTOM ON]을 누르면 자신만의 자캐/앤오/세계관 이름으로 자유롭게 발췌를 만들 수 있습니다.</li>
+                    <li><strong>자동 저장:</strong> 작성 중인 글, 레이아웃, 컬러 설정은 껐다 켜도 기기에 자동으로 유지됩니다. (배경 이미지는 용량 문제로 제외)</li>
+                </ul>
+            </div>
+
+            <div class="modal-footer-msg">
+                모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사 > 공유하기를 눌러 발췌 앱으로 이동 가능합니다.<br><br>
+                이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2
+            </div>
+        </div>
+    </div>
+
     <script>
         const archList = { "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"], "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"], "VANGUARD - 2": ["신드롬", "바이브", "리암"], "AGENT": ["카토", "샤드", "블루"], "ACOLYTE": ["블루", "피카"], "CORE": ["Dr. 밴스", "퓨어"], "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"], "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"] };
         const cap = document.getElementById('capture-area'), wrapper = document.getElementById('preview-wrapper'), editor = document.getElementById('editor');
@@ -446,7 +504,6 @@
         
         let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
 
-        // [모바일 드래그 영역 방어]
         let savedRange = null;
         document.addEventListener('selectionchange', () => {
             const sel = window.getSelection();
@@ -455,6 +512,7 @@
             }
         });
 
+        // [버그 방어] 모바일 텍스트 영역 확장 방어 로직 추가
         function exec(cmd, val = null) {
             editor.focus();
             if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
@@ -462,6 +520,10 @@
             if(cmd === 'backColor' && val) document.execCommand('hiliteColor', false, val);
             document.execCommand(cmd, false, val);
             saveSettings(); 
+            
+            // 명령 실행 후 선택 영역 강제 초기화 (모바일에서 범위가 확장되는 렉 원천 차단)
+            window.getSelection().removeAllRanges();
+            savedRange = null;
         }
 
         const bindFmt = (id, cmd, val) => {
@@ -479,9 +541,9 @@
         bindFmt('alignRightBtn', 'justifyRight');
         bindFmt('removeHiBtn', 'backColor', 'transparent');
 
-        // 형광펜
         const hlColorInput = document.getElementById('hlColor');
         const hiBtn = document.getElementById('hiBtn');
+        
         const applyHighlight = (e) => {
             e.preventDefault();
             const hex = hlColorInput.value;
@@ -493,29 +555,41 @@
         hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
         document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
 
-        // [신규] 텍스트 모자이크 (심볼 치환) 기능
+        // [기능 추가] 텍스트 모자이크 (심볼 치환) 및 되돌리기 기능
         const applyMosaic = (e) => {
             e.preventDefault();
             editor.focus();
             if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
             
             const sel = window.getSelection();
-            if (!sel.rangeCount || sel.isCollapsed) return; // 드래그한 영역이 없으면 무시
+            if (!sel.rangeCount || sel.isCollapsed) return; 
             
             const text = sel.toString();
             const sym = document.getElementById('mosaicSel').value;
-            
-            // 공백과 줄바꿈은 유지하고 일반 문자만 선택한 심볼로 치환
             const obfuscated = text.replace(/[^\s\n]/g, sym); 
             
-            // 렌더링에 안전한 순수 텍스트 덮어쓰기 명령
             document.execCommand('insertText', false, obfuscated);
             saveSettings();
+            
+            // 모자이크 적용 후에도 영역 강제 초기화 (모바일 렉 방지)
+            window.getSelection().removeAllRanges();
+            savedRange = null;
         };
+        
         const mosaicBtn = document.getElementById('mosaicBtn');
         mosaicBtn.addEventListener('mousedown', applyMosaic);
         mosaicBtn.addEventListener('touchstart', applyMosaic, {passive: false});
 
+        // 되돌리기(Undo) 버튼 연결
+        const applyUndo = (e) => {
+            e.preventDefault();
+            editor.focus();
+            document.execCommand('undo', false, null); // 브라우저 자체 히스토리 롤백 활용 (안전함)
+            saveSettings();
+        };
+        const undoBtn = document.getElementById('undoBtn');
+        undoBtn.addEventListener('mousedown', applyUndo);
+        undoBtn.addEventListener('touchstart', applyUndo, {passive: false});
 
         const colorPickers = ['c1', 'c2', 'c3', 'c4'];
         colorPickers.forEach(id => {
@@ -724,7 +798,11 @@
         for(let c in archList) catSel.add(new Option(c, c));
         catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); renderDOM(); };
 
-        document.getElementById('manualBtn').onclick = () => alert("모바일에서 앱을 설치한 후 케이브덕에서 발췌하고 싶은 문장을 복사>공유하기를 눌러 발췌 앱으로 이동가능합니다. 이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2");
+        // [신규] 사용설명서 모달 열기/닫기 로직
+        const manualModal = document.getElementById('manualModal');
+        document.getElementById('manualBtn').onclick = () => { manualModal.classList.add('show'); };
+        document.getElementById('closeModalBtn').onclick = () => { manualModal.classList.remove('show'); };
+        window.onclick = (e) => { if (e.target == manualModal) manualModal.classList.remove('show'); };
         
         document.getElementById('resetBtn').onclick = () => { 
             if(confirm("모든 설정을 초기화하시겠습니까? (Reset Everything?)")) { 
@@ -794,7 +872,7 @@
             }
         };
 
-        // [최종 렌더링 방어] 캡처 엔진 가상 해상도 주입 & 모바일 짤림 방어
+        // 캡처 오류 100% 방지 엔진
         document.getElementById('saveBtn').onclick = () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
