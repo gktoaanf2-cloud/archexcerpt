@@ -83,92 +83,127 @@
         /* [Standard] */
         .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
         
-        /* [Polaroid 방탄 렌더링] */
-        .theme-polaroid { background: var(--c1, #e0e0e0) !important; }
-        .theme-polaroid #card { 
-            width: 75%; 
-            background: #fdfdfd !important; 
-            padding: 30px !important; 
-            border: 1px solid #e0e0e0 !important; 
-            box-shadow: 5px 15px 40px rgba(0,0,0,0.3) !important; 
-            position: relative; z-index: 2; border-radius: 3px;
+        /* ===================== POLAROID — 흩뿌린 필름 프린트 ===================== */
+        .theme-polaroid { background: var(--c1, #efeae2) !important;
+            background-image: radial-gradient(circle at 28% 22%, rgba(255,255,255,0.6), transparent 60%) !important; }
+        .theme-polaroid .bg-img { display: none !important; } /* 전체배경 끄고 사진은 폴라로이드 창 안으로 */
+
+        /* 뒤에 흩뿌린 장식 프레임 (이미지 0KB, 순수 CSS) */
+        .polaroid-item { position: absolute; z-index: 1; background: #fffdf9;
+            border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 44px rgba(45,35,22,0.20); }
+        .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%;
+            background: #e7e1d6; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), inset 0 2px 10px rgba(0,0,0,0.1); }
+        .pl-back-1 { width: 44%; height: 50%; top: 7%; left: 6%; transform: rotate(-8deg); }
+        .pl-back-2 { width: 38%; height: 44%; bottom: 7%; right: 6%; transform: rotate(7deg); }
+
+        .theme-polaroid #card {
+            width: 64%;
+            background: #fffdf9 !important;
+            padding: 20px 20px 0 20px !important;
+            border: 1px solid rgba(0,0,0,0.04) !important;
+            box-shadow: 0 32px 64px rgba(45,35,22,0.30), inset 0 1px 0 rgba(255,255,255,0.7) !important;
+            position: relative; z-index: 3; border-radius: 2px; transform: rotate(-1.5deg);
         }
         .polaroid-screen {
-            background: var(--c4, #dedede);
-            width: 100%; min-height: 400px;
-            display: flex; align-items: center; justify-content: center; 
-            color: #000 !important;
-            border: 1px solid rgba(0,0,0,0.1); 
-            box-sizing: border-box; position: relative;
+            background-color: var(--c4, #e7e1d6);
+            background-image: var(--photo, none);
+            background-size: cover; background-position: center;
+            width: 100%; aspect-ratio: 1 / 1; min-height: 360px;
+            display: flex; align-items: center; justify-content: center;
+            color: #000 !important; box-sizing: border-box; position: relative; overflow: visible;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.07), inset 0 3px 14px rgba(0,0,0,0.12);
         }
         .polaroid-spacer { display: none; }
-        .theme-polaroid .polaroid-spacer { display: block; width: 100%; min-height: 110px; flex-shrink: 0; background: transparent; }
+        .theme-polaroid .polaroid-spacer { display: block; width: 100%; height: 116px; flex-shrink: 0; background: transparent; }
 
-        /* [Y2K] */
-        .theme-y2k { background: var(--c3, #fdf0f5) !important; }
-        .theme-y2k #card { width: 85%; background: var(--c1, #dcbdf2) !important; border: 4px solid #000 !important; border-radius: 16px; padding: 0 !important; box-shadow: 12px 12px 0px #000 !important; position: relative; z-index: 2; overflow: hidden;}
-        .y2k-top-bar { background: var(--c2, #ffb3d9); border-bottom: 4px solid #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .y2k-brand { font-family: 'Arial Black', sans-serif; font-size: 20px; color: #000; letter-spacing: -1px; display:flex; align-items: center; gap: 10px;}
-        .y2k-brand::before { content: '✨'; font-size: 24px; }
-        .y2k-window-controls { display: flex; gap: 8px; }
-        .y2k-window-controls span { width: 18px; height: 18px; border: 3px solid #000; background: #fff; box-shadow: 2px 2px 0px #000; border-radius: 50%;}
-        .y2k-window-controls span:nth-child(1) { background: #ffea75; }
-        .y2k-window-controls span:nth-child(2) { background: #a2fca2; }
-        .y2k-window-controls span:nth-child(3) { background: #ff7e7e; }
-        .y2k-screen-wrap { padding: 30px; background: transparent; }
-        .y2k-screen { background: var(--c4, #ffffff); border: 4px solid #000; border-radius: 12px; padding: var(--pad, 50px); box-shadow: inset 5px 5px 0px rgba(0,0,0,0.05); min-height: 400px; display: flex; align-items: center; justify-content: center; color: #000 !important; box-sizing: border-box; width: 100%;}
-        .y2k-ui-elements { padding: 0 30px 40px 30px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
-        .y2k-bar { width: 50%; height: 12px; background: #fff; border: 3px solid #000; border-radius: 6px; box-shadow: 2px 2px 0px #000; position: relative; }
-        .y2k-bar::after { content:''; position: absolute; left:0; top:0; width:45%; height:100%; background: var(--c2, #ffb3d9); border-right: 3px solid #000; }
-        .y2k-btns { display: flex; gap: 15px; }
-        .y2k-btn { width: 55px; height: 50px; border: 3px solid #000; background: #fff; border-radius: 12px; box-shadow: 4px 4px 0px #000; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #000; font-weight: 900; }
+        /* ===================== Y2K — 1px 라인 뮤직 플레이어 ===================== */
+        .theme-y2k { background: var(--c3, #dfe7ee) !important;
+            background-image: linear-gradient(155deg, var(--c3, #dfe7ee), #ffffff 72%) !important; }
+        .theme-y2k #card {
+            width: 84%;
+            background: var(--c1, rgba(255,255,255,0.72)) !important;
+            border: 1px solid var(--c2, #2b2f36) !important; border-radius: 16px;
+            padding: 0 !important; overflow: hidden; position: relative; z-index: 2;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 26px 54px rgba(40,55,80,0.20) !important;
+        }
+        .y2k-top-bar { background: transparent; border-bottom: 1px solid var(--c2, #2b2f36);
+            padding: 13px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+        .y2k-brand { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 500;
+            color: var(--c2, #2b2f36); letter-spacing: 5px; text-transform: uppercase;
+            display:flex; align-items: center; gap: 9px; white-space: nowrap; }
+        .y2k-brand::before { content: '◖◗'; letter-spacing: -3px; font-size: 11px; opacity: 0.7; }
+        .y2k-eq { display: flex; align-items: flex-end; gap: 3px; height: 15px; opacity: 0.8; }
+        .y2k-eq i { display: block; width: 2px; background: var(--c2, #2b2f36); }
+        .y2k-eq i:nth-child(1){height:5px}.y2k-eq i:nth-child(2){height:12px}.y2k-eq i:nth-child(3){height:8px}
+        .y2k-eq i:nth-child(4){height:15px}.y2k-eq i:nth-child(5){height:7px}.y2k-eq i:nth-child(6){height:11px}
+        .y2k-eq i:nth-child(7){height:4px}
+        .y2k-window-controls { display: flex; gap: 9px; }
+        .y2k-window-controls span { width: 10px; height: 10px; border: 1px solid var(--c2, #2b2f36);
+            background: transparent; border-radius: 50%; box-shadow: none; }
+        .y2k-screen-wrap { padding: 26px; background: transparent; }
+        .y2k-screen { background: var(--c4, rgba(255,255,255,0.45));
+            border: 1px solid var(--c2, #2b2f36); border-radius: 10px;
+            padding: var(--pad, 50px); min-height: 340px; box-sizing: border-box; width: 100%;
+            display: flex; align-items: center; justify-content: center; color: #000 !important;
+            box-shadow: inset 0 0 0 4px rgba(255,255,255,0.30); position: relative; }
+        .y2k-ui-elements { padding: 2px 26px 26px 26px; display: flex; justify-content: space-between;
+            align-items: center; gap: 18px; width: 100%; box-sizing: border-box; }
+        .y2k-bar { flex: 1; height: 1px; background: var(--c2, #2b2f36); opacity: 0.45; position: relative; }
+        .y2k-bar::before { content:''; position:absolute; left:0; top:0; width:38%; height:1px; background: var(--c2, #2b2f36); opacity: 1; }
+        .y2k-bar::after { content:''; position:absolute; left:38%; top:50%; width:8px; height:8px;
+            transform: translate(-50%,-50%); border:1px solid var(--c2,#2b2f36); border-radius:50%; background: var(--c1,#fff); }
+        .y2k-btns { display: flex; align-items: center; gap: 4px; color: var(--c2, #2b2f36);
+            font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
 
-        /* [Diary] */
-        .theme-diary { background: var(--c1, #f4f1ea) !important; }
-        .theme-diary #card { width: 85%; background: #fff !important; padding: var(--pad, 80px) !important; box-shadow: 15px 15px 0px rgba(0,0,0,0.08) !important; position: relative; border-left: 60px solid #fff; border-radius: 5px; z-index: 2; color: #000 !important; }
-        .diary-holes { position: absolute; left: -45px; top: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 40px 0; z-index: 10; }
-        .hole { width: 25px; height: 25px; background: var(--c1, #f4f1ea); border-radius: 50%; box-shadow: inset 3px 3px 5px rgba(0,0,0,0.5); }
-        .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 220px; height: 55px; background: var(--c2, rgba(255, 200, 200, 0.7)); z-index: 11; }
+        /* ===================== DIARY — 괘선 저널 페이지 ===================== */
+        .theme-diary { background: var(--c1, #e9e0cd) !important;
+            background-image: radial-gradient(circle at 70% 18%, rgba(255,255,255,0.55), transparent 60%) !important; }
+        .theme-diary #card {
+            width: 80%;
+            background-color: #fbf6ea !important;
+            background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, rgba(55,85,120,0.15) 47px, rgba(55,85,120,0.15) 48px) !important;
+            background-position: 0 74px !important;
+            padding: 62px 54px 60px 86px !important;
+            box-shadow: 0 26px 54px rgba(80,60,30,0.24) !important;
+            position: relative; z-index: 2; border-radius: 2px; color: #2a2622 !important;
+        }
+        .theme-diary #card::before { content:''; position:absolute; top:0; left:62px; width:1px; height:100%;
+            background: rgba(195,70,70,0.45); z-index: 1; }
+        .diary-date { position: absolute; top: 24px; left: 86px; right: 54px; z-index: 3;
+            display: flex; justify-content: space-between; align-items: baseline;
+            font-family: 'Helvetica Neue', Arial, sans-serif; color: rgba(70,60,48,0.55);
+            font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+            border-bottom: 1px solid rgba(0,0,0,0.07); padding-bottom: 8px; }
+        .diary-ribbon { position: absolute; top: -8px; right: 13%; width: 26px; height: 124px;
+            background: var(--c2, #b03f3d); box-shadow: 0 8px 14px rgba(0,0,0,0.22); z-index: 4; }
+        .diary-ribbon::after { content:''; position:absolute; bottom:-13px; left:0;
+            border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
 
-        /* [SF 터미널 방탄 렌더링] */
-        .theme-sf { background: #050505 !important; }
-        .theme-sf #card { 
-            width: 85%; 
-            padding: calc(var(--pad, 60px) + 20px) var(--pad, 60px) !important; 
-            background: #0d1017 !important; 
-            border: 1px solid rgba(255, 255, 255, 0.15) !important; 
-            position: relative; 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important; 
-            z-index: 2; 
+        /* ===================== SF — 기하 + 곡선 HUD ===================== */
+        .theme-sf { background: #06080d !important;
+            background-image: radial-gradient(circle at 50% 36%, rgba(120,185,210,0.10), transparent 56%) !important; }
+        .theme-sf #card {
+            width: 82%;
+            padding: calc(var(--pad, 60px) + 22px) calc(var(--pad, 60px) + 6px) !important;
+            background: linear-gradient(158deg, #0c1119, #070a10) !important;
+            border: 1px solid rgba(150,200,222,0.16) !important; border-radius: 24px;
+            position: relative; z-index: 2;
+            box-shadow: inset 0 0 60px rgba(85,155,185,0.06), 0 32px 72px rgba(0,0,0,0.7) !important;
         }
-        
-        .sf-inner-frame {
-            position: absolute; top: 12px; left: 12px; 
-            width: calc(100% - 24px); height: calc(100% - 24px);
-            border: 1px solid rgba(255,255,255,0.06);
-            pointer-events: none; z-index: 1; box-sizing: border-box;
-        }
-        
-        .sf-line { position: absolute; background: var(--c2, #ffffff); z-index: 5; opacity: 0.6; }
-        .sf-h { height: 1px; width: 15px; } .sf-v { width: 1px; height: 15px; }
-        .sf-t { top: -1px; } .sf-b { top: calc(100% - 1px); } 
-        .sf-l { left: -1px; } .sf-r { left: calc(100% - 1px); }
-        
-        .sf-deco-text { 
-            position: absolute; 
-            color: var(--c2, #ffffff); 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 10px; 
-            letter-spacing: 4px; 
-            opacity: 0.5; 
-            z-index: 10; 
-            pointer-events: none; 
-            white-space: nowrap;
-        }
-        .sf-deco-text.top-left { top: -20px; left: 0px; font-weight: bold; opacity: 0.8;}
-        .sf-deco-text.top-right { top: -20px; left: calc(100% - 70px); }
-        .sf-deco-text.bottom-left { top: calc(100% + 8px); left: 0px; opacity: 0.3; }
-        .sf-deco-text.bottom-right { top: calc(100% + 8px); left: calc(100% - 100px); opacity: 0.3; }
+        /* 곡선 코너 브라켓 (라운드 보더, 순수 CSS) */
+        .sf-corner { position: absolute; width: 52px; height: 52px;
+            border: 1.2px solid var(--c2, #a9d8e3); opacity: 0.85; pointer-events: none; box-sizing: border-box; }
+        .sf-corner.tl { top: 16px; left: 16px; border-right: none; border-bottom: none; border-top-left-radius: 24px; }
+        .sf-corner.tr { top: 16px; right: 16px; border-left: none; border-bottom: none; border-top-right-radius: 24px; }
+        .sf-corner.bl { bottom: 16px; left: 16px; border-right: none; border-top: none; border-bottom-left-radius: 24px; }
+        .sf-corner.br { bottom: 16px; right: 16px; border-left: none; border-top: none; border-bottom-right-radius: 24px; }
+        .sf-tick { position: absolute; left: 50%; transform: translateX(-50%); width: 44px; height: 1px;
+            background: var(--c2, #a9d8e3); opacity: 0.4; pointer-events: none; }
+        .sf-tick.top { top: 20px; } .sf-tick.bottom { bottom: 20px; }
+        .sf-label { position: absolute; font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+            color: var(--c2, #a9d8e3); opacity: 0.5; z-index: 4; pointer-events: none; white-space: nowrap; }
+        .sf-label.lt { top: 28px; left: 80px; } .sf-label.rb { bottom: 28px; right: 80px; }
 
         /* 스티커 엔진 UI */
         .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
@@ -309,27 +344,28 @@
                         
                         <div id="r19-badge">19금<span>주딱ON</span></div>
 
+                        <div class="polaroid-item pl-back-1" style="display:none;"></div>
+                        <div class="polaroid-item pl-back-2" style="display:none;"></div>
+
                         <div id="card" class="card">
                             
-                            <div class="sf-item sf-inner-frame" style="display:none;"></div>
-                            <div class="sf-item sf-line sf-h sf-t sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-l" style="display:none;"></div>
-                            <div class="sf-item sf-line sf-h sf-t sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-t sf-r" style="display:none;"></div>
-                            <div class="sf-item sf-line sf-h sf-b sf-l" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-l" style="display:none;"></div>
-                            <div class="sf-item sf-line sf-h sf-b sf-r" style="display:none;"></div><div class="sf-item sf-line sf-v sf-b sf-r" style="display:none;"></div>
-                            
-                            <div class="sf-item sf-deco-text top-left" style="display:none;">SYS.DATA_LOG // 0x00A8F</div>
-                            <div class="sf-item sf-deco-text top-right" style="display:none;">[ CLR : 0 ]</div>
-                            <div class="sf-item sf-deco-text bottom-left" style="display:none;">WARNING_</div>
-                            <div class="sf-item sf-deco-text bottom-right" style="display:none;">CH. OVERRIDE</div>
+                            <div class="sf-item sf-corner tl" style="display:none;"></div>
+                            <div class="sf-item sf-corner tr" style="display:none;"></div>
+                            <div class="sf-item sf-corner bl" style="display:none;"></div>
+                            <div class="sf-item sf-corner br" style="display:none;"></div>
+                            <div class="sf-item sf-tick top" style="display:none;"></div>
+                            <div class="sf-item sf-tick bottom" style="display:none;"></div>
+                            <div class="sf-item sf-label lt" style="display:none;">SYS / ARCHIVE</div>
+                            <div class="sf-item sf-label rb" style="display:none;">CH.01 — REC</div>
 
-                            <div class="diary-item diary-holes" id="diaryHoles" style="display:none;">
-                                <div class="hole"></div><div class="hole"></div><div class="hole"></div>
-                                <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+                            <div class="diary-item diary-date" style="display:none;">
+                                <span>JOURNAL</span><span id="diary-date-val"></span>
                             </div>
-                            <div class="diary-item tape" id="diaryTape" style="display:none;"></div>
+                            <div class="diary-item diary-ribbon" style="display:none;"></div>
 
                             <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
-                                <span class="y2k-brand">Retro Player</span>
+                                <span class="y2k-brand">Now Playing</span>
+                                <div class="y2k-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
                                 <div class="y2k-window-controls"><span></span><span></span><span></span></div>
                             </div>
 
@@ -338,8 +374,9 @@
                             </div>
 
                             <div class="y2k-item y2k-ui-elements" id="y2k-ui" style="display:none;">
+                                <div class="y2k-btns">&#9474;&#9665;</div>
                                 <div class="y2k-bar"></div>
-                                <div class="y2k-btns">⏮ ● ⏭</div>
+                                <div class="y2k-btns">&#9655;&nbsp;&nbsp;&#9655;&#9474;</div>
                             </div>
                             
                             <div class="polaroid-spacer"></div>
@@ -607,6 +644,23 @@
             document.getElementById(id).addEventListener('change', saveSettings);
         });
 
+        // 테마별 기본 팔레트 (테마 전환 시 그 테마에 맞는 색으로 리셋)
+        const themePalettes = {
+            standard: { c1:'#0a0a0a', c2:'#ffffff', c3:'#fdf0f5', c4:'#ffffff' },
+            polaroid: { c1:'#efeae2', c2:'#b03f3d', c3:'#fdf0f5', c4:'#e7e1d6' },
+            y2k:      { c1:'#ffffff', c2:'#2b3138', c3:'#dfe7ee', c4:'#f4f8fb' },
+            diary:    { c1:'#e9e0cd', c2:'#b03f3d', c3:'#fdf0f5', c4:'#ffffff' },
+            sf:       { c1:'#06080d', c2:'#a9d8e3', c3:'#fdf0f5', c4:'#ffffff' }
+        };
+        function applyThemePalette(t) {
+            const p = themePalettes[t]; if(!p) return;
+            ['c1','c2','c3','c4'].forEach(k => {
+                const el = document.getElementById(k);
+                el.value = p[k];
+                cap.style.setProperty('--' + k, p[k]);
+            });
+        }
+
         customToggleBtn.onclick = () => {
             isCustomMode = !isCustomMode;
             customToggleBtn.innerText = isCustomMode ? "CUSTOM ON" : "CUSTOM OFF";
@@ -702,16 +756,20 @@
         function renderDOM() {
             const t = themeSel.value; cap.className = 'theme-' + t;
             
-            document.querySelectorAll('.y2k-item, .diary-item, .sf-item').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.y2k-item, .diary-item, .sf-item, .polaroid-item').forEach(el => el.style.display = 'none');
             document.getElementById('c3-box').style.display = 'none'; document.getElementById('c4-box').style.display = 'none';
 
             if(t === 'y2k') { 
                 document.querySelectorAll('.y2k-item').forEach(el => el.style.display = 'flex'); 
                 document.getElementById('c3-box').style.display = 'flex'; document.getElementById('c4-box').style.display = 'flex'; 
             }
-            if(t === 'diary') document.querySelectorAll('.diary-item').forEach(el => el.style.display = 'flex');
+            if(t === 'diary') {
+                document.querySelectorAll('.diary-item').forEach(el => el.style.display = 'flex');
+                const dv = document.getElementById('diary-date-val');
+                if(dv){ const d = new Date(); dv.textContent = d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0'); }
+            }
             if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
-            if(t === 'polaroid') { document.getElementById('c4-box').style.display = 'flex'; }
+            if(t === 'polaroid') { document.querySelectorAll('.polaroid-item').forEach(el => el.style.display = 'block'); document.getElementById('c4-box').style.display = 'flex'; }
 
             cap.style.setProperty('--c1', document.getElementById('c1').value); 
             cap.style.setProperty('--c2', document.getElementById('c2').value);
@@ -752,16 +810,27 @@
             saveSettings();
         }
 
-        function updateBackground() {
-            if(!rawBgImageSrc) { bgImg.style.display = 'none'; return; }
+        function applyBgUrl(url) {
+            if(!url) {
+                bgImg.style.display = 'none';
+                bgImg.style.backgroundImage = 'none';
+                cap.style.setProperty('--photo', 'none');
+                return;
+            }
             bgImg.style.display = 'block';
-            if(blurSlide.value == 0) { bgImg.style.backgroundImage = `url(${rawBgImageSrc})`; return; }
+            bgImg.style.backgroundImage = `url(${url})`;
+            cap.style.setProperty('--photo', `url(${url})`); // 폴라로이드 창 등에서 사용
+        }
+
+        function updateBackground() {
+            if(!rawBgImageSrc) { applyBgUrl(null); return; }
+            if(blurSlide.value == 0) { applyBgUrl(rawBgImageSrc); saveSettings(); return; }
 
             const img = new Image(); img.crossOrigin = "Anonymous";
             img.onload = () => {
                 const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const ctx = c.getContext('2d');
                 ctx.filter = `blur(${blurSlide.value * (img.width/1080)}px)`; ctx.drawImage(img, 0, 0);
-                bgImg.style.backgroundImage = `url(${c.toDataURL()})`;
+                applyBgUrl(c.toDataURL());
             };
             img.src = rawBgImageSrc;
             saveSettings();
@@ -775,7 +844,7 @@
             r.readAsDataURL(file);
             setTimeout(() => { e.target.value = ''; }, 100);
         });
-        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; bgImg.style.backgroundImage = "none"; saveSettings(); };
+        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; applyBgUrl(null); saveSettings(); };
         document.getElementById('blurSlide').addEventListener('change', updateBackground);
 
         const r19Btn = document.getElementById('r19Btn');
@@ -830,6 +899,7 @@
         document.querySelectorAll('input:not([type="color"]), select').forEach(el => { 
             el.addEventListener('input', (e) => {
                 if (el.id === 'ratioSel' || el.id === 'themeSel') updateLayout(); 
+                if (el.id === 'themeSel') applyThemePalette(themeSel.value);
                 renderDOM(); 
             });
         });
@@ -880,6 +950,7 @@
                 presetMode.style.display = isCustomMode ? 'none' : 'grid';
                 customMode.style.display = isCustomMode ? 'flex' : 'none';
             } else {
+                applyThemePalette(themeSel.value);
                 catSel.dispatchEvent(new Event('change'));
             }
         }
