@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARCH EXCERPT STUDIO</title>
     <link rel="manifest" href="manifest.json">
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -67,14 +67,14 @@
         .drawing-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
         #drawing-canvas { width: 100%; height: 100%; pointer-events: none; touch-action: none; display: block; }
         
-        .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
+        .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; white-space: normal; max-width: 60%; }
         .info-title { font-size: 22px; font-weight: 800; color: var(--text-color, #fff); letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
-        .info-watermark { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.6); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .info-watermark { font-size: 13px; font-weight: 300; color: var(--wm-color, rgba(255,255,255,0.6)); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
         #r19-badge span { font-size: 11px; }
 
-        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: keep-all; word-wrap: break-word; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); }
+        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: keep-all; word-wrap: break-word; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); user-select: text; -webkit-user-select: text; }
         .rich-text i, .rich-text em { font-style: italic !important; }
         .rich-text b, .rich-text strong { font-weight: bold !important; }
 
@@ -516,7 +516,7 @@
         const customMode = document.getElementById('custom-mode');
         const customCat = document.getElementById('customCat'), customChar = document.getElementById('customChar'), customCreator = document.getElementById('customCreator');
         
-        let drawMode = false, isDrawing = false, curZ = 50, rawBgImageSrc = null;
+        let drawMode = false, isDrawing = false, curZ = 100, rawBgImageSrc = null;
 
         let savedRange = null;
         document.addEventListener('selectionchange', () => {
@@ -734,8 +734,15 @@
             displayWatermark.style.fontFamily = fontSel.value;
             editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
             
-            if(t === 'y2k' || t === 'diary' || t === 'polaroid') cap.style.setProperty('--editor-color', '#000000'); 
-            else cap.style.setProperty('--editor-color', '#ffffff');
+            if(t === 'y2k' || t === 'diary' || t === 'polaroid') {
+                cap.style.setProperty('--editor-color', '#000000');
+                cap.style.setProperty('--text-color', '#1a1a1a');
+                cap.style.setProperty('--wm-color', 'rgba(0,0,0,0.55)');
+            } else {
+                cap.style.setProperty('--editor-color', '#ffffff');
+                cap.style.setProperty('--text-color', '#ffffff');
+                cap.style.setProperty('--wm-color', 'rgba(255,255,255,0.6)');
+            }
             
             const txtBody = document.getElementById('text-body') || document.getElementById('y2k-screen-wrap');
             if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
@@ -847,7 +854,14 @@
         }
 
         function loadSettings() { 
-            const s = JSON.parse(localStorage.getItem('arch_final_v_touch_v8')); 
+            let s = null;
+            try {
+                s = JSON.parse(localStorage.getItem('arch_final_v_touch_v8'));
+            } catch(err) {
+                console.warn('저장된 설정이 손상되어 초기화합니다.', err);
+                localStorage.removeItem('arch_final_v_touch_v8');
+                s = null;
+            }
             if(s) { 
                 catSel.value = s.cat; 
                 if(archList[s.cat]) { charSel.innerHTML = ""; archList[s.cat].forEach(n => charSel.add(new Option(n, n))); }
@@ -882,18 +896,46 @@
         };
 
         // 캡처 엔진 가상 해상도 및 모바일 짤림 방어
-        document.getElementById('saveBtn').onclick = () => {
+        document.getElementById('saveBtn').onclick = async () => {
             document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
             
             const w = 1080;
             const h = ratioSel.value === '1:1' ? 1080 : 1920;
+
+            // 웹폰트가 캡처보다 늦게 로딩되어 PNG 폰트가 깨지는 문제 방지
+            try { await document.fonts.ready; } catch(e) {}
             
             window.scrollTo(0, 0); 
-            const oldT = cap.style.transform; 
-            const oldOverflow = wrapper.style.overflow; 
-            
+
+            // 원래 스타일 백업 (캡처 후 복구용)
+            const prev = {
+                transform: cap.style.transform,
+                position: cap.style.position,
+                top: cap.style.top,
+                left: cap.style.left,
+                zIndex: cap.style.zIndex,
+                overflow: wrapper.style.overflow,
+                bodyOverflow: document.body.style.overflow
+            };
+
+            // 캡처 대상을 화면 좌상단에 1:1 실측 배치 (모바일에서 화면 밖으로 나가 잘리는 현상 방지)
             cap.style.transform = 'none'; 
+            cap.style.position = 'fixed';
+            cap.style.top = '0';
+            cap.style.left = '0';
+            cap.style.zIndex = '99999';
             wrapper.style.overflow = 'visible'; 
+            document.body.style.overflow = 'hidden';
+
+            const restore = () => {
+                cap.style.transform = prev.transform;
+                cap.style.position = prev.position;
+                cap.style.top = prev.top;
+                cap.style.left = prev.left;
+                cap.style.zIndex = prev.zIndex;
+                wrapper.style.overflow = prev.overflow;
+                document.body.style.overflow = prev.bodyOverflow;
+            };
             
             setTimeout(() => {
                 html2canvas(cap, { 
@@ -905,18 +947,18 @@
                     height: h,         
                     windowWidth: w,    
                     windowHeight: h,   
+                    scrollX: 0,
+                    scrollY: 0,
                     logging: false
                 }).then(canvas => {
-                    cap.style.transform = oldT; 
-                    wrapper.style.overflow = oldOverflow; 
+                    restore();
                     
                     const a = document.createElement('a'); 
                     a.download = `ARCH_EXCERPT_${Date.now()}.png`; 
                     a.href = canvas.toDataURL(); 
                     a.click();
                 }).catch(err => {
-                    cap.style.transform = oldT;
-                    wrapper.style.overflow = oldOverflow;
+                    restore();
                     console.error("Capture Error: ", err);
                     alert("이미지 렌더링 중 오류가 발생했습니다.");
                 });
