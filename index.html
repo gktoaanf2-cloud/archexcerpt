@@ -89,16 +89,16 @@
         .theme-polaroid .bg-img { display: none !important; } /* 전체배경 끄고 사진은 폴라로이드 창 안으로 */
 
         /* 뒤에 흩뿌린 장식 프레임 (이미지 0KB, 순수 CSS) */
-        .polaroid-item { position: absolute; z-index: 1; background: #fffdf9;
+        .polaroid-item { position: absolute; z-index: 1; background: var(--c2, #fffdf9);
             border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 44px rgba(45,35,22,0.20); }
         .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%;
-            background: #e7e1d6; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), inset 0 2px 10px rgba(0,0,0,0.1); }
+            background: var(--c4, #e7e1d6); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), inset 0 2px 10px rgba(0,0,0,0.1); }
         .pl-back-1 { width: 44%; height: 50%; top: 7%; left: 6%; transform: rotate(-8deg); }
         .pl-back-2 { width: 38%; height: 44%; bottom: 7%; right: 6%; transform: rotate(7deg); }
 
         .theme-polaroid #card {
             width: 64%;
-            background: #fffdf9 !important;
+            background: var(--c2, #fffdf9) !important;
             padding: 20px 20px 0 20px !important;
             border: 1px solid rgba(0,0,0,0.04) !important;
             box-shadow: 0 32px 64px rgba(45,35,22,0.30), inset 0 1px 0 rgba(255,255,255,0.7) !important;
@@ -180,12 +180,13 @@
             border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
 
         /* ===================== SF — 기하 + 곡선 HUD ===================== */
-        .theme-sf { background: #06080d !important;
+        .theme-sf { background-color: var(--c1, #06080d) !important;
             background-image: radial-gradient(circle at 50% 36%, rgba(120,185,210,0.10), transparent 56%) !important; }
         .theme-sf #card {
             width: 82%;
             padding: calc(var(--pad, 60px) + 22px) calc(var(--pad, 60px) + 6px) !important;
-            background: linear-gradient(158deg, #0c1119, #070a10) !important;
+            background-color: var(--c3, #0c1119) !important;
+            background-image: linear-gradient(158deg, rgba(255,255,255,0.05), rgba(0,0,0,0.22)) !important;
             border: 1px solid rgba(150,200,222,0.16) !important; border-radius: 24px;
             position: relative; z-index: 2;
             box-shadow: inset 0 0 60px rgba(85,155,185,0.06), 0 32px 72px rgba(0,0,0,0.7) !important;
@@ -647,10 +648,10 @@
         // 테마별 기본 팔레트 (테마 전환 시 그 테마에 맞는 색으로 리셋)
         const themePalettes = {
             standard: { c1:'#0a0a0a', c2:'#ffffff', c3:'#fdf0f5', c4:'#ffffff' },
-            polaroid: { c1:'#efeae2', c2:'#b03f3d', c3:'#fdf0f5', c4:'#e7e1d6' },
+            polaroid: { c1:'#efeae2', c2:'#fffdf9', c3:'#fdf0f5', c4:'#e7e1d6' },
             y2k:      { c1:'#ffffff', c2:'#2b3138', c3:'#dfe7ee', c4:'#f4f8fb' },
             diary:    { c1:'#e9e0cd', c2:'#b03f3d', c3:'#fdf0f5', c4:'#ffffff' },
-            sf:       { c1:'#06080d', c2:'#a9d8e3', c3:'#fdf0f5', c4:'#ffffff' }
+            sf:       { c1:'#06080d', c2:'#a9d8e3', c3:'#0c1119', c4:'#ffffff' }
         };
         function applyThemePalette(t) {
             const p = themePalettes[t]; if(!p) return;
@@ -768,7 +769,10 @@
                 const dv = document.getElementById('diary-date-val');
                 if(dv){ const d = new Date(); dv.textContent = d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0'); }
             }
-            if(t === 'sf') document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
+            if(t === 'sf') {
+                document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
+                document.getElementById('c3-box').style.display = 'flex';
+            }
             if(t === 'polaroid') { document.querySelectorAll('.polaroid-item').forEach(el => el.style.display = 'block'); document.getElementById('c4-box').style.display = 'flex'; }
 
             cap.style.setProperty('--c1', document.getElementById('c1').value); 
