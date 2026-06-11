@@ -7,1038 +7,427 @@
     <link rel="manifest" href="manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-        @font-face { font-family: 'JoseonGulim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
-        @font-face { font-family: 'KoPubDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'MaruBuri'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'ChosunIlbo'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'LeeSeoyun'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff'); font-weight: normal; font-style: normal; }
-        @font-face { font-family: 'Kkubulrim'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/TTogether.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Nanum+Myeongjo:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Gothic+A1:wght@300;400;500;700&family=IBM+Plex+Sans+KR:wght@300;400;500;700&display=swap');
+        @font-face { font-family:'JoseonGulim'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight:normal; font-display:swap; }
+        @font-face { font-family:'MaruBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
 
-        :root { 
-            --bg: #090a0c; 
-            --panel: rgba(15, 16, 20, 0.45); 
-            --border: rgba(255, 255, 255, 0.15); 
-            --border-glow: rgba(255, 255, 255, 0.4);
-            --accent: #ffffff; 
-            --text: #e0e0e0; 
-            --dim: #7a7a85; 
-            --holo: rgba(0, 255, 255, 0.15);
-        }
+        :root { --bg:#090a0c; --panel:rgba(15,16,20,0.45); --border:rgba(255,255,255,0.15); --border-glow:rgba(255,255,255,0.4); --accent:#ffffff; --text:#e0e0e0; --dim:#7a7a85; }
 
-        body { 
-            background: var(--bg); 
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
-                linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-            color: var(--text); 
-            font-family: "Pretendard Variable", sans-serif; 
-            margin: 0; padding: 20px; 
-            display: flex; flex-direction: column; align-items: center; overflow-x: hidden; user-select: none;
-        }
+        body { background:var(--bg); background-image:radial-gradient(circle at 50% 0%,rgba(255,255,255,0.03) 0%,transparent 50%),linear-gradient(0deg,rgba(0,0,0,0.5) 0%,transparent 100%); color:var(--text); font-family:"Pretendard Variable",sans-serif; margin:0; padding:20px; display:flex; flex-direction:column; align-items:center; overflow-x:hidden; user-select:none; }
 
-        .header-area { text-align: center; margin-bottom: 30px; position: relative; }
-        .header-area::after { content: ''; display: block; width: 40px; height: 1px; background: var(--accent); margin: 15px auto 0; box-shadow: 0 0 8px var(--accent); }
-        h1 { font-size: 1.5rem; font-weight: 300; letter-spacing: 6px; margin: 0; text-transform: uppercase; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .sub-warning { font-size: 0.7rem; color: var(--dim); margin-top: 8px; font-weight: normal; letter-spacing: 2px; }
+        .header-area { text-align:center; margin-bottom:30px; position:relative; }
+        .header-area::after { content:''; display:block; width:40px; height:1px; background:var(--accent); margin:15px auto 0; box-shadow:0 0 8px var(--accent); }
+        h1 { font-size:1.5rem; font-weight:300; letter-spacing:6px; margin:0; text-transform:uppercase; color:#fff; text-shadow:0 0 10px rgba(255,255,255,0.3); }
+        .sub-warning { font-size:0.7rem; color:var(--dim); margin-top:8px; letter-spacing:2px; }
 
-        .container { width: 100%; max-width: 1300px; }
-        .editor-layout { display: flex; flex-direction: column; gap: 20px; }
+        .container { width:100%; max-width:1300px; }
+        .editor-layout { display:flex; flex-direction:column; gap:20px; }
+        @media(min-width:1000px) { .editor-layout { flex-direction:row; align-items:flex-start; gap:40px; } .preview-section { flex:1; position:sticky; top:20px; } .panel-section { width:420px; flex-shrink:0; display:flex; flex-direction:column; gap:15px; } body { padding:40px; } }
 
-        @media (min-width: 1000px) {
-            .editor-layout { flex-direction: row; align-items: flex-start; gap: 40px; }
-            .preview-section { flex: 1; position: sticky; top: 20px; }
-            .panel-section { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; }
-            body { padding: 40px; }
-        }
+        .preview-wrapper { width:100%; background:#000; border:1px solid var(--border-glow); box-shadow:0 0 30px rgba(0,0,0,0.8); overflow:hidden; position:relative; }
+        #capture-area { position:absolute; top:0; left:0; transform-origin:top left; width:1080px; height:1080px; background:var(--c1,#000); display:flex; align-items:center; justify-content:center; box-sizing:border-box; overflow:hidden; }
+        .bg-img { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:1; pointer-events:none; }
+        .drawing-layer { position:absolute; top:0; left:0; width:100%; height:100%; z-index:15; pointer-events:none; }
+        #drawing-canvas { width:100%; height:100%; pointer-events:none; touch-action:none; display:block; }
 
-        .preview-wrapper { 
-            width: 100%; background: #000; 
-            border: 1px solid var(--border-glow); 
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); 
-            overflow: hidden; position: relative; 
-        }
-        
-        #capture-area { position: absolute; top: 0; left: 0; transform-origin: top left; width: 1080px; height: 1080px; background: var(--c1, #000); display: flex; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
-        
-        .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; pointer-events: none; }
-        .drawing-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
-        #drawing-canvas { width: 100%; height: 100%; pointer-events: none; touch-action: none; display: block; }
-        
-        .info-group { position: absolute; bottom: 35px; left: 45px; z-index: 100; pointer-events: none; display: flex; flex-direction: column; gap: 2px; white-space: normal; max-width: 60%; }
-        .info-title { font-size: 22px; font-weight: 800; color: var(--text-color, #fff); letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
-        .info-watermark { font-size: 13px; font-weight: 300; color: var(--wm-color, rgba(255,255,255,0.6)); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        /* ── 하단 정보 그룹 (수정: 더 안쪽, 얇은 볼드, 옅은 그림자) ── */
+        .info-group { position:absolute; bottom:42px; left:55px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:2px; white-space:normal; max-width:55%; }
+        .info-title { font-size:20px; font-weight:700; color:var(--text-color,#fff); letter-spacing:1px; text-shadow:0 1px 4px rgba(0,0,0,0.5); }
+        .info-watermark { font-size:12px; font-weight:400; color:var(--wm-color,rgba(255,255,255,0.5)); letter-spacing:3px; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.4); }
 
-        #r19-badge { display: none; position: absolute; top: 35px; right: 35px; z-index: 999; background: #e50914; color: #fff; font-weight: 900; font-size: 22px; text-align: center; border-radius: 50%; width: 80px; height: 80px; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: rotate(15deg); flex-direction: column; justify-content: center; line-height: 1.1; pointer-events: none; }
-        #r19-badge span { font-size: 11px; }
+        #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
+        #r19-badge span { font-size:11px; }
 
-        .rich-text { width: 100%; outline: none; white-space: pre-wrap; word-break: keep-all; word-wrap: break-word; line-height: 1.6; position: relative; z-index: 5; color: var(--editor-color, #ffffff); user-select: text; -webkit-user-select: text; }
-        .rich-text i, .rich-text em { font-style: italic !important; }
-        .rich-text b, .rich-text strong { font-weight: bold !important; }
+        .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; }
+        .rich-text i,.rich-text em { font-style:italic!important; }
+        .rich-text b,.rich-text strong { font-weight:bold!important; }
+        #card { box-sizing:border-box; transition:none; display:flex; flex-direction:column; }
 
-        #card { box-sizing: border-box; transition: none; display: flex; flex-direction: column; }
-        
-        /* [Standard] */
-        .theme-standard #card { background: transparent !important; border: none !important; box-shadow: none !important; width: 85%; position: relative; z-index: 2; padding: var(--pad, 80px); }
-        
-        /* ===================== POLAROID — 흩뿌린 필름 프린트 ===================== */
-        .theme-polaroid { background: var(--c1, #efeae2) !important;
-            background-image: radial-gradient(circle at 28% 22%, rgba(255,255,255,0.6), transparent 60%) !important; }
-        .theme-polaroid .bg-img { display: none !important; } /* 전체배경 끄고 사진은 폴라로이드 창 안으로 */
+        /* ═══ STANDARD ═══ */
+        .theme-standard #card { background:transparent!important; border:none!important; box-shadow:none!important; width:85%; position:relative; z-index:2; padding:var(--pad,80px); }
 
-        /* 뒤에 흩뿌린 장식 프레임 (이미지 0KB, 순수 CSS) */
-        .polaroid-item { position: absolute; z-index: 1; background: var(--c2, #fffdf9);
-            border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 44px rgba(45,35,22,0.20); }
-        .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%;
-            background: var(--c4, #e7e1d6); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), inset 0 2px 10px rgba(0,0,0,0.1); }
-        .pl-back-1 { width: 44%; height: 50%; top: 7%; left: 6%; transform: rotate(-8deg); }
-        .pl-back-2 { width: 38%; height: 44%; bottom: 7%; right: 6%; transform: rotate(7deg); }
+        /* ═══ POLAROID ═══ */
+        .theme-polaroid { background:var(--c1,#efeae2)!important; background-image:radial-gradient(circle at 28% 22%,rgba(255,255,255,0.6),transparent 60%)!important; }
+        .theme-polaroid .bg-img { display:none!important; }
+        .polaroid-item { position:absolute; z-index:1; background:var(--c2,#fffdf9); border:1px solid rgba(0,0,0,0.05); box-shadow:0 20px 44px rgba(45,35,22,0.20); }
+        .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%; background:var(--c4,#e7e1d6); box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05),inset 0 2px 10px rgba(0,0,0,0.1); }
+        .pl-back-1 { width:44%; height:50%; top:7%; left:6%; transform:rotate(-8deg); }
+        .pl-back-2 { width:38%; height:44%; bottom:7%; right:6%; transform:rotate(7deg); }
+        .theme-polaroid #card { width:64%; background:var(--c2,#fffdf9)!important; padding:20px 20px 0 20px!important; border:1px solid rgba(0,0,0,0.04)!important; box-shadow:0 32px 64px rgba(45,35,22,0.30),inset 0 1px 0 rgba(255,255,255,0.7)!important; position:relative; z-index:3; border-radius:2px; transform:rotate(-1.5deg); }
+        .polaroid-screen { background-color:var(--c4,#e7e1d6); background-image:var(--photo,none); background-size:cover; background-position:center; width:100%; aspect-ratio:1/1; min-height:360px; display:flex; align-items:center; justify-content:center; color:#000!important; box-sizing:border-box; position:relative; overflow:visible; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.07),inset 0 3px 14px rgba(0,0,0,0.12); }
+        .polaroid-spacer { display:none; }
+        .theme-polaroid .polaroid-spacer { display:block; width:100%; height:116px; flex-shrink:0; }
 
-        .theme-polaroid #card {
-            width: 64%;
-            background: var(--c2, #fffdf9) !important;
-            padding: 20px 20px 0 20px !important;
-            border: 1px solid rgba(0,0,0,0.04) !important;
-            box-shadow: 0 32px 64px rgba(45,35,22,0.30), inset 0 1px 0 rgba(255,255,255,0.7) !important;
-            position: relative; z-index: 3; border-radius: 2px; transform: rotate(-1.5deg);
-        }
-        .polaroid-screen {
-            background-color: var(--c4, #e7e1d6);
-            background-image: var(--photo, none);
-            background-size: cover; background-position: center;
-            width: 100%; aspect-ratio: 1 / 1; min-height: 360px;
-            display: flex; align-items: center; justify-content: center;
-            color: #000 !important; box-sizing: border-box; position: relative; overflow: visible;
-            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.07), inset 0 3px 14px rgba(0,0,0,0.12);
-        }
-        .polaroid-spacer { display: none; }
-        .theme-polaroid .polaroid-spacer { display: block; width: 100%; height: 116px; flex-shrink: 0; background: transparent; }
+        /* ═══ Y2K (수정: 내부 박스 제거, 카드 자체가 콘텐츠 영역) ═══ */
+        .theme-y2k { background:var(--c3,#dfe7ee)!important; background-image:linear-gradient(155deg,var(--c3,#dfe7ee),#ffffff 72%)!important; }
+        .theme-y2k #card { width:84%; background:var(--c1,rgba(255,255,255,0.72))!important; border:1px solid var(--c2,#2b2f36)!important; border-radius:14px; padding:0!important; overflow:hidden; position:relative; z-index:2; box-shadow:0 26px 54px rgba(40,55,80,0.20)!important; }
+        .y2k-top-bar { background:transparent; border-bottom:1px solid var(--c2,#2b2f36); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:14px; }
+        .y2k-brand { font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:500; color:var(--c2,#2b2f36); letter-spacing:5px; text-transform:uppercase; display:flex; align-items:center; gap:9px; white-space:nowrap; }
+        .y2k-brand::before { content:'◖◗'; letter-spacing:-3px; font-size:11px; opacity:0.7; }
+        .y2k-eq { display:flex; align-items:flex-end; gap:3px; height:15px; opacity:0.8; }
+        .y2k-eq i { display:block; width:2px; background:var(--c2,#2b2f36); }
+        .y2k-eq i:nth-child(1){height:5px}.y2k-eq i:nth-child(2){height:12px}.y2k-eq i:nth-child(3){height:8px}.y2k-eq i:nth-child(4){height:15px}.y2k-eq i:nth-child(5){height:7px}.y2k-eq i:nth-child(6){height:11px}.y2k-eq i:nth-child(7){height:4px}
+        .y2k-window-controls { display:flex; gap:9px; }
+        .y2k-window-controls span { width:10px; height:10px; border:1px solid var(--c2,#2b2f36); background:transparent; border-radius:50%; }
+        /* Y2K: 내부 스크린 박스 제거 → 카드 직접 패딩 */
+        .y2k-screen-wrap { padding:var(--pad,50px); min-height:340px; display:flex; align-items:center; justify-content:center; color:#000!important; }
+        .y2k-ui-elements { padding:2px 20px 18px 20px; display:flex; justify-content:space-between; align-items:center; gap:18px; width:100%; box-sizing:border-box; border-top:1px solid rgba(0,0,0,0.06); }
+        .y2k-bar { flex:1; height:1px; background:var(--c2,#2b2f36); opacity:0.45; position:relative; }
+        .y2k-bar::before { content:''; position:absolute; left:0; top:0; width:38%; height:1px; background:var(--c2,#2b2f36); opacity:1; }
+        .y2k-bar::after { content:''; position:absolute; left:38%; top:50%; width:8px; height:8px; transform:translate(-50%,-50%); border:1px solid var(--c2,#2b2f36); border-radius:50%; background:var(--c1,#fff); }
+        .y2k-btns { display:flex; align-items:center; gap:4px; color:var(--c2,#2b2f36); font-size:14px; letter-spacing:1px; white-space:nowrap; }
 
-        /* ===================== Y2K — 1px 라인 뮤직 플레이어 ===================== */
-        .theme-y2k { background: var(--c3, #dfe7ee) !important;
-            background-image: linear-gradient(155deg, var(--c3, #dfe7ee), #ffffff 72%) !important; }
-        .theme-y2k #card {
-            width: 84%;
-            background: var(--c1, rgba(255,255,255,0.72)) !important;
-            border: 1px solid var(--c2, #2b2f36) !important; border-radius: 16px;
-            padding: 0 !important; overflow: hidden; position: relative; z-index: 2;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 26px 54px rgba(40,55,80,0.20) !important;
-        }
-        .y2k-top-bar { background: transparent; border-bottom: 1px solid var(--c2, #2b2f36);
-            padding: 13px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
-        .y2k-brand { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; font-weight: 500;
-            color: var(--c2, #2b2f36); letter-spacing: 5px; text-transform: uppercase;
-            display:flex; align-items: center; gap: 9px; white-space: nowrap; }
-        .y2k-brand::before { content: '◖◗'; letter-spacing: -3px; font-size: 11px; opacity: 0.7; }
-        .y2k-eq { display: flex; align-items: flex-end; gap: 3px; height: 15px; opacity: 0.8; }
-        .y2k-eq i { display: block; width: 2px; background: var(--c2, #2b2f36); }
-        .y2k-eq i:nth-child(1){height:5px}.y2k-eq i:nth-child(2){height:12px}.y2k-eq i:nth-child(3){height:8px}
-        .y2k-eq i:nth-child(4){height:15px}.y2k-eq i:nth-child(5){height:7px}.y2k-eq i:nth-child(6){height:11px}
-        .y2k-eq i:nth-child(7){height:4px}
-        .y2k-window-controls { display: flex; gap: 9px; }
-        .y2k-window-controls span { width: 10px; height: 10px; border: 1px solid var(--c2, #2b2f36);
-            background: transparent; border-radius: 50%; box-shadow: none; }
-        .y2k-screen-wrap { padding: 26px; background: transparent; }
-        .y2k-screen { background: var(--c4, rgba(255,255,255,0.45));
-            border: 1px solid var(--c2, #2b2f36); border-radius: 10px;
-            padding: var(--pad, 50px); min-height: 340px; box-sizing: border-box; width: 100%;
-            display: flex; align-items: center; justify-content: center; color: #000 !important;
-            box-shadow: inset 0 0 0 4px rgba(255,255,255,0.30); position: relative; }
-        .y2k-ui-elements { padding: 2px 26px 26px 26px; display: flex; justify-content: space-between;
-            align-items: center; gap: 18px; width: 100%; box-sizing: border-box; }
-        .y2k-bar { flex: 1; height: 1px; background: var(--c2, #2b2f36); opacity: 0.45; position: relative; }
-        .y2k-bar::before { content:''; position:absolute; left:0; top:0; width:38%; height:1px; background: var(--c2, #2b2f36); opacity: 1; }
-        .y2k-bar::after { content:''; position:absolute; left:38%; top:50%; width:8px; height:8px;
-            transform: translate(-50%,-50%); border:1px solid var(--c2,#2b2f36); border-radius:50%; background: var(--c1,#fff); }
-        .y2k-btns { display: flex; align-items: center; gap: 4px; color: var(--c2, #2b2f36);
-            font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
+        /* ═══ DIARY ═══ */
+        .theme-diary { background:var(--c1,#e9e0cd)!important; background-image:radial-gradient(circle at 70% 18%,rgba(255,255,255,0.55),transparent 60%)!important; }
+        .theme-diary #card { width:80%; background-color:#fbf6ea!important; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,rgba(55,85,120,0.15) 47px,rgba(55,85,120,0.15) 48px)!important; background-position:0 74px!important; padding:62px 54px 60px 86px!important; box-shadow:0 26px 54px rgba(80,60,30,0.24)!important; position:relative; z-index:2; border-radius:2px; color:#2a2622!important; }
+        .theme-diary #card::before { content:''; position:absolute; top:0; left:62px; width:1px; height:100%; background:rgba(195,70,70,0.45); z-index:1; }
+        .diary-date { position:absolute; top:24px; left:86px; right:54px; z-index:3; display:flex; justify-content:space-between; align-items:baseline; font-family:'Helvetica Neue',Arial,sans-serif; color:rgba(70,60,48,0.55); font-size:12px; letter-spacing:4px; text-transform:uppercase; border-bottom:1px solid rgba(0,0,0,0.07); padding-bottom:8px; }
+        .diary-ribbon { position:absolute; top:-8px; right:13%; width:26px; height:124px; background:var(--c2,#b03f3d); box-shadow:0 8px 14px rgba(0,0,0,0.22); z-index:4; }
+        .diary-ribbon::after { content:''; position:absolute; bottom:-13px; left:0; border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
 
-        /* ===================== DIARY — 괘선 저널 페이지 ===================== */
-        .theme-diary { background: var(--c1, #e9e0cd) !important;
-            background-image: radial-gradient(circle at 70% 18%, rgba(255,255,255,0.55), transparent 60%) !important; }
-        .theme-diary #card {
-            width: 80%;
-            background-color: #fbf6ea !important;
-            background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, rgba(55,85,120,0.15) 47px, rgba(55,85,120,0.15) 48px) !important;
-            background-position: 0 74px !important;
-            padding: 62px 54px 60px 86px !important;
-            box-shadow: 0 26px 54px rgba(80,60,30,0.24) !important;
-            position: relative; z-index: 2; border-radius: 2px; color: #2a2622 !important;
-        }
-        .theme-diary #card::before { content:''; position:absolute; top:0; left:62px; width:1px; height:100%;
-            background: rgba(195,70,70,0.45); z-index: 1; }
-        .diary-date { position: absolute; top: 24px; left: 86px; right: 54px; z-index: 3;
-            display: flex; justify-content: space-between; align-items: baseline;
-            font-family: 'Helvetica Neue', Arial, sans-serif; color: rgba(70,60,48,0.55);
-            font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
-            border-bottom: 1px solid rgba(0,0,0,0.07); padding-bottom: 8px; }
-        .diary-ribbon { position: absolute; top: -8px; right: 13%; width: 26px; height: 124px;
-            background: var(--c2, #b03f3d); box-shadow: 0 8px 14px rgba(0,0,0,0.22); z-index: 4; }
-        .diary-ribbon::after { content:''; position:absolute; bottom:-13px; left:0;
-            border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
+        /* ═══ SF (수정: 내부 구분 제거, 카드=터미널 박스) ═══ */
+        .theme-sf { background-color:var(--c1,#06080d)!important; background-image:radial-gradient(circle at 50% 36%,rgba(120,185,210,0.10),transparent 56%)!important; }
+        .theme-sf #card { width:82%; padding:var(--pad,60px)!important; background-color:var(--c3,#0c1119)!important; background-image:linear-gradient(158deg,rgba(255,255,255,0.04),rgba(0,0,0,0.18))!important; border:1px solid rgba(150,200,222,0.18)!important; border-radius:2px; position:relative; z-index:2; box-shadow:inset 0 0 50px rgba(85,155,185,0.04),0 32px 72px rgba(0,0,0,0.7)!important; }
+        .sf-corner { position:absolute; width:28px; height:28px; border:1px solid var(--c2,#a9d8e3); opacity:0.6; pointer-events:none; box-sizing:border-box; }
+        .sf-corner.tl { top:10px; left:10px; border-right:none; border-bottom:none; }
+        .sf-corner.tr { top:10px; right:10px; border-left:none; border-bottom:none; }
+        .sf-corner.bl { bottom:10px; left:10px; border-right:none; border-top:none; }
+        .sf-corner.br { bottom:10px; right:10px; border-left:none; border-top:none; }
+        .sf-tick { position:absolute; left:50%; transform:translateX(-50%); width:30px; height:1px; background:var(--c2,#a9d8e3); opacity:0.3; pointer-events:none; }
+        .sf-tick.top { top:14px; } .sf-tick.bottom { bottom:14px; }
+        .sf-label { position:absolute; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--c2,#a9d8e3); opacity:0.4; z-index:4; pointer-events:none; white-space:nowrap; }
+        .sf-label.lt { top:18px; left:48px; } .sf-label.rb { bottom:18px; right:48px; }
 
-        /* ===================== SF — 기하 + 곡선 HUD ===================== */
-        .theme-sf { background-color: var(--c1, #06080d) !important;
-            background-image: radial-gradient(circle at 50% 36%, rgba(120,185,210,0.10), transparent 56%) !important; }
-        .theme-sf #card {
-            width: 82%;
-            padding: calc(var(--pad, 60px) + 22px) calc(var(--pad, 60px) + 6px) !important;
-            background-color: var(--c3, #0c1119) !important;
-            background-image: linear-gradient(158deg, rgba(255,255,255,0.05), rgba(0,0,0,0.22)) !important;
-            border: 1px solid rgba(150,200,222,0.16) !important; border-radius: 24px;
-            position: relative; z-index: 2;
-            box-shadow: inset 0 0 60px rgba(85,155,185,0.06), 0 32px 72px rgba(0,0,0,0.7) !important;
-        }
-        /* 곡선 코너 브라켓 (라운드 보더, 순수 CSS) */
-        .sf-corner { position: absolute; width: 52px; height: 52px;
-            border: 1.2px solid var(--c2, #a9d8e3); opacity: 0.85; pointer-events: none; box-sizing: border-box; }
-        .sf-corner.tl { top: 16px; left: 16px; border-right: none; border-bottom: none; border-top-left-radius: 24px; }
-        .sf-corner.tr { top: 16px; right: 16px; border-left: none; border-bottom: none; border-top-right-radius: 24px; }
-        .sf-corner.bl { bottom: 16px; left: 16px; border-right: none; border-top: none; border-bottom-left-radius: 24px; }
-        .sf-corner.br { bottom: 16px; right: 16px; border-left: none; border-top: none; border-bottom-right-radius: 24px; }
-        .sf-tick { position: absolute; left: 50%; transform: translateX(-50%); width: 44px; height: 1px;
-            background: var(--c2, #a9d8e3); opacity: 0.4; pointer-events: none; }
-        .sf-tick.top { top: 20px; } .sf-tick.bottom { bottom: 20px; }
-        .sf-label { position: absolute; font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
-            color: var(--c2, #a9d8e3); opacity: 0.5; z-index: 4; pointer-events: none; white-space: nowrap; }
-        .sf-label.lt { top: 28px; left: 80px; } .sf-label.rb { bottom: 28px; right: 80px; }
+        /* 스티커 */
+        .sticker { position:absolute; z-index:20; padding:15px; cursor:move; touch-action:none; }
+        .sticker img { display:block; max-width:250px; height:auto; pointer-events:none; user-select:none; }
+        .sticker-active { border:1px solid rgba(255,255,255,0.5)!important; background:rgba(255,255,255,0.05); }
+        .sticker-ctrl { position:absolute; width:26px; height:26px; background:#000; border:1px solid #fff; border-radius:50%; display:none; z-index:1000; text-align:center; line-height:24px; color:#fff; cursor:pointer; font-size:12px; touch-action:none; }
+        .sticker-active .sticker-ctrl { display:block!important; }
+        .sticker-del { top:-13px; right:-13px; background:#ff4d4d; }
+        .sticker-resize { bottom:-13px; right:-13px; background:#fff; color:#000; cursor:se-resize; }
+        .sticker-up { top:-13px; left:-13px; background:#333; }
+        .sticker-down { bottom:-13px; left:-13px; background:#333; }
 
-        /* 스티커 엔진 UI */
-        .sticker { position: absolute; z-index: 20; padding: 15px; cursor: move; touch-action: none;}
-        .sticker img { display: block; max-width: 250px; height: auto; pointer-events: none; user-select: none; }
-        .sticker-active { border: 1px solid rgba(255,255,255,0.5) !important; background: rgba(255,255,255,0.05); }
-        .sticker-ctrl { position: absolute; width: 26px; height: 26px; background: #000; border: 1px solid #fff; border-radius: 50%; display: none; z-index: 1000; text-align: center; line-height: 24px; color: #fff; cursor: pointer; font-size: 12px; touch-action: none;}
-        .sticker-active .sticker-ctrl { display: block !important; }
-        .sticker-del { top: -13px; right: -13px; background: #ff4d4d; }
-        .sticker-resize { bottom: -13px; right: -13px; background: #fff; color: #000; cursor: se-resize; }
-        .sticker-up { top: -13px; left: -13px; background: #333; }
-        .sticker-down { bottom: -13px; left: -13px; background: #333; }
+        /* 패널 UI */
+        .panel { background:var(--panel); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid var(--border); box-shadow:inset 0 0 10px rgba(255,255,255,0.02); padding:20px; display:flex; flex-direction:column; gap:15px; position:relative; }
+        .panel::before { content:''; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top:1px solid #fff; border-left:1px solid #fff; }
+        .panel::after { content:''; position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom:1px solid #fff; border-right:1px solid #fff; }
 
-        /* 제어 패널 UI */
-        .panel { 
-            background: var(--panel); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border); 
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.02);
-            padding: 20px; display: flex; flex-direction: column; gap: 15px; 
-            position: relative;
-        }
-        .panel::before { content:''; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top: 1px solid #fff; border-left: 1px solid #fff; }
-        .panel::after { content:''; position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom: 1px solid #fff; border-right: 1px solid #fff; }
+        label { font-size:0.65rem; color:var(--text); font-weight:300; letter-spacing:2px; text-transform:uppercase; margin-bottom:2px; display:block; opacity:0.8; }
+        select,input[type="text"],textarea { width:100%; padding:10px; background:rgba(0,0,0,0.4); border:1px solid var(--border); color:#fff; box-sizing:border-box; font-size:0.85rem; outline:none; transition:0.3s; }
+        select:focus,input[type="text"]:focus { border-color:var(--accent); box-shadow:0 0 5px rgba(255,255,255,0.2); }
+        input::placeholder { color:rgba(255,255,255,0.3); }
+        #mosaicSel { width:auto; padding:0 6px; height:26px; border-radius:4px; font-size:11px; flex-shrink:0; }
+        input[type="range"] { -webkit-appearance:none; width:100%; background:rgba(255,255,255,0.1); height:1px; outline:none; margin:15px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border:1px solid #fff; background:#000; cursor:pointer; transition:0.2s; }
+        input[type="range"]::-webkit-slider-thumb:hover { background:#fff; }
 
-        label { font-size: 0.65rem; color: var(--text); font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; display: block; opacity: 0.8;}
-        
-        select, input[type="text"], textarea { 
-            width: 100%; padding: 10px; 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid var(--border); 
-            color: #fff; 
-            box-sizing: border-box; font-size: 0.85rem; outline: none; transition: 0.3s;
-        }
-        select:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(255,255,255,0.2); }
-        input::placeholder { color: rgba(255,255,255,0.3); }
-        
-        #mosaicSel { width: auto; padding: 0 6px; height: 26px; border-radius: 4px; font-size: 11px; flex-shrink: 0; }
-        
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 1px; outline: none; margin: 15px 0; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border: 1px solid #fff; background: #000; cursor: pointer; transition: 0.2s; }
-        input[type="range"]::-webkit-slider-thumb:hover { background: #fff; }
+        .toolbar { display:flex; gap:6px; background:rgba(0,0,0,0.3); padding:8px; align-items:center; border:1px solid var(--border); flex-wrap:wrap; }
+        .tool-btn { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.1); padding:6px 12px; cursor:pointer; font-size:12px; transition:0.2s; display:flex; align-items:center; justify-content:center; }
+        .tool-btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.5); }
+        .tool-btn.active { background:var(--accent); color:#000; }
+        .color-pick { width:28px; height:28px; border:1px solid rgba(255,255,255,0.3); padding:0; background:transparent; cursor:pointer; overflow:hidden; border-radius:4px; }
+        .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+        .btn-main { background:transparent; color:#fff; padding:16px; border:1px solid var(--accent); font-size:0.9rem; font-weight:300; letter-spacing:3px; cursor:pointer; width:100%; transition:0.3s; position:relative; overflow:hidden; }
+        .btn-main::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:rgba(255,255,255,0.1); transition:0.3s; }
+        .btn-main:hover::before { left:0; } .btn-main:hover { box-shadow:0 0 15px rgba(255,255,255,0.3); }
+        .btn-dim { background:rgba(0,0,0,0.5); color:var(--dim); border:1px solid var(--border); padding:10px; cursor:pointer; font-size:11px; width:100%; letter-spacing:1px; transition:0.2s; }
+        .btn-dim:hover { border-color:#fff; color:#fff; }
+        details { background:rgba(0,0,0,0.3); border:1px solid var(--border); }
+        summary { padding:15px; font-weight:300; letter-spacing:2px; cursor:pointer; color:var(--accent); display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; }
+        .details-in { padding:0 20px 20px 20px; display:flex; flex-direction:column; gap:15px; }
+        .compact-row { display:flex; gap:15px; align-items:flex-end; }
+        .compact-row > div { flex:1; }
+        .color-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .color-item { display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.4); padding:6px 10px; border:1px solid var(--border); font-size:10px; font-family:monospace; }
+        .r19-switch-wrap { display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+        .r19-switch { width:12px; height:12px; border:1px solid var(--dim); background:transparent; transition:0.3s; }
+        .r19-switch.active { background:#e50914; border-color:#e50914; box-shadow:0 0 10px rgba(229,9,20,0.8); }
+        .r19-label { font-size:0.7rem; color:var(--text); font-weight:300; }
 
-        .toolbar { display: flex; gap: 6px; background: rgba(0,0,0,0.3); padding: 8px; align-items: center; border: 1px solid var(--border); flex-wrap: wrap; }
-        .tool-btn { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; cursor: pointer; font-size: 12px; transition: 0.2s; display:flex; align-items:center; justify-content:center;}
-        .tool-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
-        .tool-btn.active { background: var(--accent); color: #000; }
-        .color-pick { width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.3); padding: 0; background: transparent; cursor: pointer; overflow: hidden; border-radius: 4px; }
+        /* ── 프리셋 UI ── */
+        .preset-list { display:flex; flex-wrap:wrap; gap:6px; }
+        .preset-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#ccc; padding:6px 12px; font-size:0.7rem; cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:6px; letter-spacing:1px; max-width:180px; overflow:hidden; }
+        .preset-btn:hover { border-color:#fff; color:#fff; background:rgba(255,255,255,0.1); }
+        .preset-btn .p-del { color:#666; font-size:10px; margin-left:auto; }
+        .preset-btn .p-del:hover { color:#f55; }
+        .preset-save-row { display:flex; gap:8px; }
+        .preset-save-row input { flex:1; padding:7px 10px; font-size:0.78rem; }
+        .preset-save-row button { white-space:nowrap; }
 
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .btn-main { background: transparent; color: #fff; padding: 16px; border: 1px solid var(--accent); font-size: 0.9rem; font-weight: 300; letter-spacing: 3px; cursor: pointer; width: 100%; transition: 0.3s; position: relative; overflow: hidden; }
-        .btn-main::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); transition: 0.3s; }
-        .btn-main:hover::before { left: 0; }
-        .btn-main:hover { box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-
-        .btn-dim { background: rgba(0,0,0,0.5); color: var(--dim); border: 1px solid var(--border); padding: 10px; cursor: pointer; font-size: 11px; width: 100%; letter-spacing: 1px; transition: 0.2s;}
-        .btn-dim:hover { border-color: #fff; color: #fff; }
-        
-        details { background: rgba(0,0,0,0.3); border: 1px solid var(--border); }
-        summary { padding: 15px; font-weight: 300; letter-spacing: 2px; cursor: pointer; color: var(--accent); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .details-in { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .compact-row { display: flex; gap: 15px; align-items: flex-end; }
-        .compact-row > div { flex: 1; }
-        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .color-item { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.4); padding: 6px 10px; border: 1px solid var(--border); font-size: 10px; font-family: monospace;}
-        
-        .r19-switch-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-        .r19-switch { width: 12px; height: 12px; border: 1px solid var(--dim); background: transparent; transition: 0.3s; }
-        .r19-switch.active { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229,9,20,0.8); }
-        .r19-label { font-size: 0.7rem; color: var(--text); font-weight: 300; }
-
-        /* [수정 완벽 방어] 사용설명서 모달 UI 스타일 */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
-        
-        .modal-content {
-            background: rgba(15, 16, 20, 0.95); border: 1px solid var(--border);
-            width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
-            padding: 30px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            position: relative; color: var(--text);
-            box-sizing: border-box; /* 모달 터짐 100% 방지 */
-        }
-        
-        /* 세련된 SF 느낌의 커스텀 스크롤바 */
-        .modal-content::-webkit-scrollbar { width: 6px; }
-        .modal-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 4px; }
-        .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        .modal-content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-
-        .modal-content::before { content:''; position:absolute; top:-1px; left:-1px; width:15px; height:15px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); pointer-events: none;}
-        .modal-content::after { content:''; position:absolute; bottom:-1px; right:-1px; width:15px; height:15px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); pointer-events: none;}
-        
-        .modal-close {
-            position: absolute; top: 20px; right: 20px;
-            background: transparent; border: none; color: var(--dim); font-size: 24px; cursor: pointer; transition: 0.2s;
-            padding: 0; line-height: 1; z-index: 10;
-        }
-        .modal-close:hover { color: #fff; }
-        
-        .modal-title { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: #fff;}
-        .modal-section { margin-bottom: 25px; word-break: keep-all; word-wrap: break-word; line-height: 1.6;}
-        .modal-section h3 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; letter-spacing: 1px;}
-        .modal-section p, .modal-section li { font-size: 0.85rem; color: #ccc; margin-bottom: 8px; }
-        .modal-section ul { padding-left: 20px; margin: 0; }
-        .modal-footer-msg { font-size: 0.8rem; text-align: center; color: var(--dim); margin-top: 30px; font-style: italic; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; word-break: keep-all; line-height: 1.5;}
+        /* 모달 */
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; visibility:hidden; transition:opacity .3s,visibility .3s; }
+        .modal-overlay.show { opacity:1; visibility:visible; }
+        .modal-content { background:rgba(15,16,20,0.95); border:1px solid var(--border); width:90%; max-width:500px; max-height:80vh; overflow-y:auto; padding:30px; border-radius:12px; box-shadow:0 20px 50px rgba(0,0,0,0.9); position:relative; color:var(--text); box-sizing:border-box; }
+        .modal-content::-webkit-scrollbar { width:6px; } .modal-content::-webkit-scrollbar-track { background:rgba(0,0,0,0.3); border-radius:4px; } .modal-content::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:4px; }
+        .modal-content::before { content:''; position:absolute; top:-1px; left:-1px; width:15px; height:15px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); pointer-events:none; }
+        .modal-content::after { content:''; position:absolute; bottom:-1px; right:-1px; width:15px; height:15px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); pointer-events:none; }
+        .modal-close { position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--dim); font-size:24px; cursor:pointer; transition:0.2s; padding:0; line-height:1; z-index:10; }
+        .modal-close:hover { color:#fff; }
+        .modal-title { font-size:1.2rem; font-weight:800; letter-spacing:2px; margin-top:0; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:10px; color:#fff; }
+        .modal-section { margin-bottom:25px; word-break:keep-all; line-height:1.6; }
+        .modal-section h3 { font-size:0.9rem; color:var(--accent); margin-bottom:10px; letter-spacing:1px; }
+        .modal-section p,.modal-section li { font-size:0.85rem; color:#ccc; margin-bottom:8px; }
+        .modal-section ul { padding-left:20px; margin:0; }
+        .modal-footer-msg { font-size:0.8rem; text-align:center; color:var(--dim); margin-top:30px; font-style:italic; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; word-break:keep-all; line-height:1.5; }
     </style>
 </head>
 <body>
-
-    <div class="header-area">
-        <h1>ARCH EXCERPT STUDIO</h1>
-        <div class="sub-warning">SYSTEM ONLINE. UNAUTHORIZED ACCESS PROHIBITED.</div>
-    </div>
-
-    <div class="container">
-        <div class="editor-layout">
-            
-            <div class="preview-section">
-                <div class="preview-wrapper" id="preview-wrapper">
-                    <div id="capture-area" class="theme-standard">
-                        
-                        <div id="info-group" class="info-group">
-                            <div id="display-title" class="info-title"></div>
-                            <div id="display-watermark" class="info-watermark"></div>
-                        </div>
-
-                        <div id="bgImg" class="bg-img"></div>
-                        
-                        <div class="drawing-layer">
-                            <canvas id="drawing-canvas" width="1080" height="1080"></canvas>
-                        </div>
-                        
-                        <div id="r19-badge">19금<span>주딱ON</span></div>
-
-                        <div class="polaroid-item pl-back-1" style="display:none;"></div>
-                        <div class="polaroid-item pl-back-2" style="display:none;"></div>
-
-                        <div id="card" class="card">
-                            
-                            <div class="sf-item sf-corner tl" style="display:none;"></div>
-                            <div class="sf-item sf-corner tr" style="display:none;"></div>
-                            <div class="sf-item sf-corner bl" style="display:none;"></div>
-                            <div class="sf-item sf-corner br" style="display:none;"></div>
-                            <div class="sf-item sf-tick top" style="display:none;"></div>
-                            <div class="sf-item sf-tick bottom" style="display:none;"></div>
-                            <div class="sf-item sf-label lt" style="display:none;">SYS / ARCHIVE</div>
-                            <div class="sf-item sf-label rb" style="display:none;">CH.01 — REC</div>
-
-                            <div class="diary-item diary-date" style="display:none;">
-                                <span>JOURNAL</span><span id="diary-date-val"></span>
-                            </div>
-                            <div class="diary-item diary-ribbon" style="display:none;"></div>
-
-                            <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
-                                <span class="y2k-brand">Now Playing</span>
-                                <div class="y2k-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                                <div class="y2k-window-controls"><span></span><span></span><span></span></div>
-                            </div>
-
-                            <div id="y2k-screen-wrap">
-                                <div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div>
-                            </div>
-
-                            <div class="y2k-item y2k-ui-elements" id="y2k-ui" style="display:none;">
-                                <div class="y2k-btns">&#9474;&#9665;</div>
-                                <div class="y2k-bar"></div>
-                                <div class="y2k-btns">&#9655;&nbsp;&nbsp;&#9655;&#9474;</div>
-                            </div>
-                            
-                            <div class="polaroid-spacer"></div>
-                        </div>
+    <div class="header-area"><h1>ARCH EXCERPT STUDIO</h1><div class="sub-warning">SYSTEM ONLINE. UNAUTHORIZED ACCESS PROHIBITED.</div></div>
+    <div class="container"><div class="editor-layout">
+        <div class="preview-section"><div class="preview-wrapper" id="preview-wrapper">
+            <div id="capture-area" class="theme-standard">
+                <div id="info-group" class="info-group"><div id="display-title" class="info-title"></div><div id="display-watermark" class="info-watermark"></div></div>
+                <div id="bgImg" class="bg-img"></div>
+                <div class="drawing-layer"><canvas id="drawing-canvas" width="1080" height="1080"></canvas></div>
+                <div id="r19-badge">19금<span>주딱ON</span></div>
+                <div class="polaroid-item pl-back-1" style="display:none;"></div>
+                <div class="polaroid-item pl-back-2" style="display:none;"></div>
+                <div id="card" class="card">
+                    <div class="sf-item sf-corner tl" style="display:none;"></div><div class="sf-item sf-corner tr" style="display:none;"></div>
+                    <div class="sf-item sf-corner bl" style="display:none;"></div><div class="sf-item sf-corner br" style="display:none;"></div>
+                    <div class="sf-item sf-tick top" style="display:none;"></div><div class="sf-item sf-tick bottom" style="display:none;"></div>
+                    <div class="sf-item sf-label lt" style="display:none;">SYS / ARCHIVE</div>
+                    <div class="sf-item sf-label rb" style="display:none;">CH.01 — REC</div>
+                    <div class="diary-item diary-date" style="display:none;"><span>JOURNAL</span><span id="diary-date-val"></span></div>
+                    <div class="diary-item diary-ribbon" style="display:none;"></div>
+                    <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
+                        <span class="y2k-brand">Now Playing</span>
+                        <div class="y2k-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                        <div class="y2k-window-controls"><span></span><span></span><span></span></div>
                     </div>
+                    <div id="y2k-screen-wrap"><div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div></div>
+                    <div class="y2k-item y2k-ui-elements" id="y2k-ui" style="display:none;">
+                        <div class="y2k-btns">&#9474;&#9665;</div><div class="y2k-bar"></div><div class="y2k-btns">&#9655;&nbsp;&nbsp;&#9655;&#9474;</div>
+                    </div>
+                    <div class="polaroid-spacer"></div>
+                </div>
+            </div>
+        </div></div>
+
+        <div class="panel-section">
+            <button class="btn-dim" id="manualBtn" style="color:#fff; border-color:rgba(255,255,255,0.4);">📑 DATA MANUAL</button>
+
+            <!-- ── PRESET PANEL ── -->
+            <div class="panel">
+                <label>프리셋 (Preset)</label>
+                <div class="preset-save-row">
+                    <input type="text" id="presetNameInput" placeholder="프리셋 이름 입력">
+                    <button class="tool-btn" id="presetSaveBtn" style="white-space:nowrap;">저장</button>
+                </div>
+                <div class="preset-list" id="presetList"></div>
+            </div>
+
+            <div class="panel">
+                <label>텍스트 포맷 (Format)</label>
+                <div class="toolbar">
+                    <button class="tool-btn" id="bBtn" style="font-weight:bold;">B</button>
+                    <button class="tool-btn" id="iBtn" style="font-style:italic;">I</button>
+                    <button class="tool-btn" id="uBtn" style="text-decoration:underline;">U</button>
+                    <button class="tool-btn" id="alignLeftBtn"><i class="fa-solid fa-align-left"></i></button>
+                    <button class="tool-btn" id="alignCenterBtn"><i class="fa-solid fa-align-center"></i></button>
+                    <button class="tool-btn" id="alignRightBtn"><i class="fa-solid fa-align-right"></i></button>
+                    <div style="width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 4px;"></div>
+                    <div style="display:flex; align-items:center; gap:5px;"><label style="margin:0; font-size:9px;">TEXT</label><input type="color" class="color-pick" id="fColor" value="#ffffff"></div>
+                    <div style="display:flex; align-items:center; gap:5px; margin-left:5px;"><label style="margin:0; font-size:9px;">HL</label><input type="color" class="color-pick" id="hlColor" value="#ffeb3b"></div>
+                    <button class="tool-btn" id="hiBtn" style="color:#ffeb3b; font-weight:bold;">ON</button>
+                    <button class="tool-btn" id="removeHiBtn">OFF</button>
+                    <div style="width:100%; height:1px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
+                    <select id="mosaicSel"><option value="█">█ (블록)</option><option value="♥">♥ (하트)</option><option value="★">★ (별)</option><option value="X">X (엑스)</option><option value="?">? (물음표)</option></select>
+                    <button class="tool-btn" id="mosaicBtn" style="font-weight:bold; border-color:rgba(255,255,255,0.4);">착한말 적용</button>
+                    <button class="tool-btn" id="undoBtn" style="color:#ff8888; margin-left:auto;"><i class="fa-solid fa-rotate-left"></i> 되돌리기</button>
                 </div>
             </div>
 
-            <div class="panel-section">
-                <button class="btn-dim" id="manualBtn" style="color:#fff; border-color: rgba(255,255,255,0.4);">📑 DATA MANUAL (사용설명서)</button>
-
-                <div class="panel">
-                    <label>텍스트 포맷 (Format)</label>
-                    <div class="toolbar">
-                        <button class="tool-btn" id="bBtn" style="font-weight:bold;">B</button>
-                        <button class="tool-btn" id="iBtn" style="font-style:italic;">I</button>
-                        <button class="tool-btn" id="uBtn" style="text-decoration:underline;">U</button>
-                        <button class="tool-btn" id="alignLeftBtn"><i class="fa-solid fa-align-left"></i></button>
-                        <button class="tool-btn" id="alignCenterBtn"><i class="fa-solid fa-align-center"></i></button>
-                        <button class="tool-btn" id="alignRightBtn"><i class="fa-solid fa-align-right"></i></button>
-                        
-                        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 4px;"></div>
-                        
-                        <div style="display:flex; align-items:center; gap:5px;">
-                            <label style="margin:0; font-size:9px;">TEXT</label>
-                            <input type="color" class="color-pick" id="fColor" value="#ffffff">
-                        </div>
-                        
-                        <div style="display:flex; align-items:center; gap:5px; margin-left: 5px;">
-                            <label style="margin:0; font-size:9px;">HL</label>
-                            <input type="color" class="color-pick" id="hlColor" value="#ffeb3b">
-                        </div>
-                        <button class="tool-btn" id="hiBtn" style="color:#ffeb3b; font-weight:bold;">ON</button>
-                        <button class="tool-btn" id="removeHiBtn">OFF</button>
-
-                        <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
-                        
-                        <select id="mosaicSel">
-                            <option value="█">█ (블록)</option>
-                            <option value="♥">♥ (하트)</option>
-                            <option value="★">★ (별)</option>
-                            <option value="X">X (엑스)</option>
-                            <option value="?">? (물음표)</option>
-                        </select>
-                        <button class="tool-btn" id="mosaicBtn" style="font-weight:bold; border-color: rgba(255,255,255,0.4);">착한말 적용</button>
-                        <button class="tool-btn" id="undoBtn" style="color:#ff8888; margin-left:auto;"><i class="fa-solid fa-rotate-left"></i> 되돌리기</button>
-
-                    </div>
+            <div class="panel">
+                <label>데코레이션 (Decoration)</label>
+                <div class="toolbar">
+                    <button class="tool-btn" id="drawBtn">PEN OFF</button>
+                    <button class="tool-btn" id="clearBtn">CLEAR ALL</button>
+                    <input type="color" class="color-pick" id="penColor" value="#ffffff">
+                    <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
                 </div>
-
-                <div class="panel">
-                    <label>데코레이션 (Decoration)</label>
-                    <div class="toolbar">
-                        <button class="tool-btn" id="drawBtn">PEN OFF</button>
-                        <button class="tool-btn" id="clearBtn">CLEAR ALL</button>
-                        <input type="color" class="color-pick" id="penColor" value="#ffffff">
-                        <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
-                    </div>
-                    <label style="margin-top: 10px;">스티커 추가 (Add Sticker)</label>
-                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
-                </div>
-
-                <div class="panel">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <label style="margin:0;">데이터 셋업 (Data Setup)</label>
-                        <button class="tool-btn" id="customToggleBtn" style="font-size:10px; border-color:rgba(255,255,255,0.5);">CUSTOM OFF</button>
-                    </div>
-                    
-                    <div id="preset-mode" class="row-2">
-                        <select id="catSel"></select>
-                        <select id="charSel"></select>
-                    </div>
-                    
-                    <div id="custom-mode" style="display:none; flex-direction:column; gap:10px;">
-                        <div class="row-2">
-                            <input type="text" id="customCat" placeholder="UNKNOWN">
-                            <input type="text" id="customChar" placeholder="UNKNOWN">
-                        </div>
-                        <input type="text" id="customCreator" placeholder="SAMPLE">
-                    </div>
-
-                    <div class="row-2" style="margin-top: 15px;">
-                        <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1 (SQUARE)</option><option value="9:16">9:16 (STORY)</option></select></div>
-                        <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
-                    </div>
-                    <div class="row-2">
-                        <div><label>폰트</label><select id="fontSel"><option value="'Pretendard Variable'">프리텐다드</option><option value="'JoseonGulim'">조선굴림</option><option value="'KoPubDotum'">코펍돋움</option><option value="'MaruBuri'">마루부리</option><option value="'ChosunIlbo'">조선일보명조</option><option value="'LeeSeoyun'">이서윤체</option><option value="'Kkubulrim'">꾸불림체</option></select></div>
-                        <div><label>크기</label><input type="range" id="sizeSlide" min="30" max="110" value="45"></div>
-                    </div>
-                    
-                    <label style="margin-top: 10px;">레이아웃 색상 (Color Matrix)</label>
-                    <div class="color-grid">
-                        <div class="color-item"><span>C1</span><input type="color" id="c1" value="#000000" class="color-pick" style="border:none;"></div>
-                        <div class="color-item"><span>C2</span><input type="color" id="c2" value="#ffffff" class="color-pick" style="border:none;"></div>
-                        <div class="color-item" id="c3-box" style="display:none;"><span>C3</span><input type="color" id="c3" value="#fdf0f5" class="color-pick" style="border:none;"></div>
-                        <div class="color-item" id="c4-box" style="display:none;"><span>C4</span><input type="color" id="c4" value="#ffffff" class="color-pick" style="border:none;"></div>
-                    </div>
-                </div>
-
-                <details>
-                    <summary>ADVANCED PARAMETERS <i class="fa-solid fa-gear"></i></summary>
-                    <div class="details-in">
-                        <div class="compact-row">
-                            <div><label>Padding</label><input type="range" id="padSlide" min="20" max="160" value="80"></div>
-                            <div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="0"></div>
-                        </div>
-                        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                <label style="margin:0;">배경 이미지 (Background)</label>
-                                <div class="r19-switch-wrap" id="r19Btn">
-                                    <div class="r19-switch" id="r19Toggle"></div>
-                                    <span class="r19-label">R-19 MARK</span>
-                                </div>
-                            </div>
-                            <input type="file" id="bgFile" accept="image/*" class="btn-dim">
-                            <div class="compact-row" style="margin-top:8px;">
-                                <div style="flex:2"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
-                                <button id="delBgBtn" style="background:transparent; color:#f55; border:1px solid rgba(255,85,85,0.4); height:30px; padding:0 10px; cursor:pointer; font-size:10px; margin-bottom:12px; transition:0.2s;">DELETE</button>
-                            </div>
-                        </div>
-                    </div>
-                </details>
-
-                <button class="btn-main" id="saveBtn">RENDER & SAVE PNG</button>
-                <button class="btn-dim" id="resetBtn">SYSTEM RESET (설정 초기화)</button>
+                <label style="margin-top:10px;">스티커 추가</label>
+                <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
             </div>
+
+            <div class="panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <label style="margin:0;">데이터 셋업 (Data Setup)</label>
+                    <button class="tool-btn" id="customToggleBtn" style="font-size:10px; border-color:rgba(255,255,255,0.5);">CUSTOM OFF</button>
+                </div>
+                <div id="preset-mode" class="row-2"><select id="catSel"></select><select id="charSel"></select></div>
+                <div id="custom-mode" style="display:none; flex-direction:column; gap:10px;">
+                    <div class="row-2"><input type="text" id="customCat" placeholder="UNKNOWN"><input type="text" id="customChar" placeholder="UNKNOWN"></div>
+                    <input type="text" id="customCreator" placeholder="SAMPLE">
+                </div>
+                <div class="row-2" style="margin-top:15px;">
+                    <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1 (SQUARE)</option><option value="9:16">9:16 (STORY)</option></select></div>
+                    <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
+                </div>
+                <div class="row-2">
+                    <div><label>폰트</label><select id="fontSel">
+                        <option value="'Pretendard Variable'">프리텐다드</option>
+                        <option value="'Noto Serif KR'">노토 세리프</option>
+                        <option value="'Nanum Myeongjo'">나눔명조</option>
+                        <option value="'Nanum Gothic'">나눔고딕</option>
+                        <option value="'Gothic A1'">고딕 A1</option>
+                        <option value="'IBM Plex Sans KR'">IBM 플렉스</option>
+                        <option value="'JoseonGulim'">조선굴림</option>
+                        <option value="'MaruBuri'">마루부리</option>
+                    </select></div>
+                    <div><label>크기</label><input type="range" id="sizeSlide" min="30" max="110" value="45"></div>
+                </div>
+                <label style="margin-top:10px;">레이아웃 색상 (Color Matrix)</label>
+                <div class="color-grid">
+                    <div class="color-item"><span>C1</span><input type="color" id="c1" value="#000000" class="color-pick" style="border:none;"></div>
+                    <div class="color-item"><span>C2</span><input type="color" id="c2" value="#ffffff" class="color-pick" style="border:none;"></div>
+                    <div class="color-item" id="c3-box" style="display:none;"><span>C3</span><input type="color" id="c3" value="#fdf0f5" class="color-pick" style="border:none;"></div>
+                    <div class="color-item" id="c4-box" style="display:none;"><span>C4</span><input type="color" id="c4" value="#ffffff" class="color-pick" style="border:none;"></div>
+                </div>
+            </div>
+
+            <details><summary>ADVANCED PARAMETERS <i class="fa-solid fa-gear"></i></summary>
+                <div class="details-in">
+                    <div class="compact-row"><div><label>Padding</label><input type="range" id="padSlide" min="20" max="160" value="80"></div><div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="0"></div></div>
+                    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <label style="margin:0;">배경 이미지</label>
+                            <div class="r19-switch-wrap" id="r19Btn"><div class="r19-switch" id="r19Toggle"></div><span class="r19-label">R-19 MARK</span></div>
+                        </div>
+                        <input type="file" id="bgFile" accept="image/*" class="btn-dim">
+                        <div class="compact-row" style="margin-top:8px;">
+                            <div style="flex:2"><label>Blur</label><input type="range" id="blurSlide" min="0" max="30" value="0"></div>
+                            <button id="delBgBtn" style="background:transparent; color:#f55; border:1px solid rgba(255,85,85,0.4); height:30px; padding:0 10px; cursor:pointer; font-size:10px; margin-bottom:12px;">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <button class="btn-main" id="saveBtn">RENDER & SAVE PNG</button>
+            <button class="btn-dim" id="resetBtn">SYSTEM RESET (설정 초기화)</button>
         </div>
-    </div>
+    </div></div>
 
-    <div class="modal-overlay" id="manualModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
-            <h2 class="modal-title">DATA MANUAL</h2>
-            
-            <div class="modal-section">
-                <h3>📱 모바일 앱(PWA) 설치 가이드</h3>
-                <ul>
-                    <li><strong>iOS (사파리):</strong> 하단의 [공유] 버튼 ➔ [홈 화면에 추가]</li>
-                    <li><strong>Android (크롬):</strong> 우측 상단의 [점 3개] 메뉴 ➔ [홈 화면에 추가] 혹은 [앱 설치]</li>
-                </ul>
-            </div>
-            
-            <div class="modal-section">
-                <h3>✨ 핵심 기능 안내</h3>
-                <ul>
-                    <li><strong>공유 안테나:</strong> 앱을 설치한 뒤, 텍스트를 복사하고 공유하기(Share)를 통해 이 앱으로 보내면 텍스트가 자동으로 입력됩니다.</li>
-                    <li><strong>착한말 (모자이크):</strong> 드래그한 텍스트를 특수 기호(█, ♥ 등)로 치환합니다. [되돌리기] 버튼으로 언제든 복구 가능합니다.</li>
-                    <li><strong>커스텀 모드:</strong> 데이터 셋업에서 [CUSTOM ON]을 누르면 ARCH 이외의 장르로 자유롭게 발췌를 만들 수 있습니다.</li>
-                    <li><strong>자동 저장:</strong> 작성 중인 글, 레이아웃, 컬러 설정은 껐다 켜도 기기에 자동으로 유지됩니다. (배경 이미지는 용량 문제로 제외)</li>
-                </ul>
-            </div>
-
-            <div class="modal-footer-msg">
-                모바일에서 앱을 설치한 후 플랫폼에서 발췌하고 싶은 문장을 복사 > 공유하기를 눌러 발췌 앱으로 이동 가능합니다.<br><br>
-                커스텀 모드는 친구의 요청으로 추가했지만 ARCH에 해가 될 시 해당 기능을 폐쇄하고 지인 공유로 변경됩니다.<br><br>
-                모든 배포 자료는 ARCH를 좋아하는 사람이 만들었습니다. 이 점 반드시 유의해주세요.<br><br>
-                이 앱이 도움이 되었다면 산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2
-            </div>
-        </div>
-    </div>
+    <div class="modal-overlay" id="manualModal"><div class="modal-content">
+        <button class="modal-close" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <h2 class="modal-title">DATA MANUAL</h2>
+        <div class="modal-section"><h3>📱 모바일 앱(PWA) 설치</h3><ul><li><strong>iOS:</strong> 하단 [공유] ➔ [홈 화면에 추가]</li><li><strong>Android:</strong> 우측 상단 [⋮] ➔ [앱 설치]</li></ul></div>
+        <div class="modal-section"><h3>✨ 핵심 기능</h3><ul><li><strong>프리셋:</strong> 자주 쓰는 설정(폰트, 테마, 색상, 캐릭터)을 저장하고 원클릭으로 불러옵니다.</li><li><strong>착한말:</strong> 드래그한 텍스트를 특수 기호로 치환. 되돌리기로 복구.</li><li><strong>커스텀 모드:</strong> ARCH 외 장르로 자유 발췌.</li><li><strong>자동 저장:</strong> 레이아웃·컬러 설정 자동 유지 (배경 이미지 제외).</li></ul></div>
+        <div class="modal-footer-msg">모든 배포 자료는 ARCH를 좋아하는 사람이 만들었습니다.<br>산타, 페더와 많은 대화 부탁드립니다... 아크의 모두가 1M을 찍는 그날까지...S2</div>
+    </div></div>
 
     <script>
-        const archList = { "ARCH-PRIMA": ["헬리오스", "해일", "이카로스", "산타"], "VANGUARD - 1": ["애쉬", "노아", "아모레", "셰인", "오버로드", "라임"], "VANGUARD - 2": ["신드롬", "바이브", "리암"], "AGENT": ["카토", "샤드", "블루"], "ACOLYTE": ["블루", "피카"], "CORE": ["Dr. 밴스", "퓨어"], "R.S.T.": ["휴고", "저스티스", "에덴", "카르마"], "SUPPORT": ["오아시스", "자이안", "페더", "스트레이", "윈터", "부스터", "코드"] };
-        const cap = document.getElementById('capture-area'), wrapper = document.getElementById('preview-wrapper'), editor = document.getElementById('editor');
-        const catSel = document.getElementById('catSel'), charSel = document.getElementById('charSel');
-        const displayTitle = document.getElementById('display-title'), displayWatermark = document.getElementById('display-watermark');
-        const ratioSel = document.getElementById('ratioSel'), themeSel = document.getElementById('themeSel'), fontSel = document.getElementById('fontSel'), sizeSlide = document.getElementById('sizeSlide');
-        const padSlide = document.getElementById('padSlide'), radSlide = document.getElementById('radSlide'), blurSlide = document.getElementById('blurSlide');
-        const bgImg = document.getElementById('bgImg'), dCanvas = document.getElementById('drawing-canvas'), dCtx = dCanvas.getContext('2d');
-        
-        let isCustomMode = false;
-        const customToggleBtn = document.getElementById('customToggleBtn');
-        const presetMode = document.getElementById('preset-mode');
-        const customMode = document.getElementById('custom-mode');
-        const customCat = document.getElementById('customCat'), customChar = document.getElementById('customChar'), customCreator = document.getElementById('customCreator');
-        
-        let drawMode = false, isDrawing = false, curZ = 100, rawBgImageSrc = null;
+    const archList={"ARCH-PRIMA":["헬리오스","해일","이카로스","산타"],"VANGUARD - 1":["애쉬","노아","아모레","셰인","오버로드","라임"],"VANGUARD - 2":["신드롬","바이브","리암"],"AGENT":["카토","샤드","블루"],"ACOLYTE":["블루","피카"],"CORE":["Dr. 밴스","퓨어"],"R.S.T.":["휴고","저스티스","에덴","카르마"],"SUPPORT":["오아시스","자이안","페더","스트레이","윈터","부스터","코드"]};
+    const cap=document.getElementById('capture-area'),wrapper=document.getElementById('preview-wrapper'),editor=document.getElementById('editor');
+    const catSel=document.getElementById('catSel'),charSel=document.getElementById('charSel');
+    const displayTitle=document.getElementById('display-title'),displayWatermark=document.getElementById('display-watermark');
+    const ratioSel=document.getElementById('ratioSel'),themeSel=document.getElementById('themeSel'),fontSel=document.getElementById('fontSel'),sizeSlide=document.getElementById('sizeSlide');
+    const padSlide=document.getElementById('padSlide'),radSlide=document.getElementById('radSlide'),blurSlide=document.getElementById('blurSlide');
+    const bgImg=document.getElementById('bgImg'),dCanvas=document.getElementById('drawing-canvas'),dCtx=dCanvas.getContext('2d');
+    let isCustomMode=false;
+    const customToggleBtn=document.getElementById('customToggleBtn'),presetMode=document.getElementById('preset-mode'),customMode=document.getElementById('custom-mode');
+    const customCat=document.getElementById('customCat'),customChar=document.getElementById('customChar'),customCreator=document.getElementById('customCreator');
+    let drawMode=false,isDrawing=false,curZ=100,rawBgImageSrc=null,savedRange=null;
 
-        let savedRange = null;
-        document.addEventListener('selectionchange', () => {
-            const sel = window.getSelection();
-            if (sel.rangeCount > 0 && editor.contains(sel.anchorNode)) {
-                savedRange = sel.getRangeAt(0);
-            }
-        });
+    document.addEventListener('selectionchange',()=>{const s=window.getSelection();if(s.rangeCount>0&&editor.contains(s.anchorNode))savedRange=s.getRangeAt(0);});
+    function exec(cmd,val=null){editor.focus();if(savedRange){const s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}document.execCommand('styleWithCSS',false,true);if(cmd==='backColor'&&val)document.execCommand('hiliteColor',false,val);document.execCommand(cmd,false,val);saveSettings();window.getSelection().removeAllRanges();savedRange=null;}
+    const bindFmt=(id,cmd,val)=>{const b=document.getElementById(id);const h=(e)=>{e.preventDefault();exec(cmd,val);};b.addEventListener('mousedown',h);b.addEventListener('touchstart',h,{passive:false});};
+    bindFmt('bBtn','bold');bindFmt('iBtn','italic');bindFmt('uBtn','underline');bindFmt('alignLeftBtn','justifyLeft');bindFmt('alignCenterBtn','justifyCenter');bindFmt('alignRightBtn','justifyRight');bindFmt('removeHiBtn','backColor','transparent');
 
-        // 모바일 텍스트 렉 & 범위 확장 방어
-        function exec(cmd, val = null) {
-            editor.focus();
-            if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
-            document.execCommand('styleWithCSS', false, true); 
-            if(cmd === 'backColor' && val) document.execCommand('hiliteColor', false, val);
-            document.execCommand(cmd, false, val);
-            saveSettings(); 
-            
-            window.getSelection().removeAllRanges();
-            savedRange = null;
-        }
+    const hlColorInput=document.getElementById('hlColor'),hiBtn=document.getElementById('hiBtn');
+    const applyHL=(e)=>{e.preventDefault();const h=hlColorInput.value;let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);exec('backColor',`rgba(${r},${g},${b},0.4)`);};
+    hiBtn.addEventListener('mousedown',applyHL);hiBtn.addEventListener('touchstart',applyHL,{passive:false});
+    hlColorInput.addEventListener('input',e=>{hiBtn.style.color=e.target.value;});
+    document.getElementById('fColor').addEventListener('change',e=>{exec('foreColor',e.target.value);});
 
-        const bindFmt = (id, cmd, val) => {
-            const btn = document.getElementById(id);
-            const handler = (e) => { e.preventDefault(); exec(cmd, val); };
-            btn.addEventListener('mousedown', handler);
-            btn.addEventListener('touchstart', handler, {passive: false});
-        };
+    const applyMosaic=(e)=>{e.preventDefault();editor.focus();if(savedRange){const s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}const sel=window.getSelection();if(!sel.rangeCount||sel.isCollapsed)return;const t=sel.toString(),sym=document.getElementById('mosaicSel').value;document.execCommand('insertText',false,t.replace(/[^\s\n]/g,sym));saveSettings();window.getSelection().removeAllRanges();savedRange=null;};
+    const mosaicBtn=document.getElementById('mosaicBtn');mosaicBtn.addEventListener('mousedown',applyMosaic);mosaicBtn.addEventListener('touchstart',applyMosaic,{passive:false});
+    const applyUndo=(e)=>{e.preventDefault();editor.focus();document.execCommand('undo',false,null);saveSettings();};
+    const undoBtn=document.getElementById('undoBtn');undoBtn.addEventListener('mousedown',applyUndo);undoBtn.addEventListener('touchstart',applyUndo,{passive:false});
 
-        bindFmt('bBtn', 'bold');
-        bindFmt('iBtn', 'italic');
-        bindFmt('uBtn', 'underline');
-        bindFmt('alignLeftBtn', 'justifyLeft');
-        bindFmt('alignCenterBtn', 'justifyCenter');
-        bindFmt('alignRightBtn', 'justifyRight');
-        bindFmt('removeHiBtn', 'backColor', 'transparent');
+    const colorPickers=['c1','c2','c3','c4'];
+    colorPickers.forEach(id=>{document.getElementById(id).addEventListener('input',e=>{cap.style.setProperty(`--${id}`,e.target.value);});document.getElementById(id).addEventListener('change',saveSettings);});
+    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'}};
+    function applyThemePalette(t){const p=themePalettes[t];if(!p)return;['c1','c2','c3','c4'].forEach(k=>{const el=document.getElementById(k);el.value=p[k];cap.style.setProperty('--'+k,p[k]);});}
 
-        const hlColorInput = document.getElementById('hlColor');
-        const hiBtn = document.getElementById('hiBtn');
-        
-        const applyHighlight = (e) => {
-            e.preventDefault();
-            const hex = hlColorInput.value;
-            let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-            exec('backColor', `rgba(${r}, ${g}, ${b}, 0.4)`);
-        };
-        hiBtn.addEventListener('mousedown', applyHighlight);
-        hiBtn.addEventListener('touchstart', applyHighlight, {passive: false});
-        hlColorInput.addEventListener('input', (e) => { hiBtn.style.color = e.target.value; });
-        document.getElementById('fColor').addEventListener('change', (e) => { exec('foreColor', e.target.value); });
+    customToggleBtn.onclick=()=>{isCustomMode=!isCustomMode;customToggleBtn.innerText=isCustomMode?"CUSTOM ON":"CUSTOM OFF";customToggleBtn.style.background=isCustomMode?"rgba(255,255,255,0.1)":"transparent";customToggleBtn.style.color=isCustomMode?"#fff":"var(--text)";presetMode.style.display=isCustomMode?'none':'grid';customMode.style.display=isCustomMode?'flex':'none';renderDOM();};
+    [customCat,customChar,customCreator].forEach(el=>el.addEventListener('input',renderDOM));
+    editor.addEventListener('input',saveSettings);
 
-        const applyMosaic = (e) => {
-            e.preventDefault();
-            editor.focus();
-            if (savedRange) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedRange); }
-            
-            const sel = window.getSelection();
-            if (!sel.rangeCount || sel.isCollapsed) return; 
-            
-            const text = sel.toString();
-            const sym = document.getElementById('mosaicSel').value;
-            const obfuscated = text.replace(/[^\s\n]/g, sym); 
-            
-            document.execCommand('insertText', false, obfuscated);
-            saveSettings();
-            
-            window.getSelection().removeAllRanges();
-            savedRange = null;
-        };
-        
-        const mosaicBtn = document.getElementById('mosaicBtn');
-        mosaicBtn.addEventListener('mousedown', applyMosaic);
-        mosaicBtn.addEventListener('touchstart', applyMosaic, {passive: false});
+    // 스티커
+    document.getElementById('stickerFile').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{createSticker(ev.target.result);};r.readAsDataURL(f);setTimeout(()=>{e.target.value='';},100);});
+    function createSticker(src){const s=document.createElement('div');s.className='sticker';s.style.left='200px';s.style.top='200px';s.style.zIndex=++curZ;s.innerHTML=`<img src="${src}"><div class="sticker-ctrl sticker-del"><i class="fa-solid fa-xmark"></i></div><div class="sticker-ctrl sticker-resize"><i class="fa-solid fa-arrows-left-right"></i></div><div class="sticker-ctrl sticker-up"><i class="fa-solid fa-angles-up"></i></div><div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>`;cap.appendChild(s);const bind=(sel,fn)=>{const b=s.querySelector(sel);const h=e=>{e.stopPropagation();e.preventDefault();fn();};b.addEventListener('mousedown',h);b.addEventListener('touchstart',h,{passive:false});};bind('.sticker-del',()=>s.remove());bind('.sticker-up',()=>s.style.zIndex=++curZ);bind('.sticker-down',()=>s.style.zIndex=Math.max(2,parseInt(s.style.zIndex)-1));initStickerInteractions(s);}
+    function initStickerInteractions(stk){let isM=false,isR=false,sX,sY,sL,sA,sScale=1,sRot=0,center={};const startMove=e=>{if(drawMode||e.target.classList.contains('sticker-ctrl'))return;e.stopPropagation();document.querySelectorAll('.sticker').forEach(s=>s.classList.remove('sticker-active'));stk.classList.add('sticker-active');isM=true;sX=e.clientX||e.touches[0].clientX;sY=e.clientY||e.touches[0].clientY;if(e.pointerId)stk.setPointerCapture(e.pointerId);};stk.addEventListener('mousedown',startMove);stk.addEventListener('touchstart',startMove,{passive:false});const startResize=e=>{e.stopPropagation();e.preventDefault();isR=true;const pR=cap.getBoundingClientRect(),s=1080/pR.width,rect=stk.getBoundingClientRect();center={x:(rect.left+rect.width/2-pR.left)*s,y:(rect.top+rect.height/2-pR.top)*s};sX=((e.clientX||e.touches[0].clientX)-pR.left)*s;sY=((e.clientY||e.touches[0].clientY)-pR.top)*s;sL=Math.hypot(sX-center.x,sY-center.y);sA=Math.atan2(sY-center.y,sX-center.x);const tr=window.getComputedStyle(stk).transform;if(tr!=='none'){const v=tr.split('(')[1].split(')')[0].split(',');sRot=Math.atan2(v[1],v[0]);sScale=Math.sqrt(v[0]*v[0]+v[1]*v[1]);}};const rBtn=stk.querySelector('.sticker-resize');rBtn.addEventListener('mousedown',startResize);rBtn.addEventListener('touchstart',startResize,{passive:false});const onMove=e=>{if(!isM&&!isR)return;const pR=cap.getBoundingClientRect(),s=1080/pR.width;const cX=e.clientX||(e.touches&&e.touches[0].clientX),cY=e.clientY||(e.touches&&e.touches[0].clientY);if(isM){e.preventDefault();stk.style.left=(parseFloat(stk.style.left||0)+(cX-sX)*s)+'px';stk.style.top=(parseFloat(stk.style.top||0)+(cY-sY)*s)+'px';sX=cX;sY=cY;}if(isR){e.preventDefault();const cx2=(cX-pR.left)*s,cy2=(cY-pR.top)*s;stk.style.transform=`scale(${(Math.hypot(cx2-center.x,cy2-center.y)/sL)*sScale}) rotate(${((Math.atan2(cy2-center.y,cx2-center.x)-sA)+sRot)*(180/Math.PI)}deg)`;}};window.addEventListener('mousemove',onMove);window.addEventListener('touchmove',onMove,{passive:false});const onEnd=()=>{isM=false;isR=false;};window.addEventListener('mouseup',onEnd);window.addEventListener('touchend',onEnd);}
 
-        const applyUndo = (e) => {
-            e.preventDefault();
-            editor.focus();
-            document.execCommand('undo', false, null);
-            saveSettings();
-        };
-        const undoBtn = document.getElementById('undoBtn');
-        undoBtn.addEventListener('mousedown', applyUndo);
-        undoBtn.addEventListener('touchstart', applyUndo, {passive: false});
+    function renderDOM(){const t=themeSel.value;cap.className='theme-'+t;document.querySelectorAll('.y2k-item,.diary-item,.sf-item,.polaroid-item').forEach(el=>el.style.display='none');document.getElementById('c3-box').style.display='none';document.getElementById('c4-box').style.display='none';
+    if(t==='y2k'){document.querySelectorAll('.y2k-item').forEach(el=>el.style.display='flex');document.getElementById('c3-box').style.display='flex';document.getElementById('c4-box').style.display='flex';}
+    if(t==='diary'){document.querySelectorAll('.diary-item').forEach(el=>el.style.display='flex');const dv=document.getElementById('diary-date-val');if(dv){const d=new Date();dv.textContent=d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0');}}
+    if(t==='sf'){document.querySelectorAll('.sf-item').forEach(el=>el.style.display='block');document.getElementById('c3-box').style.display='flex';}
+    if(t==='polaroid'){document.querySelectorAll('.polaroid-item').forEach(el=>el.style.display='block');document.getElementById('c4-box').style.display='flex';}
+    cap.style.setProperty('--c1',document.getElementById('c1').value);cap.style.setProperty('--c2',document.getElementById('c2').value);cap.style.setProperty('--c3',document.getElementById('c3').value);cap.style.setProperty('--c4',document.getElementById('c4').value);cap.style.setProperty('--pad',padSlide.value+'px');cap.style.setProperty('--rad',radSlide.value+'px');
+    if(isCustomMode){displayTitle.innerText=`${customCat.value||'UNKNOWN'} | ${customChar.value||'UNKNOWN'}`;displayWatermark.innerText=customCreator.value||'SAMPLE';}else{displayTitle.innerText=`${catSel.value} | ${charSel.value}`;displayWatermark.innerText='ARCH @체리망고';}
+    displayTitle.style.fontFamily=fontSel.value;displayWatermark.style.fontFamily="'Pretendard Variable',sans-serif";editor.style.fontFamily=fontSel.value;editor.style.fontSize=sizeSlide.value+'px';
+    const txtBody=document.getElementById('text-body')||document.getElementById('y2k-screen-wrap');
+    if(t==='y2k'||t==='diary'||t==='polaroid'){cap.style.setProperty('--editor-color','#000');cap.style.setProperty('--text-color','#1a1a1a');cap.style.setProperty('--wm-color','rgba(0,0,0,0.45)');}else{cap.style.setProperty('--editor-color','#fff');cap.style.setProperty('--text-color','#fff');cap.style.setProperty('--wm-color','rgba(255,255,255,0.5)');}
+    if(t==='y2k'){txtBody.id='text-body';txtBody.className='y2k-screen-wrap';txtBody.style.padding='var(--pad,50px)';}else if(t==='polaroid'){txtBody.id='text-body';txtBody.className='polaroid-screen';txtBody.style.padding='var(--pad,40px)';}else{txtBody.id='text-body';txtBody.className='';txtBody.style.padding='0';}
+    saveSettings();}
 
-        const colorPickers = ['c1', 'c2', 'c3', 'c4'];
-        colorPickers.forEach(id => {
-            document.getElementById(id).addEventListener('input', (e) => { cap.style.setProperty(`--${id}`, e.target.value); });
-            document.getElementById(id).addEventListener('change', saveSettings);
-        });
+    function applyBgUrl(url){if(!url){bgImg.style.display='none';bgImg.style.backgroundImage='none';cap.style.setProperty('--photo','none');return;}bgImg.style.display='block';bgImg.style.backgroundImage=`url(${url})`;cap.style.setProperty('--photo',`url(${url})`);}
+    function updateBackground(){if(!rawBgImageSrc){applyBgUrl(null);return;}if(blurSlide.value==0){applyBgUrl(rawBgImageSrc);saveSettings();return;}const img=new Image();img.crossOrigin="Anonymous";img.onload=()=>{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.filter=`blur(${blurSlide.value*(img.width/1080)}px)`;ctx.drawImage(img,0,0);applyBgUrl(c.toDataURL());};img.src=rawBgImageSrc;saveSettings();}
+    document.getElementById('bgFile').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{rawBgImageSrc=ev.target.result;updateBackground();};r.readAsDataURL(f);setTimeout(()=>{e.target.value='';},100);});
+    document.getElementById('delBgBtn').onclick=()=>{rawBgImageSrc=null;applyBgUrl(null);saveSettings();};
+    blurSlide.addEventListener('change',updateBackground);
+    document.getElementById('r19Btn').onclick=()=>{const t=document.getElementById('r19Toggle');t.classList.toggle('active');document.getElementById('r19-badge').style.display=t.classList.contains('active')?'flex':'none';};
 
-        // 테마별 기본 팔레트 (테마 전환 시 그 테마에 맞는 색으로 리셋)
-        const themePalettes = {
-            standard: { c1:'#0a0a0a', c2:'#ffffff', c3:'#fdf0f5', c4:'#ffffff' },
-            polaroid: { c1:'#efeae2', c2:'#fffdf9', c3:'#fdf0f5', c4:'#e7e1d6' },
-            y2k:      { c1:'#ffffff', c2:'#2b3138', c3:'#dfe7ee', c4:'#f4f8fb' },
-            diary:    { c1:'#e9e0cd', c2:'#b03f3d', c3:'#fdf0f5', c4:'#ffffff' },
-            sf:       { c1:'#06080d', c2:'#a9d8e3', c3:'#0c1119', c4:'#ffffff' }
-        };
-        function applyThemePalette(t) {
-            const p = themePalettes[t]; if(!p) return;
-            ['c1','c2','c3','c4'].forEach(k => {
-                const el = document.getElementById(k);
-                el.value = p[k];
-                cap.style.setProperty('--' + k, p[k]);
-            });
-        }
+    drawBtn.onclick=()=>{drawMode=!drawMode;drawBtn.innerText=drawMode?"PEN ON":"PEN OFF";drawBtn.classList.toggle('active',drawMode);dCanvas.style.pointerEvents=drawMode?"auto":"none";};
+    const startDraw=e=>{if(!drawMode)return;isDrawing=true;e.preventDefault();const cX=e.clientX||(e.touches&&e.touches[0].clientX),cY=e.clientY||(e.touches&&e.touches[0].clientY);const r=dCanvas.getBoundingClientRect(),s=1080/r.width;dCtx.beginPath();dCtx.moveTo((cX-r.left)*s,(cY-r.top)*s);dCtx.strokeStyle=document.getElementById('penColor').value;dCtx.lineWidth=parseInt(document.getElementById('penSize').value);dCtx.lineCap="round";dCtx.lineJoin="round";};
+    dCanvas.addEventListener('mousedown',startDraw);dCanvas.addEventListener('touchstart',startDraw,{passive:false});
+    const moveDraw=e=>{if(!isDrawing)return;e.preventDefault();const cX=e.clientX||(e.touches&&e.touches[0].clientX),cY=e.clientY||(e.touches&&e.touches[0].clientY);const r=dCanvas.getBoundingClientRect(),s=1080/r.width;dCtx.lineTo((cX-r.left)*s,(cY-r.top)*s);dCtx.stroke();};
+    dCanvas.addEventListener('mousemove',moveDraw);dCanvas.addEventListener('touchmove',moveDraw,{passive:false});
+    window.addEventListener('mouseup',()=>isDrawing=false);window.addEventListener('touchend',()=>isDrawing=false);
+    document.getElementById('clearBtn').onclick=()=>{if(confirm("낙서를 모두 지우겠습니까?"))dCtx.clearRect(0,0,1080,1080);};
 
-        customToggleBtn.onclick = () => {
-            isCustomMode = !isCustomMode;
-            customToggleBtn.innerText = isCustomMode ? "CUSTOM ON" : "CUSTOM OFF";
-            customToggleBtn.style.background = isCustomMode ? "rgba(255,255,255,0.1)" : "transparent";
-            customToggleBtn.style.color = isCustomMode ? "#fff" : "var(--text)";
-            presetMode.style.display = isCustomMode ? 'none' : 'grid';
-            customMode.style.display = isCustomMode ? 'flex' : 'none';
-            renderDOM();
-        };
+    for(let c in archList)catSel.add(new Option(c,c));
+    catSel.onchange=()=>{charSel.innerHTML="";archList[catSel.value].forEach(n=>charSel.add(new Option(n,n)));renderDOM();};
 
-        [customCat, customChar, customCreator].forEach(el => el.addEventListener('input', renderDOM));
-        editor.addEventListener('input', saveSettings);
+    document.getElementById('manualBtn').onclick=()=>{document.getElementById('manualModal').classList.add('show');};
+    document.getElementById('closeModalBtn').onclick=()=>{document.getElementById('manualModal').classList.remove('show');};
+    window.onclick=e=>{if(e.target==document.getElementById('manualModal'))document.getElementById('manualModal').classList.remove('show');};
+    document.getElementById('resetBtn').onclick=()=>{if(confirm("모든 설정을 초기화하시겠습니까?")){localStorage.removeItem('arch_final_v10');localStorage.removeItem('arch_presets_v1');location.reload();}};
+    document.querySelectorAll('input:not([type="color"]),select').forEach(el=>{el.addEventListener('input',e=>{if(el.id==='ratioSel'||el.id==='themeSel')updateLayout();if(el.id==='themeSel')applyThemePalette(themeSel.value);renderDOM();});});
 
-        const stickerInput = document.getElementById('stickerFile');
-        stickerInput.addEventListener('change', function(e) {
-            const file = e.target.files[0]; 
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => { createSticker(ev.target.result); };
-            reader.readAsDataURL(file);
-            setTimeout(() => { e.target.value = ''; }, 100);
-        });
+    function updateLayout(){const w=1080,h=ratioSel.value==='1:1'?1080:1920;const b=document.createElement('canvas');b.width=dCanvas.width;b.height=dCanvas.height;b.getContext('2d').drawImage(dCanvas,0,0);cap.style.width=w+'px';cap.style.height=h+'px';dCanvas.width=w;dCanvas.height=h;dCtx.drawImage(b,0,0);const sc=wrapper.clientWidth/w;cap.style.transform=`scale(${sc})`;wrapper.style.height=(h*sc)+'px';}
+    window.onresize=updateLayout;
 
-        function createSticker(src) {
-            const stk = document.createElement('div'); stk.className = 'sticker';
-            stk.style.left = '200px'; stk.style.top = '200px'; stk.style.zIndex = ++curZ;
-            stk.innerHTML = `<img src="${src}">
-                <div class="sticker-ctrl sticker-del"><i class="fa-solid fa-xmark"></i></div>
-                <div class="sticker-ctrl sticker-resize"><i class="fa-solid fa-arrows-left-right"></i></div>
-                <div class="sticker-ctrl sticker-up"><i class="fa-solid fa-angles-up"></i></div>
-                <div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>`;
-            cap.appendChild(stk);
-            
-            const bindBtn = (sel, fn) => {
-                const btn = stk.querySelector(sel);
-                const h = (e) => { e.stopPropagation(); e.preventDefault(); fn(); };
-                btn.addEventListener('mousedown', h); btn.addEventListener('touchstart', h, {passive: false});
-            };
-            bindBtn('.sticker-del', () => stk.remove());
-            bindBtn('.sticker-up', () => stk.style.zIndex = ++curZ);
-            bindBtn('.sticker-down', () => stk.style.zIndex = Math.max(2, parseInt(stk.style.zIndex)-1));
-            
-            initStickerInteractions(stk);
-        }
+    function saveSettings(){const s={cat:catSel.value,char:charSel.value,rat:ratioSel.value,thm:themeSel.value,fnt:fontSel.value,size:sizeSlide.value,c1:document.getElementById('c1').value,c2:document.getElementById('c2').value,c3:document.getElementById('c3').value,c4:document.getElementById('c4').value,pad:padSlide.value,rad:radSlide.value,blur:blurSlide.value,html:editor.innerHTML,customMode:isCustomMode,customCat:customCat.value,customChar:customChar.value,customCreator:customCreator.value};localStorage.setItem('arch_final_v10',JSON.stringify(s));}
+    function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('arch_final_v10'));}catch(e){localStorage.removeItem('arch_final_v10');s=null;}if(s){catSel.value=s.cat;if(archList[s.cat]){charSel.innerHTML="";archList[s.cat].forEach(n=>charSel.add(new Option(n,n)));}charSel.value=s.char;ratioSel.value=s.rat;themeSel.value=s.thm;fontSel.value=s.fnt;sizeSlide.value=s.size;document.getElementById('c1').value=s.c1;document.getElementById('c2').value=s.c2;if(s.c3)document.getElementById('c3').value=s.c3;if(s.c4)document.getElementById('c4').value=s.c4;padSlide.value=s.pad;radSlide.value=s.rad;if(s.blur)blurSlide.value=s.blur;if(s.html)editor.innerHTML=s.html;isCustomMode=s.customMode||false;customCat.value=s.customCat||'';customChar.value=s.customChar||'';customCreator.value=s.customCreator||'';customToggleBtn.innerText=isCustomMode?"CUSTOM ON":"CUSTOM OFF";customToggleBtn.style.background=isCustomMode?"rgba(255,255,255,0.1)":"transparent";customToggleBtn.style.color=isCustomMode?"#fff":"var(--text)";presetMode.style.display=isCustomMode?'none':'grid';customMode.style.display=isCustomMode?'flex':'none';}else{applyThemePalette(themeSel.value);catSel.dispatchEvent(new Event('change'));}}
 
-        function initStickerInteractions(stk) {
-            let isM = false, isR = false, sX, sY, sL, sA, sScale = 1, sRot = 0, center = {};
-            
-            const startMove = (e) => {
-                if(drawMode || e.target.classList.contains('sticker-ctrl')) return;
-                e.stopPropagation(); document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
-                stk.classList.add('sticker-active'); isM = true; 
-                sX = e.clientX || e.touches[0].clientX; sY = e.clientY || e.touches[0].clientY;
-                if(e.pointerId) stk.setPointerCapture(e.pointerId);
-            };
-            stk.addEventListener('mousedown', startMove); stk.addEventListener('touchstart', startMove, {passive: false});
+    // ══════════ PRESET SYSTEM ══════════
+    const PRESET_KEY='arch_presets_v1';
+    function getPresets(){try{return JSON.parse(localStorage.getItem(PRESET_KEY))||[];}catch(e){return[];}}
+    function setPresets(arr){localStorage.setItem(PRESET_KEY,JSON.stringify(arr));}
 
-            const startResize = (e) => {
-                e.stopPropagation(); e.preventDefault(); isR = true;
-                const pR = cap.getBoundingClientRect(), s = 1080/pR.width, rect = stk.getBoundingClientRect();
-                center = { x: (rect.left + rect.width/2 - pR.left)*s, y: (rect.top + rect.height/2 - pR.top)*s };
-                sX = ((e.clientX || e.touches[0].clientX) - pR.left)*s; sY = ((e.clientY || e.touches[0].clientY) - pR.top)*s;
-                sL = Math.hypot(sX - center.x, sY - center.y); sA = Math.atan2(sY - center.y, sX - center.x);
-                const tr = window.getComputedStyle(stk).transform;
-                if(tr !== 'none') { const v = tr.split('(')[1].split(')')[0].split(','); sRot = Math.atan2(v[1], v[0]); sScale = Math.sqrt(v[0]*v[0] + v[1]*v[1]); }
-            };
-            const rBtn = stk.querySelector('.sticker-resize');
-            rBtn.addEventListener('mousedown', startResize); rBtn.addEventListener('touchstart', startResize, {passive: false});
+    function renderPresets(){const list=document.getElementById('presetList');list.innerHTML='';const presets=getPresets();if(!presets.length){list.innerHTML='<span style="font-size:0.68rem;color:#555;letter-spacing:1px;">저장된 프리셋 없음</span>';return;}
+    presets.forEach((p,i)=>{const btn=document.createElement('div');btn.className='preset-btn';btn.innerHTML=`<span>${p.name}</span><span class="p-del" data-idx="${i}">✕</span>`;btn.addEventListener('click',e=>{if(e.target.classList.contains('p-del')){e.stopPropagation();const idx=parseInt(e.target.dataset.idx);const arr=getPresets();arr.splice(idx,1);setPresets(arr);renderPresets();return;}loadPreset(p.data);});list.appendChild(btn);});}
 
-            const onMove = (e) => {
-                if(!isM && !isR) return;
-                const pR = cap.getBoundingClientRect(), s = 1080/pR.width;
-                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                if(isM) { 
-                    e.preventDefault();
-                    stk.style.left = (parseFloat(stk.style.left || 0) + (clientX - sX)*s) + 'px'; 
-                    stk.style.top = (parseFloat(stk.style.top || 0) + (clientY - sY)*s) + 'px'; 
-                    sX = clientX; sY = clientY; 
-                }
-                if(isR) {
-                    e.preventDefault();
-                    const cX = (clientX - pR.left)*s, cY = (clientY - pR.top)*s;
-                    stk.style.transform = `scale(${(Math.hypot(cX - center.x, cY - center.y) / sL) * sScale}) rotate(${((Math.atan2(cY - center.y, cX - center.x) - sA) + sRot) * (180/Math.PI)}deg)`;
-                }
-            };
-            window.addEventListener('mousemove', onMove); window.addEventListener('touchmove', onMove, {passive: false});
-            
-            const onEnd = () => { isM = false; isR = false; };
-            window.addEventListener('mouseup', onEnd); window.addEventListener('touchend', onEnd);
-        }
+    function loadPreset(data){if(data.thm)themeSel.value=data.thm;if(data.fnt)fontSel.value=data.fnt;if(data.size)sizeSlide.value=data.size;if(data.c1)document.getElementById('c1').value=data.c1;if(data.c2)document.getElementById('c2').value=data.c2;if(data.c3)document.getElementById('c3').value=data.c3;if(data.c4)document.getElementById('c4').value=data.c4;if(data.pad)padSlide.value=data.pad;if(data.rad)radSlide.value=data.rad;
+    if(data.customMode!==undefined){isCustomMode=data.customMode;customToggleBtn.innerText=isCustomMode?"CUSTOM ON":"CUSTOM OFF";customToggleBtn.style.background=isCustomMode?"rgba(255,255,255,0.1)":"transparent";customToggleBtn.style.color=isCustomMode?"#fff":"var(--text)";presetMode.style.display=isCustomMode?'none':'grid';customMode.style.display=isCustomMode?'flex':'none';}
+    if(data.customMode){customCat.value=data.customCat||'';customChar.value=data.customChar||'';customCreator.value=data.customCreator||'';}else{if(data.cat){catSel.value=data.cat;if(archList[data.cat]){charSel.innerHTML="";archList[data.cat].forEach(n=>charSel.add(new Option(n,n)));}if(data.char)charSel.value=data.char;}}
+    updateLayout();renderDOM();}
 
-        function renderDOM() {
-            const t = themeSel.value; cap.className = 'theme-' + t;
-            
-            document.querySelectorAll('.y2k-item, .diary-item, .sf-item, .polaroid-item').forEach(el => el.style.display = 'none');
-            document.getElementById('c3-box').style.display = 'none'; document.getElementById('c4-box').style.display = 'none';
+    document.getElementById('presetSaveBtn').addEventListener('click',()=>{const name=document.getElementById('presetNameInput').value.trim();if(!name){alert('프리셋 이름을 입력하세요.');return;}const presets=getPresets();if(presets.length>=8){alert('프리셋은 최대 8개까지 저장 가능합니다.');return;}
+    const data={cat:catSel.value,char:charSel.value,thm:themeSel.value,fnt:fontSel.value,size:sizeSlide.value,c1:document.getElementById('c1').value,c2:document.getElementById('c2').value,c3:document.getElementById('c3').value,c4:document.getElementById('c4').value,pad:padSlide.value,rad:radSlide.value,customMode:isCustomMode,customCat:customCat.value,customChar:customChar.value,customCreator:customCreator.value};
+    presets.push({name,data});setPresets(presets);document.getElementById('presetNameInput').value='';renderPresets();});
 
-            if(t === 'y2k') { 
-                document.querySelectorAll('.y2k-item').forEach(el => el.style.display = 'flex'); 
-                document.getElementById('c3-box').style.display = 'flex'; document.getElementById('c4-box').style.display = 'flex'; 
-            }
-            if(t === 'diary') {
-                document.querySelectorAll('.diary-item').forEach(el => el.style.display = 'flex');
-                const dv = document.getElementById('diary-date-val');
-                if(dv){ const d = new Date(); dv.textContent = d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0'); }
-            }
-            if(t === 'sf') {
-                document.querySelectorAll('.sf-item').forEach(el => el.style.display = 'block');
-                document.getElementById('c3-box').style.display = 'flex';
-            }
-            if(t === 'polaroid') { document.querySelectorAll('.polaroid-item').forEach(el => el.style.display = 'block'); document.getElementById('c4-box').style.display = 'flex'; }
+    // 캡처
+    document.getElementById('saveBtn').onclick=async()=>{document.querySelectorAll('.sticker').forEach(s=>s.classList.remove('sticker-active'));const w=1080,h=ratioSel.value==='1:1'?1080:1920;try{await document.fonts.ready;}catch(e){}window.scrollTo(0,0);const prev={transform:cap.style.transform,position:cap.style.position,top:cap.style.top,left:cap.style.left,zIndex:cap.style.zIndex,overflow:wrapper.style.overflow,bodyOverflow:document.body.style.overflow};cap.style.transform='none';cap.style.position='fixed';cap.style.top='0';cap.style.left='0';cap.style.zIndex='99999';wrapper.style.overflow='visible';document.body.style.overflow='hidden';const restore=()=>{cap.style.transform=prev.transform;cap.style.position=prev.position;cap.style.top=prev.top;cap.style.left=prev.left;cap.style.zIndex=prev.zIndex;wrapper.style.overflow=prev.overflow;document.body.style.overflow=prev.bodyOverflow;};
+    setTimeout(()=>{html2canvas(cap,{scale:1,useCORS:true,allowTaint:true,backgroundColor:'#000',width:w,height:h,windowWidth:w,windowHeight:h,scrollX:0,scrollY:0,logging:false}).then(canvas=>{restore();const a=document.createElement('a');a.download=`ARCH_EXCERPT_${Date.now()}.png`;a.href=canvas.toDataURL();a.click();}).catch(err=>{restore();console.error(err);alert("렌더링 오류");});},300);};
 
-            cap.style.setProperty('--c1', document.getElementById('c1').value); 
-            cap.style.setProperty('--c2', document.getElementById('c2').value);
-            cap.style.setProperty('--c3', document.getElementById('c3').value); 
-            cap.style.setProperty('--c4', document.getElementById('c4').value);
-            cap.style.setProperty('--pad', padSlide.value + 'px'); 
-            cap.style.setProperty('--rad', radSlide.value + 'px');
-            
-            if(isCustomMode) {
-                const cCatText = customCat.value || 'UNKNOWN';
-                const cCharText = customChar.value || 'UNKNOWN';
-                displayTitle.innerText = `${cCatText} | ${cCharText}`;
-                displayWatermark.innerText = customCreator.value || 'SAMPLE';
-            } else {
-                displayTitle.innerText = `${catSel.value} | ${charSel.value}`;
-                displayWatermark.innerText = `ARCH @체리망고`;
-            }
-
-            displayTitle.style.fontFamily = fontSel.value;
-            displayWatermark.style.fontFamily = fontSel.value;
-            editor.style.fontFamily = fontSel.value; editor.style.fontSize = sizeSlide.value + 'px';
-            
-            if(t === 'y2k' || t === 'diary' || t === 'polaroid') {
-                cap.style.setProperty('--editor-color', '#000000');
-                cap.style.setProperty('--text-color', '#1a1a1a');
-                cap.style.setProperty('--wm-color', 'rgba(0,0,0,0.55)');
-            } else {
-                cap.style.setProperty('--editor-color', '#ffffff');
-                cap.style.setProperty('--text-color', '#ffffff');
-                cap.style.setProperty('--wm-color', 'rgba(255,255,255,0.6)');
-            }
-            
-            const txtBody = document.getElementById('text-body') || document.getElementById('y2k-screen-wrap');
-            if(t === 'y2k') { txtBody.id="text-body"; txtBody.className="y2k-screen"; txtBody.style.padding='var(--pad, 50px)'; } 
-            else if(t === 'polaroid') { txtBody.id="text-body"; txtBody.className="polaroid-screen"; txtBody.style.padding='var(--pad, 40px)'; }
-            else { txtBody.id="text-body"; txtBody.className=""; txtBody.style.padding='0'; }
-
-            saveSettings();
-        }
-
-        function applyBgUrl(url) {
-            if(!url) {
-                bgImg.style.display = 'none';
-                bgImg.style.backgroundImage = 'none';
-                cap.style.setProperty('--photo', 'none');
-                return;
-            }
-            bgImg.style.display = 'block';
-            bgImg.style.backgroundImage = `url(${url})`;
-            cap.style.setProperty('--photo', `url(${url})`); // 폴라로이드 창 등에서 사용
-        }
-
-        function updateBackground() {
-            if(!rawBgImageSrc) { applyBgUrl(null); return; }
-            if(blurSlide.value == 0) { applyBgUrl(rawBgImageSrc); saveSettings(); return; }
-
-            const img = new Image(); img.crossOrigin = "Anonymous";
-            img.onload = () => {
-                const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const ctx = c.getContext('2d');
-                ctx.filter = `blur(${blurSlide.value * (img.width/1080)}px)`; ctx.drawImage(img, 0, 0);
-                applyBgUrl(c.toDataURL());
-            };
-            img.src = rawBgImageSrc;
-            saveSettings();
-        }
-
-        const bgInput = document.getElementById('bgFile');
-        bgInput.addEventListener('change', function(e) {
-            const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader(); 
-            r.onload = (ev) => { rawBgImageSrc = ev.target.result; updateBackground(); }; 
-            r.readAsDataURL(file);
-            setTimeout(() => { e.target.value = ''; }, 100);
-        });
-        document.getElementById('delBgBtn').onclick = () => { rawBgImageSrc = null; applyBgUrl(null); saveSettings(); };
-        document.getElementById('blurSlide').addEventListener('change', updateBackground);
-
-        const r19Btn = document.getElementById('r19Btn');
-        const r19Toggle = document.getElementById('r19Toggle');
-        r19Btn.onclick = () => {
-            r19Toggle.classList.toggle('active');
-            document.getElementById('r19-badge').style.display = r19Toggle.classList.contains('active') ? 'flex' : 'none';
-        };
-
-        drawBtn.onclick = () => { drawMode = !drawMode; drawBtn.innerText = drawMode ? "PEN ON" : "PEN OFF"; drawBtn.classList.toggle('active', drawMode); document.getElementById('drawing-canvas').style.pointerEvents = drawMode ? "auto" : "none"; };
-        
-        const startDraw = (e) => {
-            if(!drawMode) return; isDrawing = true; e.preventDefault();
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; 
-            dCtx.beginPath(); dCtx.moveTo((clientX-r.left)*s, (clientY-r.top)*s); 
-            dCtx.strokeStyle = document.getElementById('penColor').value; 
-            dCtx.lineWidth = parseInt(document.getElementById('penSize').value); 
-            dCtx.lineCap="round"; dCtx.lineJoin="round"; 
-        };
-        dCanvas.addEventListener('mousedown', startDraw); dCanvas.addEventListener('touchstart', startDraw, {passive: false});
-
-        const moveDraw = (e) => {
-            if(!isDrawing) return; e.preventDefault();
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            const r = dCanvas.getBoundingClientRect(), s = 1080/r.width; 
-            dCtx.lineTo((clientX-r.left)*s, (clientY-r.top)*s); dCtx.stroke(); 
-        };
-        dCanvas.addEventListener('mousemove', moveDraw); dCanvas.addEventListener('touchmove', moveDraw, {passive: false});
-        
-        const endDraw = () => isDrawing = false;
-        window.addEventListener('mouseup', endDraw); window.addEventListener('touchend', endDraw);
-        document.getElementById('clearBtn').onclick = () => { if(confirm("낙서를 모두 지우겠습니까? (Clear Canvas?)")) dCtx.clearRect(0,0,1080,1080); };
-        
-        for(let c in archList) catSel.add(new Option(c, c));
-        catSel.onchange = () => { charSel.innerHTML = ""; archList[catSel.value].forEach(n => charSel.add(new Option(n, n))); renderDOM(); };
-
-        const manualModal = document.getElementById('manualModal');
-        document.getElementById('manualBtn').onclick = () => { manualModal.classList.add('show'); };
-        document.getElementById('closeModalBtn').onclick = () => { manualModal.classList.remove('show'); };
-        window.onclick = (e) => { if (e.target == manualModal) manualModal.classList.remove('show'); };
-        
-        document.getElementById('resetBtn').onclick = () => { 
-            if(confirm("모든 설정을 초기화하시겠습니까? (Reset Everything?)")) { 
-                localStorage.removeItem('arch_final_v_touch_v8'); 
-                location.reload(); 
-            } 
-        };
-        
-        document.querySelectorAll('input:not([type="color"]), select').forEach(el => { 
-            el.addEventListener('input', (e) => {
-                if (el.id === 'ratioSel' || el.id === 'themeSel') updateLayout(); 
-                if (el.id === 'themeSel') applyThemePalette(themeSel.value);
-                renderDOM(); 
-            });
-        });
-        
-        function updateLayout() {
-            const w = 1080, h = ratioSel.value === '1:1' ? 1080 : 1920;
-            const b = document.createElement('canvas'); b.width = dCanvas.width; b.height = dCanvas.height; b.getContext('2d').drawImage(dCanvas,0,0);
-            cap.style.width = w + 'px'; cap.style.height = h + 'px'; dCanvas.width = w; dCanvas.height = h; dCtx.drawImage(b,0,0);
-            const sc = wrapper.clientWidth / w; cap.style.transform = `scale(${sc})`; wrapper.style.height = (h*sc) + 'px';
-        }
-        window.onresize = updateLayout; 
-        
-        function saveSettings() { 
-            const s = { 
-                cat: catSel.value, char: charSel.value, rat: ratioSel.value, thm: themeSel.value, fnt: fontSel.value, 
-                size: sizeSlide.value, c1: document.getElementById('c1').value, c2: document.getElementById('c2').value, 
-                c3: document.getElementById('c3').value, c4: document.getElementById('c4').value, pad: padSlide.value, 
-                rad: radSlide.value, blur: blurSlide.value, html: editor.innerHTML,
-                customMode: isCustomMode, customCat: customCat.value, customChar: customChar.value, customCreator: customCreator.value
-            }; 
-            localStorage.setItem('arch_final_v_touch_v8', JSON.stringify(s)); 
-        }
-
-        function loadSettings() { 
-            let s = null;
-            try {
-                s = JSON.parse(localStorage.getItem('arch_final_v_touch_v8'));
-            } catch(err) {
-                console.warn('저장된 설정이 손상되어 초기화합니다.', err);
-                localStorage.removeItem('arch_final_v_touch_v8');
-                s = null;
-            }
-            if(s) { 
-                catSel.value = s.cat; 
-                if(archList[s.cat]) { charSel.innerHTML = ""; archList[s.cat].forEach(n => charSel.add(new Option(n, n))); }
-                charSel.value = s.char; ratioSel.value = s.rat; themeSel.value = s.thm; fontSel.value = s.fnt; sizeSlide.value = s.size; 
-                document.getElementById('c1').value = s.c1; document.getElementById('c2').value = s.c2; 
-                if(s.c3) document.getElementById('c3').value = s.c3; if(s.c4) document.getElementById('c4').value = s.c4; 
-                padSlide.value = s.pad; radSlide.value = s.rad; if(s.blur) blurSlide.value = s.blur; 
-                if(s.html) editor.innerHTML = s.html; 
-                
-                isCustomMode = s.customMode || false;
-                customCat.value = s.customCat || ''; customChar.value = s.customChar || ''; customCreator.value = s.customCreator || '';
-                
-                customToggleBtn.innerText = isCustomMode ? "CUSTOM ON" : "CUSTOM OFF";
-                customToggleBtn.style.background = isCustomMode ? "rgba(255,255,255,0.1)" : "transparent";
-                customToggleBtn.style.color = isCustomMode ? "#fff" : "var(--text)";
-                presetMode.style.display = isCustomMode ? 'none' : 'grid';
-                customMode.style.display = isCustomMode ? 'flex' : 'none';
-            } else {
-                applyThemePalette(themeSel.value);
-                catSel.dispatchEvent(new Event('change'));
-            }
-        }
-
-        window.onload = () => { 
-            loadSettings(); 
-            updateLayout(); renderDOM(); 
-            const parsedUrl = new URL(window.location.href);
-            const sharedText = parsedUrl.searchParams.get('text') || parsedUrl.searchParams.get('title');
-            if (sharedText) { 
-                editor.innerHTML = decodeURIComponent(sharedText).replace(/\n/g, '<br>'); 
-                saveSettings(); 
-            }
-        };
-
-        // 캡처 엔진 가상 해상도 및 모바일 짤림 방어
-        document.getElementById('saveBtn').onclick = async () => {
-            document.querySelectorAll('.sticker').forEach(s => s.classList.remove('sticker-active'));
-            
-            const w = 1080;
-            const h = ratioSel.value === '1:1' ? 1080 : 1920;
-
-            // 웹폰트가 캡처보다 늦게 로딩되어 PNG 폰트가 깨지는 문제 방지
-            try { await document.fonts.ready; } catch(e) {}
-            
-            window.scrollTo(0, 0); 
-
-            // 원래 스타일 백업 (캡처 후 복구용)
-            const prev = {
-                transform: cap.style.transform,
-                position: cap.style.position,
-                top: cap.style.top,
-                left: cap.style.left,
-                zIndex: cap.style.zIndex,
-                overflow: wrapper.style.overflow,
-                bodyOverflow: document.body.style.overflow
-            };
-
-            // 캡처 대상을 화면 좌상단에 1:1 실측 배치 (모바일에서 화면 밖으로 나가 잘리는 현상 방지)
-            cap.style.transform = 'none'; 
-            cap.style.position = 'fixed';
-            cap.style.top = '0';
-            cap.style.left = '0';
-            cap.style.zIndex = '99999';
-            wrapper.style.overflow = 'visible'; 
-            document.body.style.overflow = 'hidden';
-
-            const restore = () => {
-                cap.style.transform = prev.transform;
-                cap.style.position = prev.position;
-                cap.style.top = prev.top;
-                cap.style.left = prev.left;
-                cap.style.zIndex = prev.zIndex;
-                wrapper.style.overflow = prev.overflow;
-                document.body.style.overflow = prev.bodyOverflow;
-            };
-            
-            setTimeout(() => {
-                html2canvas(cap, { 
-                    scale: 1, 
-                    useCORS: true, 
-                    allowTaint: true,
-                    backgroundColor: '#000', 
-                    width: w,          
-                    height: h,         
-                    windowWidth: w,    
-                    windowHeight: h,   
-                    scrollX: 0,
-                    scrollY: 0,
-                    logging: false
-                }).then(canvas => {
-                    restore();
-                    
-                    const a = document.createElement('a'); 
-                    a.download = `ARCH_EXCERPT_${Date.now()}.png`; 
-                    a.href = canvas.toDataURL(); 
-                    a.click();
-                }).catch(err => {
-                    restore();
-                    console.error("Capture Error: ", err);
-                    alert("이미지 렌더링 중 오류가 발생했습니다.");
-                });
-            }, 300);
-        };
+    window.onload=()=>{loadSettings();updateLayout();renderDOM();renderPresets();const u=new URL(window.location.href);const t=u.searchParams.get('text')||u.searchParams.get('title');if(t){editor.innerHTML=decodeURIComponent(t).replace(/\n/g,'<br>');saveSettings();}};
     </script>
 </body>
 </html>
