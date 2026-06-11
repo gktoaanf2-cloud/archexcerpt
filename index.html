@@ -48,6 +48,10 @@
         /* ═══ STANDARD ═══ */
         .theme-standard #card { background:transparent!important; border:none!important; box-shadow:none!important; width:85%; position:relative; z-index:2; padding:var(--pad,80px); }
 
+        /* ═══ GRADIENT ═══ */
+        .theme-gradient { background:linear-gradient(135deg, var(--c1,#0f0c29), var(--c2,#302b63))!important; }
+        .theme-gradient #card { background:transparent!important; border:none!important; box-shadow:none!important; width:85%; position:relative; z-index:2; padding:var(--pad,80px); }
+
         /* ═══ POLAROID ═══ */
         .theme-polaroid { background:var(--c1,#efeae2)!important; background-image:radial-gradient(circle at 28% 22%,rgba(255,255,255,0.6),transparent 60%)!important; }
         .theme-polaroid .bg-img { display:none!important; }
@@ -62,7 +66,7 @@
 
         /* ═══ Y2K (장식: capture-area 외곽 고정) ═══ */
         .theme-y2k { background:var(--c3,#dfe7ee)!important; background-image:linear-gradient(155deg,var(--c3,#dfe7ee),#ffffff 72%)!important; }
-        .theme-y2k #card { width:100%; height:100%; background:var(--c1,rgba(255,255,255,0.72))!important; border:none!important; border-radius:0; padding:0!important; overflow:hidden; position:relative; z-index:2; box-shadow:none!important; display:flex; align-items:center; justify-content:center; }
+        .theme-y2k #card { width:85%; background:var(--c1,rgba(255,255,255,0.72))!important; border:none!important; border-radius:0; padding:0!important; overflow:hidden; position:relative; z-index:2; box-shadow:none!important; }
         .y2k-top-bar { position:absolute; top:0; left:0; right:0; background:transparent; border-bottom:1px solid var(--c2,#2b2f36); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:14px; z-index:50; }
         .y2k-brand { font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:500; color:var(--c2,#2b2f36); letter-spacing:5px; text-transform:uppercase; display:flex; align-items:center; gap:9px; white-space:nowrap; }
         .y2k-brand::before { content:'◖◗'; letter-spacing:-3px; font-size:11px; opacity:0.7; }
@@ -88,7 +92,7 @@
 
         /* ═══ SF (장식: capture-area 외곽 고정) ═══ */
         .theme-sf { background-color:var(--c1,#06080d)!important; background-image:radial-gradient(circle at 50% 36%,rgba(120,185,210,0.10),transparent 56%)!important; }
-        .theme-sf #card { width:100%; height:100%; padding:var(--pad,60px)!important; background-color:transparent!important; border:none!important; position:relative; z-index:2; box-shadow:none!important; display:flex; align-items:center; justify-content:center; }
+        .theme-sf #card { width:85%; padding:var(--pad,60px)!important; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; }
         .sf-corner { position:absolute; width:32px; height:32px; border:1px solid var(--c2,#a9d8e3); opacity:0.5; pointer-events:none; box-sizing:border-box; z-index:50; }
         .sf-corner.tl { top:24px; left:24px; border-right:none; border-bottom:none; }
         .sf-corner.tr { top:24px; right:24px; border-left:none; border-bottom:none; }
@@ -261,7 +265,7 @@
                 </div>
                 <div class="row-2" style="margin-top:15px;">
                     <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1 (SQUARE)</option><option value="9:16">9:16 (STORY)</option></select></div>
-                    <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
+                    <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="gradient">Gradient</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
                 </div>
                 <div class="row-2">
                     <div><label>폰트</label><select id="fontSel">
@@ -358,7 +362,7 @@
 
     const colorPickers=['c1','c2','c3','c4'];
     colorPickers.forEach(id=>{document.getElementById(id).addEventListener('input',e=>{cap.style.setProperty(`--${id}`,e.target.value);});document.getElementById(id).addEventListener('change',saveSettings);});
-    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'}};
+    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},gradient:{c1:'#0f0c29',c2:'#302b63',c3:'#24243e',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'}};
     function applyThemePalette(t){const p=themePalettes[t];if(!p)return;['c1','c2','c3','c4'].forEach(k=>{const el=document.getElementById(k);el.value=p[k];cap.style.setProperty('--'+k,p[k]);});}
 
     customToggleBtn.onclick=()=>{isCustomMode=!isCustomMode;customToggleBtn.innerText=isCustomMode?"CUSTOM ON":"CUSTOM OFF";customToggleBtn.style.background=isCustomMode?"rgba(255,255,255,0.1)":"transparent";customToggleBtn.style.color=isCustomMode?"#fff":"var(--text)";presetMode.style.display=isCustomMode?'none':'grid';customMode.style.display=isCustomMode?'flex':'none';renderDOM();};
