@@ -55,12 +55,15 @@
         /* ═══ POLAROID ═══ */
         .theme-polaroid { background:var(--c1,#efeae2)!important; background-image:radial-gradient(circle at 28% 22%,rgba(255,255,255,0.6),transparent 60%)!important; }
         .theme-polaroid .bg-img { display:none!important; }
-        .polaroid-item { position:absolute; z-index:1; background:var(--c2,#fffdf9); border:1px solid rgba(0,0,0,0.08); box-shadow:none; }
-        .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%; background:var(--c4,#e7e1d6); border:1px solid rgba(0,0,0,0.06); }
+        .polaroid-item { position:absolute; z-index:1; background:var(--c2,#fffdf9); border:none; box-shadow:none; }
+        .polaroid-item::after { content:''; position:absolute; top:8%; left:8%; width:84%; height:70%; background:var(--c4,#e7e1d6); border:none; }
+        /* 폴라로이드 프레임 하단 그라데이션 깊이감 */
+        .polaroid-item::before { content:''; position:absolute; bottom:0; left:0; right:0; height:30%; background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.04)); z-index:1; pointer-events:none; }
         .pl-back-1 { width:44%; height:50%; top:7%; left:6%; transform:rotate(-8deg); }
         .pl-back-2 { width:38%; height:44%; bottom:7%; right:6%; transform:rotate(7deg); }
-        .theme-polaroid #card { width:64%; background:var(--c2,#fffdf9)!important; padding:20px 20px 0 20px!important; border:1px solid rgba(0,0,0,0.08)!important; box-shadow:none!important; position:relative; z-index:3; border-radius:2px; transform:rotate(-1.5deg); }
-        .polaroid-screen { background-color:var(--c4,#e7e1d6); background-image:var(--photo,none); background-size:cover; background-position:center; width:100%; aspect-ratio:1/1; min-height:360px; display:flex; align-items:center; justify-content:center; color:#000!important; box-sizing:border-box; position:relative; overflow:visible; border:1px solid rgba(0,0,0,0.08); }
+        .theme-polaroid #card { width:64%; background:var(--c2,#fffdf9)!important; padding:20px 20px 0 20px!important; border:none!important; box-shadow:none!important; position:relative; z-index:3; border-radius:2px; transform:rotate(-1.5deg); }
+        .theme-polaroid #card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:25%; background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.03))!important; pointer-events:none; z-index:0; }
+        .polaroid-screen { background-color:var(--c4,#e7e1d6); background-image:var(--photo,none); background-size:cover; background-position:center; width:100%; aspect-ratio:1/1; min-height:360px; display:flex; align-items:center; justify-content:center; color:#000!important; box-sizing:border-box; position:relative; overflow:visible; }
         .polaroid-spacer { display:none; }
         .theme-polaroid .polaroid-spacer { display:block; width:100%; height:116px; flex-shrink:0; }
 
@@ -84,8 +87,9 @@
 
         /* ═══ DIARY ═══ */
         .theme-diary { background:var(--c1,#e9e0cd)!important; background-image:radial-gradient(circle at 70% 18%,rgba(255,255,255,0.55),transparent 60%)!important; }
-        .theme-diary #card { width:80%; background-color:#fbf6ea!important; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,rgba(55,85,120,0.15) 47px,rgba(55,85,120,0.15) 48px)!important; background-position:0 74px!important; padding:62px 54px 60px 86px!important; border:1px solid rgba(0,0,0,0.08)!important; box-shadow:none!important; position:relative; z-index:2; border-radius:2px; color:#2a2622!important; }
+        .theme-diary #card { width:80%; background-color:#fbf6ea!important; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,rgba(55,85,120,0.15) 47px,rgba(55,85,120,0.15) 48px)!important; background-position:0 74px!important; padding:62px 54px 60px 86px!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; border-radius:2px; color:#2a2622!important; overflow:hidden; }
         .theme-diary #card::before { content:''; position:absolute; top:0; left:62px; width:1px; height:100%; background:rgba(195,70,70,0.45); z-index:1; }
+        .theme-diary #card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:20%; background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.03)); pointer-events:none; z-index:1; }
         .diary-date { position:absolute; top:24px; left:86px; right:54px; z-index:50; display:flex; justify-content:space-between; align-items:baseline; font-family:'Helvetica Neue',Arial,sans-serif; color:rgba(70,60,48,0.55); font-size:12px; letter-spacing:4px; text-transform:uppercase; border-bottom:1px solid rgba(0,0,0,0.07); padding-bottom:8px; }
         .diary-ribbon { position:absolute; top:-8px; right:13%; width:26px; height:124px; background:var(--c2,#b03f3d); box-shadow:none; z-index:50; }
         .diary-ribbon::after { content:''; position:absolute; bottom:-13px; left:0; border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
