@@ -32,10 +32,10 @@
         .drawing-layer { position:absolute; top:0; left:0; width:100%; height:100%; z-index:15; pointer-events:none; }
         #drawing-canvas { width:100%; height:100%; pointer-events:none; touch-action:none; display:block; }
 
-        /* ── 하단 정보 그룹 (수정: 더 안쪽, 얇은 볼드, 옅은 그림자) ── */
-        .info-group { position:absolute; bottom:42px; left:55px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:2px; white-space:normal; max-width:55%; }
-        .info-title { font-size:20px; font-weight:700; color:var(--text-color,#fff); letter-spacing:1px; text-shadow:0 1px 4px rgba(0,0,0,0.5); }
-        .info-watermark { font-size:12px; font-weight:400; color:var(--wm-color,rgba(255,255,255,0.5)); letter-spacing:3px; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.4); }
+        /* ── 하단 정보 그룹 (얇은 상단 라인 + 안쪽 배치) ── */
+        .info-group { position:absolute; bottom:48px; left:60px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
+        .info-title { font-size:18px; font-weight:600; color:var(--text-color,#fff); letter-spacing:1.5px; text-shadow:0 1px 3px rgba(0,0,0,0.4); }
+        .info-watermark { font-size:11px; font-weight:400; color:var(--wm-color,rgba(255,255,255,0.45)); letter-spacing:3px; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.3); }
 
         #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
         #r19-badge span { font-size:11px; }
@@ -60,10 +60,10 @@
         .polaroid-spacer { display:none; }
         .theme-polaroid .polaroid-spacer { display:block; width:100%; height:116px; flex-shrink:0; }
 
-        /* ═══ Y2K (수정: 내부 박스 제거, 카드 자체가 콘텐츠 영역) ═══ */
+        /* ═══ Y2K (장식: capture-area 외곽 고정) ═══ */
         .theme-y2k { background:var(--c3,#dfe7ee)!important; background-image:linear-gradient(155deg,var(--c3,#dfe7ee),#ffffff 72%)!important; }
-        .theme-y2k #card { width:84%; background:var(--c1,rgba(255,255,255,0.72))!important; border:1px solid var(--c2,#2b2f36)!important; border-radius:14px; padding:0!important; overflow:hidden; position:relative; z-index:2; box-shadow:0 26px 54px rgba(40,55,80,0.20)!important; }
-        .y2k-top-bar { background:transparent; border-bottom:1px solid var(--c2,#2b2f36); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:14px; }
+        .theme-y2k #card { width:100%; height:100%; background:var(--c1,rgba(255,255,255,0.72))!important; border:none!important; border-radius:0; padding:0!important; overflow:hidden; position:relative; z-index:2; box-shadow:none!important; display:flex; align-items:center; justify-content:center; }
+        .y2k-top-bar { position:absolute; top:0; left:0; right:0; background:transparent; border-bottom:1px solid var(--c2,#2b2f36); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:14px; z-index:50; }
         .y2k-brand { font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; font-weight:500; color:var(--c2,#2b2f36); letter-spacing:5px; text-transform:uppercase; display:flex; align-items:center; gap:9px; white-space:nowrap; }
         .y2k-brand::before { content:'◖◗'; letter-spacing:-3px; font-size:11px; opacity:0.7; }
         .y2k-eq { display:flex; align-items:flex-end; gap:3px; height:15px; opacity:0.8; }
@@ -71,9 +71,8 @@
         .y2k-eq i:nth-child(1){height:5px}.y2k-eq i:nth-child(2){height:12px}.y2k-eq i:nth-child(3){height:8px}.y2k-eq i:nth-child(4){height:15px}.y2k-eq i:nth-child(5){height:7px}.y2k-eq i:nth-child(6){height:11px}.y2k-eq i:nth-child(7){height:4px}
         .y2k-window-controls { display:flex; gap:9px; }
         .y2k-window-controls span { width:10px; height:10px; border:1px solid var(--c2,#2b2f36); background:transparent; border-radius:50%; }
-        /* Y2K: 내부 스크린 박스 제거 → 카드 직접 패딩 */
         .y2k-screen-wrap { padding:var(--pad,50px); min-height:340px; display:flex; align-items:center; justify-content:center; color:#000!important; }
-        .y2k-ui-elements { padding:2px 20px 18px 20px; display:flex; justify-content:space-between; align-items:center; gap:18px; width:100%; box-sizing:border-box; border-top:1px solid rgba(0,0,0,0.06); }
+        .y2k-ui-elements { position:absolute; bottom:0; left:0; right:0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; gap:18px; box-sizing:border-box; border-top:1px solid rgba(0,0,0,0.08); z-index:50; }
         .y2k-bar { flex:1; height:1px; background:var(--c2,#2b2f36); opacity:0.45; position:relative; }
         .y2k-bar::before { content:''; position:absolute; left:0; top:0; width:38%; height:1px; background:var(--c2,#2b2f36); opacity:1; }
         .y2k-bar::after { content:''; position:absolute; left:38%; top:50%; width:8px; height:8px; transform:translate(-50%,-50%); border:1px solid var(--c2,#2b2f36); border-radius:50%; background:var(--c1,#fff); }
@@ -83,22 +82,22 @@
         .theme-diary { background:var(--c1,#e9e0cd)!important; background-image:radial-gradient(circle at 70% 18%,rgba(255,255,255,0.55),transparent 60%)!important; }
         .theme-diary #card { width:80%; background-color:#fbf6ea!important; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,rgba(55,85,120,0.15) 47px,rgba(55,85,120,0.15) 48px)!important; background-position:0 74px!important; padding:62px 54px 60px 86px!important; box-shadow:0 26px 54px rgba(80,60,30,0.24)!important; position:relative; z-index:2; border-radius:2px; color:#2a2622!important; }
         .theme-diary #card::before { content:''; position:absolute; top:0; left:62px; width:1px; height:100%; background:rgba(195,70,70,0.45); z-index:1; }
-        .diary-date { position:absolute; top:24px; left:86px; right:54px; z-index:3; display:flex; justify-content:space-between; align-items:baseline; font-family:'Helvetica Neue',Arial,sans-serif; color:rgba(70,60,48,0.55); font-size:12px; letter-spacing:4px; text-transform:uppercase; border-bottom:1px solid rgba(0,0,0,0.07); padding-bottom:8px; }
-        .diary-ribbon { position:absolute; top:-8px; right:13%; width:26px; height:124px; background:var(--c2,#b03f3d); box-shadow:0 8px 14px rgba(0,0,0,0.22); z-index:4; }
+        .diary-date { position:absolute; top:24px; left:86px; right:54px; z-index:50; display:flex; justify-content:space-between; align-items:baseline; font-family:'Helvetica Neue',Arial,sans-serif; color:rgba(70,60,48,0.55); font-size:12px; letter-spacing:4px; text-transform:uppercase; border-bottom:1px solid rgba(0,0,0,0.07); padding-bottom:8px; }
+        .diary-ribbon { position:absolute; top:-8px; right:13%; width:26px; height:124px; background:var(--c2,#b03f3d); box-shadow:0 8px 14px rgba(0,0,0,0.22); z-index:50; }
         .diary-ribbon::after { content:''; position:absolute; bottom:-13px; left:0; border-left:13px solid var(--c2,#b03f3d); border-right:13px solid var(--c2,#b03f3d); border-bottom:13px solid transparent; }
 
-        /* ═══ SF (수정: 내부 구분 제거, 카드=터미널 박스) ═══ */
+        /* ═══ SF (장식: capture-area 외곽 고정) ═══ */
         .theme-sf { background-color:var(--c1,#06080d)!important; background-image:radial-gradient(circle at 50% 36%,rgba(120,185,210,0.10),transparent 56%)!important; }
-        .theme-sf #card { width:82%; padding:var(--pad,60px)!important; background-color:var(--c3,#0c1119)!important; background-image:linear-gradient(158deg,rgba(255,255,255,0.04),rgba(0,0,0,0.18))!important; border:1px solid rgba(150,200,222,0.18)!important; border-radius:2px; position:relative; z-index:2; box-shadow:inset 0 0 50px rgba(85,155,185,0.04),0 32px 72px rgba(0,0,0,0.7)!important; }
-        .sf-corner { position:absolute; width:28px; height:28px; border:1px solid var(--c2,#a9d8e3); opacity:0.6; pointer-events:none; box-sizing:border-box; }
-        .sf-corner.tl { top:10px; left:10px; border-right:none; border-bottom:none; }
-        .sf-corner.tr { top:10px; right:10px; border-left:none; border-bottom:none; }
-        .sf-corner.bl { bottom:10px; left:10px; border-right:none; border-top:none; }
-        .sf-corner.br { bottom:10px; right:10px; border-left:none; border-top:none; }
-        .sf-tick { position:absolute; left:50%; transform:translateX(-50%); width:30px; height:1px; background:var(--c2,#a9d8e3); opacity:0.3; pointer-events:none; }
-        .sf-tick.top { top:14px; } .sf-tick.bottom { bottom:14px; }
-        .sf-label { position:absolute; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--c2,#a9d8e3); opacity:0.4; z-index:4; pointer-events:none; white-space:nowrap; }
-        .sf-label.lt { top:18px; left:48px; } .sf-label.rb { bottom:18px; right:48px; }
+        .theme-sf #card { width:100%; height:100%; padding:var(--pad,60px)!important; background-color:transparent!important; border:none!important; position:relative; z-index:2; box-shadow:none!important; display:flex; align-items:center; justify-content:center; }
+        .sf-corner { position:absolute; width:32px; height:32px; border:1px solid var(--c2,#a9d8e3); opacity:0.5; pointer-events:none; box-sizing:border-box; z-index:50; }
+        .sf-corner.tl { top:24px; left:24px; border-right:none; border-bottom:none; }
+        .sf-corner.tr { top:24px; right:24px; border-left:none; border-bottom:none; }
+        .sf-corner.bl { bottom:24px; left:24px; border-right:none; border-top:none; }
+        .sf-corner.br { bottom:24px; right:24px; border-left:none; border-top:none; }
+        .sf-tick { position:absolute; left:50%; transform:translateX(-50%); width:30px; height:1px; background:var(--c2,#a9d8e3); opacity:0.3; pointer-events:none; z-index:50; }
+        .sf-tick.top { top:28px; } .sf-tick.bottom { bottom:28px; }
+        .sf-label { position:absolute; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--c2,#a9d8e3); opacity:0.4; z-index:50; pointer-events:none; white-space:nowrap; }
+        .sf-label.lt { top:32px; left:66px; } .sf-label.rb { bottom:32px; right:66px; }
 
         /* 스티커 */
         .sticker { position:absolute; z-index:20; padding:15px; cursor:move; touch-action:none; }
@@ -186,23 +185,30 @@
                 <div id="r19-badge">19금<span>주딱ON</span></div>
                 <div class="polaroid-item pl-back-1" style="display:none;"></div>
                 <div class="polaroid-item pl-back-2" style="display:none;"></div>
+
+                <!-- SF 장식: capture-area 외곽 고정 -->
+                <div class="sf-item sf-corner tl" style="display:none;"></div><div class="sf-item sf-corner tr" style="display:none;"></div>
+                <div class="sf-item sf-corner bl" style="display:none;"></div><div class="sf-item sf-corner br" style="display:none;"></div>
+                <div class="sf-item sf-tick top" style="display:none;"></div><div class="sf-item sf-tick bottom" style="display:none;"></div>
+                <div class="sf-item sf-label lt" style="display:none;">SYS / ARCHIVE</div>
+                <div class="sf-item sf-label rb" style="display:none;">CH.01 — REC</div>
+
+                <!-- Y2K 장식: capture-area 상하단 고정 -->
+                <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
+                    <span class="y2k-brand">Now Playing</span>
+                    <div class="y2k-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="y2k-window-controls"><span></span><span></span><span></span></div>
+                </div>
+                <div class="y2k-item y2k-ui-elements" id="y2k-ui" style="display:none;">
+                    <div class="y2k-btns">&#9474;&#9665;</div><div class="y2k-bar"></div><div class="y2k-btns">&#9655;&nbsp;&nbsp;&#9655;&#9474;</div>
+                </div>
+
+                <!-- 다이어리 장식: capture-area 레벨 -->
+                <div class="diary-item diary-date" style="display:none;"><span>JOURNAL</span><span id="diary-date-val"></span></div>
+                <div class="diary-item diary-ribbon" style="display:none;"></div>
+
                 <div id="card" class="card">
-                    <div class="sf-item sf-corner tl" style="display:none;"></div><div class="sf-item sf-corner tr" style="display:none;"></div>
-                    <div class="sf-item sf-corner bl" style="display:none;"></div><div class="sf-item sf-corner br" style="display:none;"></div>
-                    <div class="sf-item sf-tick top" style="display:none;"></div><div class="sf-item sf-tick bottom" style="display:none;"></div>
-                    <div class="sf-item sf-label lt" style="display:none;">SYS / ARCHIVE</div>
-                    <div class="sf-item sf-label rb" style="display:none;">CH.01 — REC</div>
-                    <div class="diary-item diary-date" style="display:none;"><span>JOURNAL</span><span id="diary-date-val"></span></div>
-                    <div class="diary-item diary-ribbon" style="display:none;"></div>
-                    <div class="y2k-item y2k-top-bar" id="y2k-top" style="display:none;">
-                        <span class="y2k-brand">Now Playing</span>
-                        <div class="y2k-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                        <div class="y2k-window-controls"><span></span><span></span><span></span></div>
-                    </div>
                     <div id="y2k-screen-wrap"><div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div></div>
-                    <div class="y2k-item y2k-ui-elements" id="y2k-ui" style="display:none;">
-                        <div class="y2k-btns">&#9474;&#9665;</div><div class="y2k-bar"></div><div class="y2k-btns">&#9655;&nbsp;&nbsp;&#9655;&#9474;</div>
-                    </div>
                     <div class="polaroid-spacer"></div>
                 </div>
             </div>
@@ -242,17 +248,6 @@
                 </div>
             </div>
 
-            <div class="panel">
-                <label>데코레이션 (Decoration)</label>
-                <div class="toolbar">
-                    <button class="tool-btn" id="drawBtn">PEN OFF</button>
-                    <button class="tool-btn" id="clearBtn">CLEAR ALL</button>
-                    <input type="color" class="color-pick" id="penColor" value="#ffffff">
-                    <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
-                </div>
-                <label style="margin-top:10px;">스티커 추가</label>
-                <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
-            </div>
 
             <div class="panel">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -292,7 +287,19 @@
 
             <details><summary>ADVANCED PARAMETERS <i class="fa-solid fa-gear"></i></summary>
                 <div class="details-in">
+                    <label>데코레이션 (Decoration)</label>
+                    <div class="toolbar">
+                        <button class="tool-btn" id="drawBtn">PEN OFF</button>
+                        <button class="tool-btn" id="clearBtn">CLEAR ALL</button>
+                        <input type="color" class="color-pick" id="penColor" value="#ffffff">
+                        <input type="range" id="penSize" min="2" max="40" value="6" style="width:60px;">
+                    </div>
+                    <label style="margin-top:6px;">스티커 추가</label>
+                    <input type="file" id="stickerFile" accept="image/*" class="btn-dim">
+
+                    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:15px; margin-top:8px;">
                     <div class="compact-row"><div><label>Padding</label><input type="range" id="padSlide" min="20" max="160" value="80"></div><div><label>Radius</label><input type="range" id="radSlide" min="0" max="100" value="0"></div></div>
+                    </div>
                     <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                             <label style="margin:0;">배경 이미지</label>
@@ -372,7 +379,7 @@
     if(isCustomMode){displayTitle.innerText=`${customCat.value||'UNKNOWN'} | ${customChar.value||'UNKNOWN'}`;displayWatermark.innerText=customCreator.value||'SAMPLE';}else{displayTitle.innerText=`${catSel.value} | ${charSel.value}`;displayWatermark.innerText='ARCH @체리망고';}
     displayTitle.style.fontFamily=fontSel.value;displayWatermark.style.fontFamily="'Pretendard Variable',sans-serif";editor.style.fontFamily=fontSel.value;editor.style.fontSize=sizeSlide.value+'px';
     const txtBody=document.getElementById('text-body')||document.getElementById('y2k-screen-wrap');
-    if(t==='y2k'||t==='diary'||t==='polaroid'){cap.style.setProperty('--editor-color','#000');cap.style.setProperty('--text-color','#1a1a1a');cap.style.setProperty('--wm-color','rgba(0,0,0,0.45)');}else{cap.style.setProperty('--editor-color','#fff');cap.style.setProperty('--text-color','#fff');cap.style.setProperty('--wm-color','rgba(255,255,255,0.5)');}
+    if(t==='y2k'||t==='diary'||t==='polaroid'){cap.style.setProperty('--editor-color','#000');cap.style.setProperty('--text-color','#1a1a1a');cap.style.setProperty('--wm-color','rgba(0,0,0,0.45)');cap.style.setProperty('--line-color','rgba(0,0,0,0.15)');}else{cap.style.setProperty('--editor-color','#fff');cap.style.setProperty('--text-color','#fff');cap.style.setProperty('--wm-color','rgba(255,255,255,0.5)');cap.style.setProperty('--line-color','rgba(255,255,255,0.25)');}
     if(t==='y2k'){txtBody.id='text-body';txtBody.className='y2k-screen-wrap';txtBody.style.padding='var(--pad,50px)';}else if(t==='polaroid'){txtBody.id='text-body';txtBody.className='polaroid-screen';txtBody.style.padding='var(--pad,40px)';}else{txtBody.id='text-body';txtBody.className='';txtBody.style.padding='0';}
     saveSettings();}
 
@@ -397,7 +404,7 @@
     document.getElementById('manualBtn').onclick=()=>{document.getElementById('manualModal').classList.add('show');};
     document.getElementById('closeModalBtn').onclick=()=>{document.getElementById('manualModal').classList.remove('show');};
     window.onclick=e=>{if(e.target==document.getElementById('manualModal'))document.getElementById('manualModal').classList.remove('show');};
-    document.getElementById('resetBtn').onclick=()=>{if(confirm("모든 설정을 초기화하시겠습니까?")){localStorage.removeItem('arch_final_v10');localStorage.removeItem('arch_presets_v1');location.reload();}};
+    document.getElementById('resetBtn').onclick=()=>{if(confirm("모든 설정을 초기화하시겠습니까? (프리셋은 유지됩니다)")){localStorage.removeItem('arch_final_v10');location.reload();}};
     document.querySelectorAll('input:not([type="color"]),select').forEach(el=>{el.addEventListener('input',e=>{if(el.id==='ratioSel'||el.id==='themeSel')updateLayout();if(el.id==='themeSel')applyThemePalette(themeSel.value);renderDOM();});});
 
     function updateLayout(){const w=1080,h=ratioSel.value==='1:1'?1080:1920;const b=document.createElement('canvas');b.width=dCanvas.width;b.height=dCanvas.height;b.getContext('2d').drawImage(dCanvas,0,0);cap.style.width=w+'px';cap.style.height=h+'px';dCanvas.width=w;dCanvas.height=h;dCtx.drawImage(b,0,0);const sc=wrapper.clientWidth/w;cap.style.transform=`scale(${sc})`;wrapper.style.height=(h*sc)+'px';}
