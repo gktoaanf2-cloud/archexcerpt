@@ -34,13 +34,13 @@
 
         /* ── 하단 정보 그룹 (얇은 상단 라인 + 안쪽 배치) ── */
         .info-group { position:absolute; bottom:51px; left:62px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
-        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.95); transform-origin:left center; text-shadow:0 1px 3px rgba(0,0,0,0.4); }
+        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; text-shadow:0 1px 3px rgba(0,0,0,0.4); }
         .info-watermark { font-size:11px; font-weight:500; color:var(--wm-color,rgba(255,255,255,0.45)); letter-spacing:3px; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.3); }
 
         #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
         #r19-badge span { font-size:11px; }
 
-        .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; letter-spacing:-0.05em; transform:scaleX(0.95); transform-origin:left center; }
+        .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; }
         .rich-text i,.rich-text em { font-style:italic!important; }
         .rich-text b,.rich-text strong { font-weight:bold!important; }
         #card { box-sizing:border-box; transition:none; display:flex; flex-direction:column; }
@@ -437,8 +437,81 @@
     presets.push({name,data});setPresets(presets);document.getElementById('presetNameInput').value='';renderPresets();});
 
     // 캡처
-    document.getElementById('saveBtn').onclick=async()=>{document.querySelectorAll('.sticker').forEach(s=>s.classList.remove('sticker-active'));const w=1080,h=ratioSel.value==='1:1'?1080:1920;try{await document.fonts.ready;}catch(e){}window.scrollTo(0,0);const prev={transform:cap.style.transform,position:cap.style.position,top:cap.style.top,left:cap.style.left,zIndex:cap.style.zIndex,overflow:wrapper.style.overflow,bodyOverflow:document.body.style.overflow};cap.style.transform='none';cap.style.position='fixed';cap.style.top='0';cap.style.left='0';cap.style.zIndex='99999';wrapper.style.overflow='visible';document.body.style.overflow='hidden';const restore=()=>{cap.style.transform=prev.transform;cap.style.position=prev.position;cap.style.top=prev.top;cap.style.left=prev.left;cap.style.zIndex=prev.zIndex;wrapper.style.overflow=prev.overflow;document.body.style.overflow=prev.bodyOverflow;};
-    setTimeout(()=>{html2canvas(cap,{scale:1,useCORS:true,allowTaint:true,backgroundColor:'#000',width:w,height:h,windowWidth:w,windowHeight:h,scrollX:0,scrollY:0,logging:false}).then(canvas=>{restore();const a=document.createElement('a');a.download=`ARCH_EXCERPT_${Date.now()}.png`;a.href=canvas.toDataURL();a.click();}).catch(err=>{restore();console.error(err);alert("렌더링 오류");});},300);};
+    document.getElementById('saveBtn').onclick=async()=>{
+        document.querySelectorAll('.sticker').forEach(s=>s.classList.remove('sticker-active'));
+        const w=1080, h=ratioSel.value==='1:1'?1080:1920;
+        try{await document.fonts.ready;}catch(e){}
+        window.scrollTo(0,0);
+
+        // 원본 스타일 백업
+        const prev={
+            capTransform:cap.style.transform, capPosition:cap.style.position,
+            capTop:cap.style.top, capLeft:cap.style.left, capZIndex:cap.style.zIndex,
+            capWidth:cap.style.width, capHeight:cap.style.height,
+            wrapOverflow:wrapper.style.overflow, wrapHeight:wrapper.style.height,
+            bodyOverflow:document.body.style.overflow, bodyMinWidth:document.body.style.minWidth,
+            bodyMinHeight:document.body.style.minHeight, bodyPosition:document.body.style.position
+        };
+
+        // 모바일 대응: viewport 크기와 무관하게 1:1 실측 렌더링
+        // position:fixed 대신 absolute + body 확장 (모바일 Safari 클리핑 방지)
+        document.body.style.minWidth=w+'px';
+        document.body.style.minHeight=h+'px';
+        document.body.style.overflow='hidden';
+        document.body.style.position='relative';
+        wrapper.style.overflow='visible';
+        wrapper.style.height='auto';
+        cap.style.transform='none';
+        cap.style.position='absolute';
+        cap.style.top='0';
+        cap.style.left='0';
+        cap.style.width=w+'px';
+        cap.style.height=h+'px';
+        cap.style.zIndex='99999';
+
+        const restore=()=>{
+            cap.style.transform=prev.capTransform; cap.style.position=prev.capPosition;
+            cap.style.top=prev.capTop; cap.style.left=prev.capLeft;
+            cap.style.zIndex=prev.capZIndex; cap.style.width=prev.capWidth;
+            cap.style.height=prev.capHeight; wrapper.style.overflow=prev.wrapOverflow;
+            wrapper.style.height=prev.wrapHeight; document.body.style.overflow=prev.bodyOverflow;
+            document.body.style.minWidth=prev.bodyMinWidth;
+            document.body.style.minHeight=prev.bodyMinHeight;
+            document.body.style.position=prev.bodyPosition;
+            updateLayout();
+        };
+
+        // 렌더링 안정화 대기 (모바일 리플로우 완료)
+        await new Promise(r=>setTimeout(r,400));
+
+        try {
+            const canvas = await html2canvas(cap,{
+                scale:1, useCORS:true, allowTaint:true,
+                backgroundColor:null,
+                width:w, height:h,
+                windowWidth:w, windowHeight:h,
+                scrollX:0, scrollY:0, x:0, y:0,
+                logging:false,
+                onclone:function(doc){
+                    const clonedCap=doc.getElementById('capture-area');
+                    if(clonedCap){
+                        clonedCap.style.transform='none';
+                        clonedCap.style.width=w+'px';
+                        clonedCap.style.height=h+'px';
+                    }
+                }
+            });
+            restore();
+            const a=document.createElement('a');
+            a.download=`ARCH_EXCERPT_${Date.now()}.png`;
+            a.href=canvas.toDataURL('image/png');
+            a.click();
+        } catch(err) {
+            restore();
+            console.error(err);
+            alert("렌더링 오류가 발생했습니다.");
+        }
+    };
 
     window.onload=()=>{loadSettings();updateLayout();renderDOM();renderPresets();const u=new URL(window.location.href);const t=u.searchParams.get('text')||u.searchParams.get('title');if(t){editor.innerHTML=decodeURIComponent(t).replace(/\n/g,'<br>');saveSettings();}};
     </script>
