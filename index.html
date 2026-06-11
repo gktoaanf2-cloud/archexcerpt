@@ -586,12 +586,28 @@
         const color = document.getElementById('stickerColor').value;
         let svg = decodeSvg(s.b64);
         svg = svg.replace(/<path/g, '<path fill="'+color+'"');
-        // Ensure SVG has proper xmlns
-        if(svg.indexOf('xmlns=')===-1) svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
-        try {
-            const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-            createSticker(dataUrl);
-        } catch(e) { console.error('Sticker error:', e); }
+        
+        // Create sticker div with inline SVG (no img/dataURL needed)
+        const stk = document.createElement('div');
+        stk.className = 'sticker';
+        stk.style.left = '200px';
+        stk.style.top = '200px';
+        stk.style.zIndex = ++curZ;
+        stk.innerHTML = '<div class="sticker-svg-wrap" style="width:150px;height:150px;pointer-events:none;user-select:none;">' + svg + '</div>' +
+            '<div class="sticker-ctrl sticker-del"><i class="fa-solid fa-xmark"></i></div>' +
+            '<div class="sticker-ctrl sticker-resize"><i class="fa-solid fa-arrows-left-right"></i></div>' +
+            '<div class="sticker-ctrl sticker-up"><i class="fa-solid fa-angles-up"></i></div>' +
+            '<div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>';
+        // Style the inner SVG
+        const innerSvg = stk.querySelector('svg');
+        if(innerSvg) { innerSvg.style.width='100%'; innerSvg.style.height='100%'; innerSvg.style.display='block'; }
+        
+        cap.appendChild(stk);
+        const bind=(sel,fn)=>{const b=stk.querySelector(sel);const h=e=>{e.stopPropagation();e.preventDefault();fn();};b.addEventListener('mousedown',h);b.addEventListener('touchstart',h,{passive:false});};
+        bind('.sticker-del',()=>stk.remove());
+        bind('.sticker-up',()=>stk.style.zIndex=++curZ);
+        bind('.sticker-down',()=>stk.style.zIndex=Math.max(2,parseInt(stk.style.zIndex)-1));
+        initStickerInteractions(stk);
     }
 
     // Image crop with shape mask
