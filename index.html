@@ -264,7 +264,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <label style="margin:0;">데이터 셋업 (Data Setup)</label>
                     <div style="display:flex;gap:5px;">
-                        <button class="tool-btn" id="largeInfoBtn" style="font-size:9px; border-color:rgba(255,255,255,0.3);">노안 OFF</button>
+                        <button class="tool-btn" id="largeInfoBtn" style="font-size:9px; border-color:rgba(255,255,255,0.3);">폰트 확대 OFF</button>
                         <button class="tool-btn" id="customToggleBtn" style="font-size:10px; border-color:rgba(255,255,255,0.5);">CUSTOM OFF</button>
                     </div>
                 </div>
@@ -399,7 +399,7 @@
     document.getElementById('largeInfoBtn').onclick = () => {
         isLargeInfo = !isLargeInfo;
         const btn = document.getElementById('largeInfoBtn');
-        btn.innerText = isLargeInfo ? '노안 ON' : '노안 OFF';
+        btn.innerText = isLargeInfo ? '폰트 확대 ON' : '폰트 확대 OFF';
         btn.style.background = isLargeInfo ? 'rgba(255,255,255,0.1)' : 'transparent';
         btn.style.color = isLargeInfo ? '#fff' : 'var(--text)';
         const ig = document.getElementById('info-group');
