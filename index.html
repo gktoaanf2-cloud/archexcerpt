@@ -13,7 +13,6 @@
         @font-face { font-family:'JoseonGulim'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight:normal; font-display:swap; }
         @font-face { font-family:'MaruBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
         @font-face { font-family:'AritaBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-buri-SemiBold.woff') format('woff'); font-weight:normal; font-display:swap; }
-        @font-face { font-family:'YesMyeongjo'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.0/YESMyeongjo-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
 
         :root { --bg:#090a0c; --panel:rgba(15,16,20,0.45); --border:rgba(255,255,255,0.15); --border-glow:rgba(255,255,255,0.4); --accent:#ffffff; --text:#e0e0e0; --dim:#7a7a85; }
 
@@ -35,9 +34,9 @@
         #drawing-canvas { width:100%; height:100%; pointer-events:none; touch-action:none; display:block; }
 
         /* ── 하단 정보 그룹 (얇은 상단 라인 + 안쪽 배치) ── */
-        .info-group { position:absolute; bottom:58px; left:69px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
-        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.98); transform-origin:left center; }
-        .info-watermark { font-size:11px; font-weight:500; color:var(--text-color,#fff); opacity:0.45; letter-spacing:3px; text-transform:uppercase; }
+        .info-group { position:absolute; bottom:58px; left:69px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--c2,#fff); }
+        .info-title { font-size:18px; font-weight:800; color:var(--c2,#fff); letter-spacing:-0.05em; transform:scaleX(0.98); transform-origin:left center; }
+        .info-watermark { font-size:11px; font-weight:500; color:var(--c2,#fff); opacity:0.5; letter-spacing:3px; text-transform:uppercase; }
 
         #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
         #r19-badge span { font-size:11px; }
@@ -107,16 +106,15 @@
         .sf-label.lt { top:32px; left:66px; } .sf-label.rb { bottom:32px; right:66px; }
 
         /* ═══ NEON CITY ═══ */
-        .theme-neon { background-color:var(--c1,#0a0012)!important; background-image:linear-gradient(0deg,var(--c3,#1a0a2e) 0%,var(--c1,#0a0012) 40%)!important; overflow:hidden; }
+        .theme-neon { background-color:var(--c1,#0a0012)!important; background-image:linear-gradient(0deg,var(--c3,#1a0a2e) 0%,var(--c1,#0a0012) 40%)!important; }
         .theme-neon #card { width:85%; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; padding:var(--pad,70px)!important; }
         .neon-skyline { position:absolute; bottom:0; left:0; right:0; height:180px; z-index:1; pointer-events:none; opacity:0.35; }
         .neon-skyline-inner { position:absolute; bottom:0; left:0; right:0; height:100%; background:
             linear-gradient(0deg, var(--c3,#1a0a2e) 0%, transparent 100%),
-            repeating-linear-gradient(90deg, transparent 0px, transparent 40px, var(--c2,#ff2d95) 40px, var(--c2,#ff2d95) 41px),
-            repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px);
+            repeating-linear-gradient(90deg, transparent 0px, transparent 40px, var(--c2,#ff2d95) 40px, var(--c2,#ff2d95) 41px);
         }
         .neon-glow-line { position:absolute; bottom:180px; left:0; right:0; height:2px; background:var(--c2,#ff2d95); z-index:2; pointer-events:none; box-shadow:0 0 15px var(--c2,#ff2d95),0 0 40px var(--c2,#ff2d95); opacity:0.6; }
-        .neon-lp { position:absolute; top:50%; right:-80px; width:320px; height:320px; border-radius:50%; border:2px solid rgba(255,255,255,0.06); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.15; }
+        .neon-lp { position:absolute; top:50%; right:20px; width:260px; height:260px; border-radius:50%; border:2px solid rgba(255,255,255,0.06); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.12; }
         .neon-lp::before { content:''; position:absolute; top:50%; left:50%; width:100px; height:100px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transform:translate(-50%,-50%); }
         .neon-lp::after { content:''; position:absolute; top:50%; left:50%; width:16px; height:16px; border-radius:50%; background:var(--c2,#ff2d95); transform:translate(-50%,-50%); box-shadow:0 0 20px var(--c2,#ff2d95); }
         .neon-grid { position:absolute; bottom:0; left:0; right:0; height:200px; z-index:0; pointer-events:none; background:repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,0.02) 59px,rgba(255,255,255,0.02) 60px),repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.02) 39px,rgba(255,255,255,0.02) 40px); opacity:0.5; perspective:400px; transform:rotateX(45deg); transform-origin:bottom; }
@@ -325,7 +323,6 @@
                         <option value="'JoseonGulim'">조선굴림</option>
                         <option value="'MaruBuri'">마루부리</option>
                         <option value="'AritaBuri'">아리따부리</option>
-                        <option value="'YesMyeongjo'">예스명조</option>
                         <option value="'Nanum Pen Script'">나눔펜 (손글씨)</option>
                         <option value="'Gaegu'">개구 (손글씨)</option>
                         <option value="'Hi Melody'">하이멜로디 (손글씨)</option>
