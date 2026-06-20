@@ -12,6 +12,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Nanum+Myeongjo:wght@400;700&family=Gothic+A1:wght@300;400;500;700&family=IBM+Plex+Sans+KR:wght@300;400;500;700&family=Nanum+Pen+Script&family=Gaegu:wght@300;400;700&family=Hi+Melody&display=swap');
         @font-face { font-family:'JoseonGulim'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight:normal; font-display:swap; }
         @font-face { font-family:'MaruBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
+        @font-face { font-family:'AritaBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-buri-SemiBold.woff') format('woff'); font-weight:normal; font-display:swap; }
+        @font-face { font-family:'YesMyeongjo'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyeongjo-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
 
         :root { --bg:#090a0c; --panel:rgba(15,16,20,0.45); --border:rgba(255,255,255,0.15); --border-glow:rgba(255,255,255,0.4); --accent:#ffffff; --text:#e0e0e0; --dim:#7a7a85; }
 
@@ -33,9 +35,9 @@
         #drawing-canvas { width:100%; height:100%; pointer-events:none; touch-action:none; display:block; }
 
         /* ── 하단 정보 그룹 (얇은 상단 라인 + 안쪽 배치) ── */
-        .info-group { position:absolute; bottom:51px; left:62px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
-        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; text-shadow:0 1px 3px rgba(0,0,0,0.4); }
-        .info-watermark { font-size:11px; font-weight:500; color:var(--wm-color,rgba(255,255,255,0.45)); letter-spacing:3px; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.3); }
+        .info-group { position:absolute; bottom:55px; left:66px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
+        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; }
+        .info-watermark { font-size:11px; font-weight:500; color:var(--wm-color,rgba(255,255,255,0.45)); letter-spacing:3px; text-transform:uppercase; }
 
         #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
         #r19-badge span { font-size:11px; }
@@ -43,6 +45,7 @@
         .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; }
         .rich-text i,.rich-text em { font-style:italic!important; }
         .rich-text b,.rich-text strong { font-weight:bold!important; }
+        .rich-text span[style*="background-color"] { padding:1px 2px; margin:0 -1px; border-radius:1px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
         #card { box-sizing:border-box; transition:none; display:flex; flex-direction:column; }
 
         /* ═══ STANDARD ═══ */
@@ -102,6 +105,29 @@
         .sf-tick.top { top:28px; } .sf-tick.bottom { bottom:28px; }
         .sf-label { position:absolute; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--c2,#a9d8e3); opacity:0.4; z-index:50; pointer-events:none; white-space:nowrap; }
         .sf-label.lt { top:32px; left:66px; } .sf-label.rb { bottom:32px; right:66px; }
+
+        /* ═══ NEON CITY ═══ */
+        .theme-neon { background-color:var(--c1,#0a0012)!important; background-image:linear-gradient(0deg,var(--c3,#1a0a2e) 0%,var(--c1,#0a0012) 40%)!important; overflow:hidden; }
+        .theme-neon #card { width:85%; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; padding:var(--pad,70px)!important; }
+        .neon-skyline { position:absolute; bottom:0; left:0; right:0; height:180px; z-index:1; pointer-events:none; opacity:0.35; }
+        .neon-skyline-inner { position:absolute; bottom:0; left:0; right:0; height:100%; background:
+            linear-gradient(0deg, var(--c3,#1a0a2e) 0%, transparent 100%),
+            repeating-linear-gradient(90deg, transparent 0px, transparent 40px, var(--c2,#ff2d95) 40px, var(--c2,#ff2d95) 41px),
+            repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px);
+        }
+        .neon-glow-line { position:absolute; bottom:180px; left:0; right:0; height:2px; background:var(--c2,#ff2d95); z-index:2; pointer-events:none; box-shadow:0 0 15px var(--c2,#ff2d95),0 0 40px var(--c2,#ff2d95); opacity:0.6; }
+        .neon-lp { position:absolute; top:50%; right:-80px; width:320px; height:320px; border-radius:50%; border:2px solid rgba(255,255,255,0.06); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.15; }
+        .neon-lp::before { content:''; position:absolute; top:50%; left:50%; width:100px; height:100px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transform:translate(-50%,-50%); }
+        .neon-lp::after { content:''; position:absolute; top:50%; left:50%; width:16px; height:16px; border-radius:50%; background:var(--c2,#ff2d95); transform:translate(-50%,-50%); box-shadow:0 0 20px var(--c2,#ff2d95); }
+        .neon-grid { position:absolute; bottom:0; left:0; right:0; height:200px; z-index:0; pointer-events:none; background:repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,0.02) 59px,rgba(255,255,255,0.02) 60px),repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.02) 39px,rgba(255,255,255,0.02) 40px); opacity:0.5; perspective:400px; transform:rotateX(45deg); transform-origin:bottom; }
+        .neon-label-top { position:absolute; top:28px; left:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:var(--c2,#ff2d95); opacity:0.5; z-index:50; pointer-events:none; text-shadow:0 0 8px var(--c2,#ff2d95); }
+        .neon-label-bot { position:absolute; bottom:28px; right:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--c4,#00e5ff); opacity:0.4; z-index:50; pointer-events:none; text-shadow:0 0 8px var(--c4,#00e5ff); }
+        .neon-corner { position:absolute; width:24px; height:24px; pointer-events:none; z-index:50; }
+        .neon-corner::before,.neon-corner::after { content:''; position:absolute; background:var(--c2,#ff2d95); box-shadow:0 0 6px var(--c2,#ff2d95); }
+        .neon-corner.ntl { top:20px; left:20px; } .neon-corner.ntl::before { top:0; left:0; width:24px; height:1px; } .neon-corner.ntl::after { top:0; left:0; width:1px; height:24px; }
+        .neon-corner.ntr { top:20px; right:20px; } .neon-corner.ntr::before { top:0; right:0; width:24px; height:1px; } .neon-corner.ntr::after { top:0; right:0; width:1px; height:24px; }
+        .neon-corner.nbl { bottom:20px; left:20px; } .neon-corner.nbl::before { bottom:0; left:0; width:24px; height:1px; } .neon-corner.nbl::after { bottom:0; left:0; width:1px; height:24px; }
+        .neon-corner.nbr { bottom:20px; right:20px; } .neon-corner.nbr::before { bottom:0; right:0; width:24px; height:1px; } .neon-corner.nbr::after { bottom:0; right:0; width:1px; height:24px; }
 
         /* 스티커 */
         .sticker { position:absolute; z-index:20; padding:15px; cursor:move; touch-action:none; }
@@ -218,6 +244,18 @@
                 <div class="diary-item diary-date" style="display:none;"><span>JOURNAL</span><span id="diary-date-val"></span></div>
                 <div class="diary-item diary-ribbon" style="display:none;"></div>
 
+                <!-- Neon City 장식 -->
+                <div class="neon-item neon-skyline" style="display:none;"><div class="neon-skyline-inner"></div></div>
+                <div class="neon-item neon-glow-line" style="display:none;"></div>
+                <div class="neon-item neon-lp" style="display:none;"></div>
+                <div class="neon-item neon-grid" style="display:none;"></div>
+                <div class="neon-item neon-corner ntl" style="display:none;"></div>
+                <div class="neon-item neon-corner ntr" style="display:none;"></div>
+                <div class="neon-item neon-corner nbl" style="display:none;"></div>
+                <div class="neon-item neon-corner nbr" style="display:none;"></div>
+                <div class="neon-item neon-label-top" style="display:none;">NEON ARCHIVE</div>
+                <div class="neon-item neon-label-bot" style="display:none;">NOW PLAYING ▸</div>
+
                 <div id="card" class="card">
                     <div id="y2k-screen-wrap"><div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div></div>
                     <div class="polaroid-spacer"></div>
@@ -264,7 +302,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <label style="margin:0;">데이터 셋업 (Data Setup)</label>
                     <div style="display:flex;gap:5px;">
-                        <button class="tool-btn" id="largeInfoBtn" style="font-size:9px; border-color:rgba(255,255,255,0.3);">폰트 확대 OFF</button>
+                        <button class="tool-btn" id="largeInfoBtn" style="font-size:9px; border-color:rgba(255,255,255,0.3);">노안 OFF</button>
                         <button class="tool-btn" id="customToggleBtn" style="font-size:10px; border-color:rgba(255,255,255,0.5);">CUSTOM OFF</button>
                     </div>
                 </div>
@@ -275,7 +313,7 @@
                 </div>
                 <div class="row-2" style="margin-top:15px;">
                     <div><label>비율</label><select id="ratioSel"><option value="1:1">1:1 (SQUARE)</option><option value="9:16">9:16 (STORY)</option></select></div>
-                    <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="gradient">Gradient</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option></select></div>
+                    <div><label>테마</label><select id="themeSel"><option value="standard">Standard</option><option value="gradient">Gradient</option><option value="polaroid">Polaroid</option><option value="y2k">Y2K Player</option><option value="diary">Diary</option><option value="sf">SF Terminal</option><option value="neon">Neon City</option></select></div>
                 </div>
                 <div class="row-2">
                     <div><label>폰트</label><select id="fontSel">
@@ -286,6 +324,8 @@
                         <option value="'IBM Plex Sans KR'">IBM 플렉스</option>
                         <option value="'JoseonGulim'">조선굴림</option>
                         <option value="'MaruBuri'">마루부리</option>
+                        <option value="'AritaBuri'">아리따부리</option>
+                        <option value="'YesMyeongjo'">예스명조</option>
                         <option value="'Nanum Pen Script'">나눔펜 (손글씨)</option>
                         <option value="'Gaegu'">개구 (손글씨)</option>
                         <option value="'Hi Melody'">하이멜로디 (손글씨)</option>
@@ -362,7 +402,7 @@
     </div></div>
 
     <script>
-    const archList={"ARCH-PRIMA":["헬리오스","해일","이카로스","산타"],"VANGUARD - 1":["애쉬","노아","아모레","셰인","오버로드","라임"],"VANGUARD - 2":["신드롬","바이브","리암"],"AGENT":["카토","샤드","블루"],"ACOLYTE":["블루","피카"],"CORE":["Dr. 밴스","퓨어"],"R.S.T.":["휴고","저스티스","에덴","카르마"],"SUPPORT":["오아시스","자이안","페더","스트레이","윈터","부스터","코드"]};
+    const archList={"ARCH-PRIMA":["헬리오스","해일","이카로스","산타"],"VANGUARD - 1":["애쉬","노아","아모레","셰인","오버로드","라임"],"VANGUARD - 2":["신드롬","바이브","리암","카이날루"],"AGENT":["카토","샤드","블루"],"ACOLYTE":["블루","피카"],"CORE":["Dr. 밴스","퓨어"],"R.S.T.":["휴고","저스티스","에덴","카르마"],"SUPPORT":["오아시스","자이안","페더","스트레이","윈터","부스터","코드"]};
     const cap=document.getElementById('capture-area'),wrapper=document.getElementById('preview-wrapper'),editor=document.getElementById('editor');
     const catSel=document.getElementById('catSel'),charSel=document.getElementById('charSel');
     const displayTitle=document.getElementById('display-title'),displayWatermark=document.getElementById('display-watermark');
@@ -392,14 +432,14 @@
 
     const colorPickers=['c1','c2','c3','c4'];
     colorPickers.forEach(id=>{document.getElementById(id).addEventListener('input',e=>{cap.style.setProperty(`--${id}`,e.target.value);});document.getElementById(id).addEventListener('change',saveSettings);});
-    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},gradient:{c1:'#0f0c29',c2:'#302b63',c3:'#24243e',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'}};
+    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},gradient:{c1:'#0f0c29',c2:'#302b63',c3:'#24243e',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'},neon:{c1:'#0a0012',c2:'#ff2d95',c3:'#1a0a2e',c4:'#00e5ff'}};
     function applyThemePalette(t){const p=themePalettes[t];if(!p)return;['c1','c2','c3','c4'].forEach(k=>{const el=document.getElementById(k);el.value=p[k];cap.style.setProperty('--'+k,p[k]);});}
 
     let isLargeInfo = false;
     document.getElementById('largeInfoBtn').onclick = () => {
         isLargeInfo = !isLargeInfo;
         const btn = document.getElementById('largeInfoBtn');
-        btn.innerText = isLargeInfo ? '폰트 확대 ON' : '폰트 확대 OFF';
+        btn.innerText = isLargeInfo ? '노안 ON' : '노안 OFF';
         btn.style.background = isLargeInfo ? 'rgba(255,255,255,0.1)' : 'transparent';
         btn.style.color = isLargeInfo ? '#fff' : 'var(--text)';
         const ig = document.getElementById('info-group');
@@ -424,11 +464,12 @@
     function createSticker(src){const s=document.createElement('div');s.className='sticker';s.style.left='200px';s.style.top='200px';s.style.zIndex=++curZ;s.innerHTML=`<img src="${src}"><div class="sticker-ctrl sticker-del"><i class="fa-solid fa-xmark"></i></div><div class="sticker-ctrl sticker-resize"><i class="fa-solid fa-arrows-left-right"></i></div><div class="sticker-ctrl sticker-up"><i class="fa-solid fa-angles-up"></i></div><div class="sticker-ctrl sticker-down"><i class="fa-solid fa-angles-down"></i></div>`;cap.appendChild(s);const bind=(sel,fn)=>{const b=s.querySelector(sel);const h=e=>{e.stopPropagation();e.preventDefault();fn();};b.addEventListener('mousedown',h);b.addEventListener('touchstart',h,{passive:false});};bind('.sticker-del',()=>s.remove());bind('.sticker-up',()=>s.style.zIndex=++curZ);bind('.sticker-down',()=>s.style.zIndex=Math.max(2,parseInt(s.style.zIndex)-1));initStickerInteractions(s);}
     function initStickerInteractions(stk){let isM=false,isR=false,sX,sY,sL,sA,sScale=1,sRot=0,center={};const startMove=e=>{if(drawMode||e.target.classList.contains('sticker-ctrl'))return;e.stopPropagation();document.querySelectorAll('.sticker').forEach(s=>s.classList.remove('sticker-active'));stk.classList.add('sticker-active');isM=true;sX=e.clientX||e.touches[0].clientX;sY=e.clientY||e.touches[0].clientY;if(e.pointerId)stk.setPointerCapture(e.pointerId);};stk.addEventListener('mousedown',startMove);stk.addEventListener('touchstart',startMove,{passive:false});const startResize=e=>{e.stopPropagation();e.preventDefault();isR=true;const pR=cap.getBoundingClientRect(),s=1080/pR.width,rect=stk.getBoundingClientRect();center={x:(rect.left+rect.width/2-pR.left)*s,y:(rect.top+rect.height/2-pR.top)*s};sX=((e.clientX||e.touches[0].clientX)-pR.left)*s;sY=((e.clientY||e.touches[0].clientY)-pR.top)*s;sL=Math.hypot(sX-center.x,sY-center.y);sA=Math.atan2(sY-center.y,sX-center.x);const tr=window.getComputedStyle(stk).transform;if(tr!=='none'){const v=tr.split('(')[1].split(')')[0].split(',');sRot=Math.atan2(v[1],v[0]);sScale=Math.sqrt(v[0]*v[0]+v[1]*v[1]);}};const rBtn=stk.querySelector('.sticker-resize');rBtn.addEventListener('mousedown',startResize);rBtn.addEventListener('touchstart',startResize,{passive:false});const onMove=e=>{if(!isM&&!isR)return;const pR=cap.getBoundingClientRect(),s=1080/pR.width;const cX=e.clientX||(e.touches&&e.touches[0].clientX),cY=e.clientY||(e.touches&&e.touches[0].clientY);if(isM){e.preventDefault();stk.style.left=(parseFloat(stk.style.left||0)+(cX-sX)*s)+'px';stk.style.top=(parseFloat(stk.style.top||0)+(cY-sY)*s)+'px';sX=cX;sY=cY;}if(isR){e.preventDefault();const cx2=(cX-pR.left)*s,cy2=(cY-pR.top)*s;stk.style.transform=`scale(${(Math.hypot(cx2-center.x,cy2-center.y)/sL)*sScale}) rotate(${((Math.atan2(cy2-center.y,cx2-center.x)-sA)+sRot)*(180/Math.PI)}deg)`;}};window.addEventListener('mousemove',onMove);window.addEventListener('touchmove',onMove,{passive:false});const onEnd=()=>{isM=false;isR=false;};window.addEventListener('mouseup',onEnd);window.addEventListener('touchend',onEnd);}
 
-    function renderDOM(){const t=themeSel.value;cap.className='theme-'+t;document.querySelectorAll('.y2k-item,.diary-item,.sf-item,.polaroid-item').forEach(el=>el.style.display='none');document.getElementById('c3-box').style.display='none';document.getElementById('c4-box').style.display='none';
+    function renderDOM(){const t=themeSel.value;cap.className='theme-'+t;document.querySelectorAll('.y2k-item,.diary-item,.sf-item,.polaroid-item,.neon-item').forEach(el=>el.style.display='none');document.getElementById('c3-box').style.display='none';document.getElementById('c4-box').style.display='none';
     if(t==='y2k'){document.querySelectorAll('.y2k-item').forEach(el=>el.style.display='flex');document.getElementById('c3-box').style.display='flex';document.getElementById('c4-box').style.display='flex';}
     if(t==='diary'){document.querySelectorAll('.diary-item').forEach(el=>el.style.display='flex');const dv=document.getElementById('diary-date-val');if(dv){const d=new Date();dv.textContent=d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0');}}
     if(t==='sf'){document.querySelectorAll('.sf-item').forEach(el=>el.style.display='block');document.getElementById('c3-box').style.display='flex';}
     if(t==='polaroid'){document.querySelectorAll('.polaroid-item').forEach(el=>el.style.display='block');document.getElementById('c4-box').style.display='flex';}
+    if(t==='neon'){document.querySelectorAll('.neon-item').forEach(el=>el.style.display='block');document.getElementById('c3-box').style.display='flex';document.getElementById('c4-box').style.display='flex';}
     cap.style.setProperty('--c1',document.getElementById('c1').value);cap.style.setProperty('--c2',document.getElementById('c2').value);cap.style.setProperty('--c3',document.getElementById('c3').value);cap.style.setProperty('--c4',document.getElementById('c4').value);cap.style.setProperty('--pad',padSlide.value+'px');cap.style.setProperty('--rad',radSlide.value+'px');
     if(isCustomMode){displayTitle.innerText=`${customCat.value||'UNKNOWN'} | ${customChar.value||'UNKNOWN'}`;displayWatermark.innerText=customCreator.value||'SAMPLE';}else{displayTitle.innerText=`${catSel.value} | ${charSel.value}`;displayWatermark.innerText='ARCH @체리망고';}
     displayTitle.style.fontFamily=fontSel.value;displayWatermark.style.fontFamily="'Pretendard Variable',sans-serif";editor.style.fontFamily=fontSel.value;editor.style.fontSize=sizeSlide.value+'px';
