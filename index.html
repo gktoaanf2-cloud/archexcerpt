@@ -13,7 +13,7 @@
         @font-face { font-family:'JoseonGulim'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGu.woff') format('woff'); font-weight:normal; font-display:swap; }
         @font-face { font-family:'MaruBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/MaruBuri-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
         @font-face { font-family:'AritaBuri'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-buri-SemiBold.woff') format('woff'); font-weight:normal; font-display:swap; }
-        @font-face { font-family:'YesMyeongjo'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_13@1.0/YESMyeongjo-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
+        @font-face { font-family:'YesMyeongjo'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.0/YESMyeongjo-Regular.woff') format('woff'); font-weight:normal; font-display:swap; }
 
         :root { --bg:#090a0c; --panel:rgba(15,16,20,0.45); --border:rgba(255,255,255,0.15); --border-glow:rgba(255,255,255,0.4); --accent:#ffffff; --text:#e0e0e0; --dim:#7a7a85; }
 
@@ -35,14 +35,14 @@
         #drawing-canvas { width:100%; height:100%; pointer-events:none; touch-action:none; display:block; }
 
         /* ── 하단 정보 그룹 (얇은 상단 라인 + 안쪽 배치) ── */
-        .info-group { position:absolute; bottom:55px; left:66px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
-        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; }
-        .info-watermark { font-size:11px; font-weight:500; color:var(--wm-color,rgba(255,255,255,0.45)); letter-spacing:3px; text-transform:uppercase; }
+        .info-group { position:absolute; bottom:58px; left:69px; z-index:100; pointer-events:none; display:flex; flex-direction:column; gap:3px; white-space:normal; max-width:50%; padding-top:10px; border-top:0.5px solid var(--line-color,rgba(255,255,255,0.25)); }
+        .info-title { font-size:18px; font-weight:800; color:var(--text-color,#fff); letter-spacing:-0.05em; transform:scaleX(0.98); transform-origin:left center; }
+        .info-watermark { font-size:11px; font-weight:500; color:var(--text-color,#fff); opacity:0.45; letter-spacing:3px; text-transform:uppercase; }
 
         #r19-badge { display:none; position:absolute; top:35px; right:35px; z-index:999; background:#e50914; color:#fff; font-weight:900; font-size:22px; text-align:center; border-radius:50%; width:80px; height:80px; border:2px solid #fff; box-shadow:0 5px 15px rgba(0,0,0,0.5); transform:rotate(15deg); flex-direction:column; justify-content:center; line-height:1.1; pointer-events:none; }
         #r19-badge span { font-size:11px; }
 
-        .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; letter-spacing:-0.05em; transform:scaleX(0.97); transform-origin:left center; }
+        .rich-text { width:100%; outline:none; white-space:pre-wrap; word-break:keep-all; word-wrap:break-word; line-height:1.6; position:relative; z-index:5; color:var(--editor-color,#fff); user-select:text; -webkit-user-select:text; letter-spacing:-0.05em; transform:scaleX(0.98); transform-origin:left center; }
         .rich-text i,.rich-text em { font-style:italic!important; }
         .rich-text b,.rich-text strong { font-weight:bold!important; }
         .rich-text span[style*="background-color"] { padding:1px 2px; margin:0 -1px; border-radius:1px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
@@ -444,13 +444,13 @@
         btn.style.color = isLargeInfo ? '#fff' : 'var(--text)';
         const ig = document.getElementById('info-group');
         if(isLargeInfo) {
-            ig.style.bottom = '55px';
-            ig.style.left = '65px';
+            ig.style.bottom = '62px';
+            ig.style.left = '72px';
             ig.querySelector('.info-title').style.fontSize = '36px';
             ig.querySelector('.info-watermark').style.fontSize = '22px';
         } else {
-            ig.style.bottom = '51px';
-            ig.style.left = '62px';
+            ig.style.bottom = '58px';
+            ig.style.left = '69px';
             ig.querySelector('.info-title').style.fontSize = '18px';
             ig.querySelector('.info-watermark').style.fontSize = '11px';
         }
@@ -474,7 +474,7 @@
     if(isCustomMode){displayTitle.innerText=`${customCat.value||'UNKNOWN'} | ${customChar.value||'UNKNOWN'}`;displayWatermark.innerText=customCreator.value||'SAMPLE';}else{displayTitle.innerText=`${catSel.value} | ${charSel.value}`;displayWatermark.innerText='ARCH @체리망고';}
     displayTitle.style.fontFamily=fontSel.value;displayWatermark.style.fontFamily="'Pretendard Variable',sans-serif";editor.style.fontFamily=fontSel.value;editor.style.fontSize=sizeSlide.value+'px';
     const txtBody=document.getElementById('text-body')||document.getElementById('y2k-screen-wrap');
-    if(t==='y2k'||t==='diary'||t==='polaroid'){cap.style.setProperty('--editor-color','#000');cap.style.setProperty('--text-color','#1a1a1a');cap.style.setProperty('--wm-color','rgba(0,0,0,0.45)');cap.style.setProperty('--line-color','rgba(0,0,0,0.15)');}else{cap.style.setProperty('--editor-color','#fff');cap.style.setProperty('--text-color','#fff');cap.style.setProperty('--wm-color','rgba(255,255,255,0.5)');cap.style.setProperty('--line-color','rgba(255,255,255,0.25)');}
+    if(t==='y2k'||t==='diary'||t==='polaroid'){cap.style.setProperty('--editor-color','#000');cap.style.setProperty('--text-color','#1a1a1a');cap.style.setProperty('--line-color','rgba(0,0,0,0.15)');}else{cap.style.setProperty('--editor-color','#fff');cap.style.setProperty('--text-color','#fff');cap.style.setProperty('--line-color','rgba(255,255,255,0.25)');}
     if(t==='y2k'){txtBody.id='text-body';txtBody.className='y2k-screen-wrap';txtBody.style.padding='var(--pad,50px)';}else if(t==='polaroid'){txtBody.id='text-body';txtBody.className='polaroid-screen';txtBody.style.padding='var(--pad,40px)';}else{txtBody.id='text-body';txtBody.className='';txtBody.style.padding='0';}
     saveSettings();}
 
