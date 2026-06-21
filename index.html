@@ -110,21 +110,21 @@
         .theme-neon #card { width:85%; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; padding:var(--pad,70px)!important; }
         .neon-skyline { position:absolute; bottom:0; left:0; right:0; height:160px; z-index:1; pointer-events:none; }
         .neon-skyline-inner { position:absolute; bottom:0; left:0; right:0; height:100%; background:linear-gradient(0deg, var(--c3,#1a0a2e) 0%, transparent 100%); opacity:0.9; }
-        .neon-skyline-bars { position:absolute; bottom:0; left:0; right:0; height:160px; opacity:0.15; background:repeating-linear-gradient(90deg, transparent 0px, transparent 39px, var(--c2,#ff2d95) 39px, var(--c2,#ff2d95) 40px); }
-        .neon-glow-line { position:absolute; bottom:160px; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--c2,#ff2d95) 20%,var(--c2,#ff2d95) 80%,transparent); z-index:3; pointer-events:none; opacity:0.7; }
-        .neon-glow-blur { position:absolute; bottom:150px; left:0; right:0; height:24px; background:linear-gradient(90deg,transparent,var(--c2,#ff2d95) 20%,var(--c2,#ff2d95) 80%,transparent); z-index:2; pointer-events:none; opacity:0.15; filter:blur(8px); }
-        .neon-lp { position:absolute; top:50%; right:40px; width:240px; height:240px; border-radius:50%; border:2px solid rgba(255,255,255,0.08); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.12; }
-        .neon-lp-inner { position:absolute; top:50%; left:50%; width:80px; height:80px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transform:translate(-50%,-50%); }
-        .neon-lp-dot { position:absolute; top:50%; left:50%; width:14px; height:14px; border-radius:50%; background:var(--c2,#ff2d95); transform:translate(-50%,-50%); opacity:0.8; }
-        .neon-lp-ring2 { position:absolute; top:50%; left:50%; width:160px; height:160px; border-radius:50%; border:1px solid rgba(255,255,255,0.04); transform:translate(-50%,-50%); }
-        .neon-grid { position:absolute; bottom:0; left:0; right:0; height:160px; z-index:0; pointer-events:none; opacity:0.08; background:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,0.5) 19px,rgba(255,255,255,0.5) 20px); }
-        .neon-label-top { position:absolute; top:28px; left:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:var(--c2,#ff2d95); opacity:0.6; z-index:50; pointer-events:none; }
-        .neon-label-bot { position:absolute; bottom:28px; right:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--c4,#00e5ff); opacity:0.5; z-index:50; pointer-events:none; }
+        .neon-skyline-bars { position:absolute; bottom:0; left:0; right:0; height:160px; opacity:0.4; background:repeating-linear-gradient(90deg, transparent 0px, transparent 39px, var(--c2,#ff2d95) 39px, var(--c2,#ff2d95) 40px); }
+        .neon-glow-line { position:absolute; bottom:160px; left:0; right:0; height:3px; background:var(--c2,#ff2d95); z-index:3; pointer-events:none; opacity:0.9; }
+        .neon-glow-blur { position:absolute; bottom:148px; left:5%; right:5%; height:28px; background:var(--c2,#ff2d95); z-index:2; pointer-events:none; opacity:0.12; }
+        .neon-lp { position:absolute; top:50%; right:40px; width:240px; height:240px; border-radius:50%; border:2px solid rgba(255,255,255,0.15); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.25; }
+        .neon-lp-inner { position:absolute; top:50%; left:50%; width:80px; height:80px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); transform:translate(-50%,-50%); }
+        .neon-lp-dot { position:absolute; top:50%; left:50%; width:14px; height:14px; border-radius:50%; background:var(--c2,#ff2d95); transform:translate(-50%,-50%); }
+        .neon-lp-ring2 { position:absolute; top:50%; left:50%; width:160px; height:160px; border-radius:50%; border:1px solid rgba(255,255,255,0.08); transform:translate(-50%,-50%); }
+        .neon-grid { position:absolute; bottom:0; left:0; right:0; height:160px; z-index:0; pointer-events:none; opacity:0.15; background:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,0.5) 19px,rgba(255,255,255,0.5) 20px); }
+        .neon-label-top { position:absolute; top:28px; left:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:var(--c2,#ff2d95); opacity:0.8; z-index:50; pointer-events:none; }
+        .neon-label-bot { position:absolute; bottom:28px; right:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--c4,#00e5ff); opacity:0.7; z-index:50; pointer-events:none; }
         .neon-cn-tl,.neon-cn-tr,.neon-cn-bl,.neon-cn-br { position:absolute; z-index:50; pointer-events:none; }
-        .neon-cn-tl { top:20px; left:20px; width:24px; height:24px; border-top:2px solid var(--c2,#ff2d95); border-left:2px solid var(--c2,#ff2d95); }
-        .neon-cn-tr { top:20px; right:20px; width:24px; height:24px; border-top:2px solid var(--c2,#ff2d95); border-right:2px solid var(--c2,#ff2d95); }
-        .neon-cn-bl { bottom:20px; left:20px; width:24px; height:24px; border-bottom:2px solid var(--c4,#00e5ff); border-left:2px solid var(--c4,#00e5ff); }
-        .neon-cn-br { bottom:20px; right:20px; width:24px; height:24px; border-bottom:2px solid var(--c4,#00e5ff); border-right:2px solid var(--c4,#00e5ff); }
+        .neon-cn-tl { top:20px; left:20px; width:28px; height:28px; border-top:2px solid var(--c2,#ff2d95); border-left:2px solid var(--c2,#ff2d95); }
+        .neon-cn-tr { top:20px; right:20px; width:28px; height:28px; border-top:2px solid var(--c2,#ff2d95); border-right:2px solid var(--c2,#ff2d95); }
+        .neon-cn-bl { bottom:20px; left:20px; width:28px; height:28px; border-bottom:2px solid var(--c4,#00e5ff); border-left:2px solid var(--c4,#00e5ff); }
+        .neon-cn-br { bottom:20px; right:20px; width:28px; height:28px; border-bottom:2px solid var(--c4,#00e5ff); border-right:2px solid var(--c4,#00e5ff); }
 
         /* 스티커 */
         .sticker { position:absolute; z-index:20; padding:15px; cursor:move; touch-action:none; }
