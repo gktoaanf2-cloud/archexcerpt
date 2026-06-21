@@ -105,26 +105,38 @@
         .sf-label { position:absolute; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--c2,#a9d8e3); opacity:0.4; z-index:50; pointer-events:none; white-space:nowrap; }
         .sf-label.lt { top:32px; left:66px; } .sf-label.rb { bottom:32px; right:66px; }
 
-        /* ═══ NEON CITY ═══ */
-        .theme-neon { background-color:var(--c1,#0a0012)!important; background-image:linear-gradient(0deg,var(--c3,#1a0a2e) 0%,var(--c1,#0a0012) 40%)!important; }
-        .theme-neon #card { width:85%; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:2; padding:var(--pad,70px)!important; }
-        .neon-skyline { position:absolute; bottom:0; left:0; right:0; height:160px; z-index:1; pointer-events:none; }
-        .neon-skyline-inner { position:absolute; bottom:0; left:0; right:0; height:100%; background:linear-gradient(0deg, var(--c3,#1a0a2e) 0%, transparent 100%); opacity:0.9; }
-        .neon-skyline-bars { position:absolute; bottom:0; left:0; right:0; height:160px; opacity:0.4; background:repeating-linear-gradient(90deg, transparent 0px, transparent 39px, var(--c2,#ff2d95) 39px, var(--c2,#ff2d95) 40px); }
-        .neon-glow-line { position:absolute; bottom:160px; left:0; right:0; height:3px; background:var(--c2,#ff2d95); z-index:3; pointer-events:none; opacity:0.9; }
-        .neon-glow-blur { position:absolute; bottom:148px; left:5%; right:5%; height:28px; background:var(--c2,#ff2d95); z-index:2; pointer-events:none; opacity:0.12; }
-        .neon-lp { position:absolute; top:50%; right:40px; width:240px; height:240px; border-radius:50%; border:2px solid rgba(255,255,255,0.15); z-index:1; pointer-events:none; transform:translateY(-50%); opacity:0.25; }
-        .neon-lp-inner { position:absolute; top:50%; left:50%; width:80px; height:80px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); transform:translate(-50%,-50%); }
-        .neon-lp-dot { position:absolute; top:50%; left:50%; width:14px; height:14px; border-radius:50%; background:var(--c2,#ff2d95); transform:translate(-50%,-50%); }
-        .neon-lp-ring2 { position:absolute; top:50%; left:50%; width:160px; height:160px; border-radius:50%; border:1px solid rgba(255,255,255,0.08); transform:translate(-50%,-50%); }
-        .neon-grid { position:absolute; bottom:0; left:0; right:0; height:160px; z-index:0; pointer-events:none; opacity:0.15; background:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,0.5) 19px,rgba(255,255,255,0.5) 20px); }
-        .neon-label-top { position:absolute; top:28px; left:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:var(--c2,#ff2d95); opacity:0.8; z-index:50; pointer-events:none; }
-        .neon-label-bot { position:absolute; bottom:28px; right:32px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--c4,#00e5ff); opacity:0.7; z-index:50; pointer-events:none; }
-        .neon-cn-tl,.neon-cn-tr,.neon-cn-bl,.neon-cn-br { position:absolute; z-index:50; pointer-events:none; }
-        .neon-cn-tl { top:20px; left:20px; width:28px; height:28px; border-top:2px solid var(--c2,#ff2d95); border-left:2px solid var(--c2,#ff2d95); }
-        .neon-cn-tr { top:20px; right:20px; width:28px; height:28px; border-top:2px solid var(--c2,#ff2d95); border-right:2px solid var(--c2,#ff2d95); }
-        .neon-cn-bl { bottom:20px; left:20px; width:28px; height:28px; border-bottom:2px solid var(--c4,#00e5ff); border-left:2px solid var(--c4,#00e5ff); }
-        .neon-cn-br { bottom:20px; right:20px; width:28px; height:28px; border-bottom:2px solid var(--c4,#00e5ff); border-right:2px solid var(--c4,#00e5ff); }
+        /* ═══ NEON CITY (Summer Night LP) ═══ */
+        .theme-neon { background:linear-gradient(160deg, var(--c1,#0d0221) 0%, var(--c3,#3a1078) 45%, var(--c2,#e84393) 100%)!important; }
+        .theme-neon #card { width:76%; background:transparent!important; border:none!important; box-shadow:none!important; position:relative; z-index:5; padding:var(--pad,80px)!important; }
+        /* LP Record — line-art, centered upper area */
+        .neon-lp { position:absolute; top:50%; left:50%; margin-left:-150px; margin-top:-210px; width:300px; height:300px; z-index:1; pointer-events:none; }
+        .neon-lp-ring { position:absolute; border-radius:50%; }
+        .neon-lp-r0 { inset:0; border:1.5px solid rgba(255,255,255,0.25); }
+        .neon-lp-r1 { top:26px; left:26px; right:26px; bottom:26px; border:1px solid var(--c2,#e84393); opacity:0.5; }
+        .neon-lp-r2 { top:52px; left:52px; right:52px; bottom:52px; border:1px solid rgba(255,255,255,0.18); }
+        .neon-lp-r3 { top:78px; left:78px; right:78px; bottom:78px; border:1px solid var(--c4,#fd79a8); opacity:0.5; }
+        .neon-lp-r4 { top:104px; left:104px; right:104px; bottom:104px; border:1px solid rgba(255,255,255,0.15); }
+        .neon-lp-center { position:absolute; top:50%; left:50%; width:60px; height:60px; margin:-30px 0 0 -30px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.3); }
+        .neon-lp-dot { position:absolute; top:50%; left:50%; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:50%; background:#fff; opacity:0.6; }
+        /* Play controls — centered, just below LP */
+        .neon-ctrl { position:absolute; top:50%; left:0; right:0; margin-top:130px; z-index:6; pointer-events:none; display:flex; align-items:center; justify-content:center; gap:34px; opacity:0.45; }
+        .neon-ctrl svg { display:block; }
+        /* Track bar — centered, with breathing room below controls */
+        .neon-track { position:absolute; top:50%; left:0; right:0; margin-top:200px; z-index:6; pointer-events:none; display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .neon-track-line { width:300px; height:2px; background:rgba(255,255,255,0.12); position:relative; border-radius:2px; }
+        .neon-track-fill { position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg, var(--c4,#fd79a8), var(--c2,#e84393)); border-radius:2px; }
+        .neon-track-dot { position:absolute; top:50%; left:40%; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:50%; background:#fff; }
+        .neon-track-time { display:flex; justify-content:space-between; width:300px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; letter-spacing:2px; color:#fff; opacity:0.4; }
+        /* Top line — sleek asymmetric */
+        .neon-top { position:absolute; top:40px; left:50px; right:50px; z-index:50; pointer-events:none; display:flex; align-items:center; gap:14px; }
+        .neon-top-label { font-family:'Helvetica Neue',Arial,sans-serif; font-size:9px; font-weight:600; letter-spacing:5px; text-transform:uppercase; color:#fff; opacity:0.55; white-space:nowrap; }
+        .neon-top-line { flex:1; height:1px; background:linear-gradient(90deg, var(--c2,#e84393), transparent); opacity:0.5; }
+        .neon-top-dot { width:5px; height:5px; border-radius:50%; background:var(--c2,#e84393); opacity:0.7; }
+        /* Bottom line — sleek asymmetric, mirror */
+        .neon-bot { position:absolute; bottom:40px; left:50px; right:50px; z-index:50; pointer-events:none; display:flex; align-items:center; gap:14px; }
+        .neon-bot-dot { width:5px; height:5px; border-radius:50%; background:var(--c4,#fd79a8); opacity:0.7; }
+        .neon-bot-line { flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--c4,#fd79a8)); opacity:0.5; }
+        .neon-bot-label { font-family:'Helvetica Neue',Arial,sans-serif; font-size:8px; font-weight:500; letter-spacing:3px; text-transform:uppercase; color:#fff; opacity:0.45; white-space:nowrap; }
 
         /* 스티커 */
         .sticker { position:absolute; z-index:20; padding:15px; cursor:move; touch-action:none; }
@@ -241,18 +253,38 @@
                 <div class="diary-item diary-date" style="display:none;"><span>JOURNAL</span><span id="diary-date-val"></span></div>
                 <div class="diary-item diary-ribbon" style="display:none;"></div>
 
-                <!-- Neon City 장식 (html2canvas 호환) -->
-                <div class="neon-item neon-grid" style="display:none;"></div>
-                <div class="neon-item neon-skyline" style="display:none;"><div class="neon-skyline-inner"></div><div class="neon-skyline-bars"></div></div>
-                <div class="neon-item neon-glow-blur" style="display:none;"></div>
-                <div class="neon-item neon-glow-line" style="display:none;"></div>
-                <div class="neon-item neon-lp" style="display:none;"><div class="neon-lp-ring2"></div><div class="neon-lp-inner"></div><div class="neon-lp-dot"></div></div>
-                <div class="neon-item neon-cn-tl" style="display:none;"></div>
-                <div class="neon-item neon-cn-tr" style="display:none;"></div>
-                <div class="neon-item neon-cn-bl" style="display:none;"></div>
-                <div class="neon-item neon-cn-br" style="display:none;"></div>
-                <div class="neon-item neon-label-top" style="display:none;">NEON ARCHIVE</div>
-                <div class="neon-item neon-label-bot" style="display:none;">NOW PLAYING ▸</div>
+                <!-- Summer Night LP -->
+                <div class="neon-item neon-lp">
+                    <div class="neon-lp-ring neon-lp-r0"></div>
+                    <div class="neon-lp-ring neon-lp-r1"></div>
+                    <div class="neon-lp-ring neon-lp-r2"></div>
+                    <div class="neon-lp-ring neon-lp-r3"></div>
+                    <div class="neon-lp-ring neon-lp-r4"></div>
+                    <div class="neon-lp-center"></div>
+                    <div class="neon-lp-dot"></div>
+                </div>
+                <div class="neon-item neon-ctrl">
+                    <svg width="26" height="26" viewBox="0 0 24 24"><rect x="3" y="5" width="2.5" height="14" fill="#fff"/><polygon points="21,5 9,12 21,19" fill="#fff"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="#fff"/><rect x="14" y="4" width="4" height="16" fill="#fff"/></svg>
+                    <svg width="26" height="26" viewBox="0 0 24 24"><polygon points="3,5 15,12 3,19" fill="#fff"/><rect x="18.5" y="5" width="2.5" height="14" fill="#fff"/></svg>
+                </div>
+                <div class="neon-item neon-track">
+                    <div class="neon-track-line">
+                        <div class="neon-track-fill"></div>
+                        <div class="neon-track-dot"></div>
+                    </div>
+                    <div class="neon-track-time"><span>01:28</span><span>03:42</span></div>
+                </div>
+                <div class="neon-item neon-top">
+                    <div class="neon-top-label">City Pop</div>
+                    <div class="neon-top-line"></div>
+                    <div class="neon-top-dot"></div>
+                </div>
+                <div class="neon-item neon-bot">
+                    <div class="neon-bot-dot"></div>
+                    <div class="neon-bot-line"></div>
+                    <div class="neon-bot-label">Now Playing</div>
+                </div>
 
                 <div id="card" class="card">
                     <div id="y2k-screen-wrap"><div id="editor" class="rich-text" contenteditable="true" spellcheck="false">대화를 입력하십시오.</div></div>
@@ -429,7 +461,7 @@
 
     const colorPickers=['c1','c2','c3','c4'];
     colorPickers.forEach(id=>{document.getElementById(id).addEventListener('input',e=>{cap.style.setProperty(`--${id}`,e.target.value);});document.getElementById(id).addEventListener('change',saveSettings);});
-    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},gradient:{c1:'#0f0c29',c2:'#302b63',c3:'#24243e',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'},neon:{c1:'#0a0012',c2:'#ff2d95',c3:'#1a0a2e',c4:'#00e5ff'}};
+    const themePalettes={standard:{c1:'#0a0a0a',c2:'#ffffff',c3:'#fdf0f5',c4:'#ffffff'},gradient:{c1:'#0f0c29',c2:'#302b63',c3:'#24243e',c4:'#ffffff'},polaroid:{c1:'#efeae2',c2:'#fffdf9',c3:'#fdf0f5',c4:'#e7e1d6'},y2k:{c1:'#ffffff',c2:'#2b3138',c3:'#dfe7ee',c4:'#f4f8fb'},diary:{c1:'#e9e0cd',c2:'#b03f3d',c3:'#fdf0f5',c4:'#ffffff'},sf:{c1:'#06080d',c2:'#a9d8e3',c3:'#0c1119',c4:'#ffffff'},neon:{c1:'#0d0221',c2:'#e84393',c3:'#3a1078',c4:'#fd79a8'}};
     function applyThemePalette(t){const p=themePalettes[t];if(!p)return;['c1','c2','c3','c4'].forEach(k=>{const el=document.getElementById(k);el.value=p[k];cap.style.setProperty('--'+k,p[k]);});}
 
     let isLargeInfo = false;
@@ -466,7 +498,7 @@
     if(t==='diary'){document.querySelectorAll('.diary-item').forEach(el=>el.style.display='flex');const dv=document.getElementById('diary-date-val');if(dv){const d=new Date();dv.textContent=d.getFullYear()+'. '+String(d.getMonth()+1).padStart(2,'0')+'. '+String(d.getDate()).padStart(2,'0');}}
     if(t==='sf'){document.querySelectorAll('.sf-item').forEach(el=>el.style.display='block');document.getElementById('c3-box').style.display='flex';}
     if(t==='polaroid'){document.querySelectorAll('.polaroid-item').forEach(el=>el.style.display='block');document.getElementById('c4-box').style.display='flex';}
-    if(t==='neon'){document.querySelectorAll('.neon-item').forEach(el=>el.style.display='block');document.getElementById('c3-box').style.display='flex';document.getElementById('c4-box').style.display='flex';}
+    if(t==='neon'){document.querySelectorAll('.neon-item').forEach(el=>el.style.display='');document.getElementById('c3-box').style.display='flex';document.getElementById('c4-box').style.display='flex';}
     cap.style.setProperty('--c1',document.getElementById('c1').value);cap.style.setProperty('--c2',document.getElementById('c2').value);cap.style.setProperty('--c3',document.getElementById('c3').value);cap.style.setProperty('--c4',document.getElementById('c4').value);cap.style.setProperty('--pad',padSlide.value+'px');cap.style.setProperty('--rad',radSlide.value+'px');
     if(isCustomMode){displayTitle.innerText=`${customCat.value||'UNKNOWN'} | ${customChar.value||'UNKNOWN'}`;displayWatermark.innerText=customCreator.value||'SAMPLE';}else{displayTitle.innerText=`${catSel.value} | ${charSel.value}`;displayWatermark.innerText='ARCH @체리망고';}
     displayTitle.style.fontFamily=fontSel.value;displayWatermark.style.fontFamily="'Pretendard Variable',sans-serif";editor.style.fontFamily=fontSel.value;editor.style.fontSize=sizeSlide.value+'px';
